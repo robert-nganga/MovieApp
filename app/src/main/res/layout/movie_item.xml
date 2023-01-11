@@ -13,17 +13,17 @@
 
         <ImageView
             android:id="@+id/imgMoviePoster"
-            android:layout_width="120dp"
-            android:layout_height="140dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_baseline_movie_24" />
 
         <TextView
             android:id="@+id/tvMovieTitle"
-            android:layout_width="110dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="5dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginHorizontal="5dp"
             android:text="Movie Titles"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textStyle="bold" />

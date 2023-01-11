@@ -43,7 +43,7 @@ class MovieViewModel @Inject constructor(private val repository: Repository): Vi
         get() = _allGenres
 
 
-    private fun getPopularMovies() = viewModelScope.launch {
+    fun getPopularMovies() = viewModelScope.launch {
         val result = repository.getPopularMovies()
         if(result.isSuccessful){
             result.body()?.let {

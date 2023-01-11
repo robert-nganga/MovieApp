@@ -2,7 +2,9 @@ package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.robert.mymovies.R
@@ -14,14 +16,19 @@ import com.robert.mymovies.ui.MovieViewModel
 
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
-    lateinit var viewModel: MovieViewModel
+    private lateinit var viewModel: MovieViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as MainActivity).viewModel
-        val allMoviesAdapter = AllMoviesAdapter()
+        val popularAdapter = TrendingAdapter()
         val trendingAdapter = TrendingAdapter()
         val genresAdapter = GenresAdapter()
+
+        val tvMorePopular = view.findViewById<TextView>(R.id.tvMorePopular)
+        tvMorePopular.setOnClickListener {
+            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment)
+        }
 
         // Shimmer Layouts
         val shimmerGenre = view.findViewById<ShimmerFrameLayout>(R.id.genreShimmer)
@@ -37,7 +44,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         val genresRecyclerView = view.findViewById<RecyclerView>(R.id.rvGenres)
         genresRecyclerView.adapter = genresAdapter
         trendingRecyclerView.adapter = trendingAdapter
-        popularRecyclerView.adapter = allMoviesAdapter
+        popularRecyclerView.adapter = popularAdapter
         viewModel.allGenres.observe(viewLifecycleOwner){
             shimmerGenre.stopShimmer()
             shimmerGenre.visibility = View.INVISIBLE
@@ -54,7 +61,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             shimmerPopular.stopShimmer()
             shimmerPopular.visibility = View.INVISIBLE
             popularRecyclerView.visibility = View.VISIBLE
-            allMoviesAdapter.updateList(it)
+            popularAdapter.updateList(it)
         }
 
     }

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.robert.mymovies.R
 import com.robert.mymovies.data.remote.Movie
-import com.robert.mymovies.utils.Constants.TRENDING_MOVIE_BASE_URL
+import com.robert.mymovies.utils.Constants.MOVIE_POSTER_BASE_URL
 
 class TrendingAdapter: RecyclerView.Adapter<TrendingAdapter.TrendingViewHolder>() {
 
@@ -35,7 +35,7 @@ class TrendingAdapter: RecyclerView.Adapter<TrendingAdapter.TrendingViewHolder>(
         private val imgTrending = itemView.findViewById<ImageView>(R.id.imgTrending)
 
         fun setData(movie: Movie){
-            val imageUrl = "$TRENDING_MOVIE_BASE_URL${movie.backdrop_path}"
+            val imageUrl = "$MOVIE_POSTER_BASE_URL${movie.poster_path}"
             Glide.with(itemView)
                 .load(imageUrl)
                 .into(imgTrending)

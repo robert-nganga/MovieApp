@@ -149,13 +149,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <include layout="@layout/shimmer_movie_item" />
+                    <include layout="@layout/shimmer_trending_item" />
 
-                    <include layout="@layout/shimmer_movie_item" />
+                    <include layout="@layout/shimmer_trending_item" />
 
-                    <include layout="@layout/shimmer_movie_item" />
-
-                    <include layout="@layout/shimmer_movie_item" />
+                    <include layout="@layout/shimmer_trending_item" />
                 </LinearLayout>
 
             </com.facebook.shimmer.ShimmerFrameLayout>
@@ -168,11 +166,23 @@
                 android:layout_marginStart="7dp"
                 android:layout_marginEnd="7dp"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textView7"
-                tools:listitem="@layout/movie_item" />
+                tools:listitem="@layout/trending_item" />
+
+            <TextView
+                android:id="@+id/tvMorePopular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="10dp"
+                android:text="See all"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trendingShimmer" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

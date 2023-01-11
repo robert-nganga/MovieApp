@@ -11,7 +11,7 @@ import com.robert.mymovies.R
 import com.robert.mymovies.data.remote.Movie
 import com.robert.mymovies.utils.Constants.MOVIE_POSTER_BASE_URL
 
-class AllMoviesAdapter: RecyclerView.Adapter<AllMoviesAdapter.AllMoviesViewHolder>() {
+class AllMoviesAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllMoviesAdapter.AllMoviesViewHolder>() {
 
     private val movies = ArrayList<Movie>()
 
@@ -24,24 +24,30 @@ class AllMoviesAdapter: RecyclerView.Adapter<AllMoviesAdapter.AllMoviesViewHolde
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllMoviesViewHolder {
-        return AllMoviesViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.img_movie_item, parent, false))
+        return AllMoviesViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: AllMoviesViewHolder, position: Int) {
         val movie = movies[position]
-        holder.setData(movie, position)
+        holder.setData(movie)
     }
 
     override fun getItemCount(): Int = movies.size
 
     inner class AllMoviesViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
-        private val imgMoviePoster = itemView.findViewById<ImageView>(R.id.imgMovie)
+        private val imgMoviePoster = itemView.findViewById<ImageView>(R.id.imgMoviePoster)
+        private val tvMovieTitle = itemView.findViewById<TextView>(R.id.tvMovieTitle)
 
-        fun setData(movie: Movie, position: Int){
+        fun setData(movie: Movie){
             val imageUrl = "$MOVIE_POSTER_BASE_URL${movie.poster_path}"
+            val layoutParams = imgMoviePoster.layoutParams
+            layoutParams.width = deviceWidth/2
+            imgMoviePoster.layoutParams = layoutParams
+
             Glide.with(itemView)
                 .load(imageUrl)
                 .into(imgMoviePoster)
+            tvMovieTitle.text = movie.title
         }
     }
 }
