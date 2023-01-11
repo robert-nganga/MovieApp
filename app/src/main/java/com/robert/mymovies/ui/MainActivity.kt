@@ -22,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    val viewModel: MovieViewModel by viewModels()
     private lateinit var toolBar: MaterialToolbar
     private lateinit var navController: NavController
     private lateinit var navigationView: NavigationView

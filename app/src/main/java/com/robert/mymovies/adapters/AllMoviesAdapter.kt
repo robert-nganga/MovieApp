@@ -24,7 +24,7 @@ class AllMoviesAdapter: RecyclerView.Adapter<AllMoviesAdapter.AllMoviesViewHolde
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllMoviesViewHolder {
-        return AllMoviesViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false))
+        return AllMoviesViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.img_movie_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: AllMoviesViewHolder, position: Int) {
@@ -35,12 +35,10 @@ class AllMoviesAdapter: RecyclerView.Adapter<AllMoviesAdapter.AllMoviesViewHolde
     override fun getItemCount(): Int = movies.size
 
     inner class AllMoviesViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
-        private val imgMoviePoster = itemView.findViewById<ImageView>(R.id.imgMoviePoster)
-        private val tvMovieTitle = itemView.findViewById<TextView>(R.id.tvMovieTitle)
+        private val imgMoviePoster = itemView.findViewById<ImageView>(R.id.imgMovie)
 
         fun setData(movie: Movie, position: Int){
             val imageUrl = "$MOVIE_POSTER_BASE_URL${movie.poster_path}"
-            tvMovieTitle.text = movie.title
             Glide.with(itemView)
                 .load(imageUrl)
                 .into(imgMoviePoster)

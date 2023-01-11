@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_gragh"
     app:startDestination="@id/moviesFragment">
 
     <fragment
         android:id="@+id/moviesFragment"
         android:name="com.robert.mymovies.ui.fragments.MoviesFragment"
-        android:label="Movies" />
+        android:label="Movies" >
+        <action
+            android:id="@+id/action_moviesFragment_to_moreFilmsFragment"
+            app:destination="@id/moreFilmsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/seriesFragment"
         android:name="com.robert.mymovies.ui.fragments.SeriesFragment"
-        android:label="Series" />
+        android:label="Series" >
+        <action
+            android:id="@+id/action_seriesFragment_to_moreFilmsFragment"
+            app:destination="@id/moreFilmsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/moreFilmsFragment"
+        android:name="com.robert.mymovies.ui.fragments.MoreFilmsFragment"
+        android:label="MoreFilmsFragment" />
 </navigation>
