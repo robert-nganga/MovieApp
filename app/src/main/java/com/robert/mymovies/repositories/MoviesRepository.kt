@@ -13,6 +13,10 @@ class MoviesRepository@Inject constructor(private val api: MoviesAPI): Repositor
         return api.getPopularMovies()
     }
 
+    override suspend fun getUpcomingMovies(): Response<MovieResponse> {
+        return api.getUpcomingMovies()
+    }
+
     override suspend fun getGenreList(): Response<GenreResponse> {
         return api.getGenreList()
     }

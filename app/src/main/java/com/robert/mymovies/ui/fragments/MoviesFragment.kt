@@ -3,16 +3,20 @@ package com.robert.mymovies.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.AllMoviesAdapter
 import com.robert.mymovies.adapters.GenresAdapter
 import com.robert.mymovies.adapters.TrendingAdapter
 import com.robert.mymovies.ui.MainActivity
 import com.robert.mymovies.ui.MovieViewModel
+import com.robert.mymovies.utils.Resource
 
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
@@ -23,6 +27,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         viewModel = (activity as MainActivity).viewModel
         val popularAdapter = TrendingAdapter()
         val trendingAdapter = TrendingAdapter()
+        val upcomingAdapter = TrendingAdapter()
         val genresAdapter = GenresAdapter()
 
         val tvMorePopular = view.findViewById<TextView>(R.id.tvMorePopular)
@@ -37,31 +42,85 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         shimmerTrending.startShimmer()
         val shimmerPopular = view.findViewById<ShimmerFrameLayout>(R.id.popularShimmer)
         shimmerPopular.startShimmer()
+        val shimmerUpcoming = view.findViewById<ShimmerFrameLayout>(R.id.upcomingShimmer)
+        shimmerUpcoming.startShimmer()
 
         //Recyclerview Layouts
+        val upcomingRecyclerView = view.findViewById<RecyclerView>(R.id.rvUpcoming)
         val trendingRecyclerView = view.findViewById<RecyclerView>(R.id.rvTrending)
         val popularRecyclerView = view.findViewById<RecyclerView>(R.id.rvPopular)
         val genresRecyclerView = view.findViewById<RecyclerView>(R.id.rvGenres)
+        upcomingRecyclerView.adapter = upcomingAdapter
         genresRecyclerView.adapter = genresAdapter
         trendingRecyclerView.adapter = trendingAdapter
         popularRecyclerView.adapter = popularAdapter
-        viewModel.allGenres.observe(viewLifecycleOwner){
-            shimmerGenre.stopShimmer()
-            shimmerGenre.visibility = View.INVISIBLE
-            genresRecyclerView.visibility = View.VISIBLE
-            genresAdapter.updateList(it)
+        viewModel.allGenres.observe(viewLifecycleOwner){ response->
+            when(response){
+                is Resource.Success -> {
+                    shimmerGenre.stopShimmer()
+                    shimmerGenre.visibility = View.INVISIBLE
+                    genresRecyclerView.visibility = View.VISIBLE
+                    response.data?.let {
+                        genresAdapter.updateList(it.genres)
+                    }
+                }
+                is Resource.Loading -> {}
+                is Resource.Error -> {}
+            }
         }
-        viewModel.allTrendingMovies.observe(viewLifecycleOwner){
-            shimmerTrending.stopShimmer()
-            shimmerTrending.visibility = View.INVISIBLE
-            trendingRecyclerView.visibility = View.VISIBLE
-            trendingAdapter.updateList(it)
+        viewModel.allTrendingMovies.observe(viewLifecycleOwner){ response->
+            when(response){
+                is  Resource.Success->{
+                    shimmerTrending.stopShimmer()
+                    shimmerTrending.visibility = View.INVISIBLE
+                    trendingRecyclerView.visibility = View.VISIBLE
+                    response.data?.let {
+                        trendingAdapter.updateList(it.results)
+                    }
+                }
+                is Resource.Loading -> {}
+                is Resource.Error -> {
+                    response.message?.let{message ->
+                        Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
+                            setAction("Retry"){
+                                viewModel.fetchData()
+                            }
+                            }
+                    }
+                }
+            }
         }
-        viewModel.allPopularMovies.observe(viewLifecycleOwner){
-            shimmerPopular.stopShimmer()
-            shimmerPopular.visibility = View.INVISIBLE
-            popularRecyclerView.visibility = View.VISIBLE
-            popularAdapter.updateList(it)
+        viewModel.allPopularMovies.observe(viewLifecycleOwner){ response ->
+
+            when(response){
+                is Resource.Success ->{
+                    shimmerPopular.stopShimmer()
+                    shimmerPopular.visibility = View.INVISIBLE
+                    popularRecyclerView.visibility = View.VISIBLE
+                    response.data?.let {
+                        popularAdapter.updateList(it.results)
+                    }
+                }
+                is Resource.Loading -> {}
+                is Resource.Error -> {}
+            }
+
+        }
+
+        viewModel.allUpcomingMovies.observe(viewLifecycleOwner){ response ->
+            when(response){
+                is Resource.Success ->{
+                    shimmerUpcoming.stopShimmer()
+                    shimmerUpcoming.visibility = View.INVISIBLE
+                    upcomingRecyclerView.visibility = View.VISIBLE
+                    response.data?.let {
+                        upcomingAdapter.updateList(it.results)
+                    }
+                }
+                is Resource.Loading -> {}
+                is Resource.Error -> {}
+            }
+
         }
 
     }

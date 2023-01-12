@@ -32,4 +32,14 @@ interface MoviesAPI {
         @Query("api_key")
         apiKey: String = BuildConfig.API_KEY,
     ): Response<MovieResponse>
+
+    @GET("3/movie/upcoming")
+    suspend fun getUpcomingMovies(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("page")
+        page: Int = 1
+    ): Response<MovieResponse>
 }

@@ -8,6 +8,8 @@ interface Repository {
 
     suspend fun getPopularMovies(): Response<MovieResponse>
 
+    suspend fun getUpcomingMovies(): Response<MovieResponse>
+
     suspend fun getGenreList(): Response<GenreResponse>
 
     suspend fun getTrendingMovies(): Response<MovieResponse>

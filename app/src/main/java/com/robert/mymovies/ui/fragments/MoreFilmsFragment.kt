@@ -10,6 +10,8 @@ import com.robert.mymovies.R
 import com.robert.mymovies.adapters.AllMoviesAdapter
 import com.robert.mymovies.ui.MainActivity
 import com.robert.mymovies.ui.MovieViewModel
+import com.robert.mymovies.utils.Resource
+import android.util.DisplayMetrics
 
 class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
 
@@ -25,10 +27,17 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         recyclerView.layoutManager = layoutManager
         val adapter = AllMoviesAdapter(getDeviceWidth())
         recyclerView.adapter = adapter
-        viewModel.allPopularMovies.observe(viewLifecycleOwner){
-            adapter.updateList(it)
+        viewModel.allPopularMovies.observe(viewLifecycleOwner){response ->
+            when(response){
+                is Resource.Success ->{
+                    response.data?.let {
+                        adapter.updateList(it.results)
+                    }
+                }
+                is Resource.Loading -> {}
+                is Resource.Error -> {}
+            }
         }
-
     }
 
     private fun getDeviceWidth(): Int {
@@ -37,4 +46,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         val paddingWidthInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingWidthInDp.toFloat(), resources.displayMetrics).toInt()
         return displayMetrics.widthPixels - paddingWidthInPx
     }
+
 }
+
+
