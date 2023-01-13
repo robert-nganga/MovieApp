@@ -14,16 +14,13 @@ import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.time.Duration
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
-
-    init {
-        fetchData()
-    }
 
     private val _allPopularMovies: MutableLiveData<Resource<MovieResponse>> = MutableLiveData()
     val allPopularMovies: LiveData<Resource<MovieResponse>>
@@ -51,55 +48,49 @@ class MovieViewModel @Inject constructor(private val repository: Repository): Vi
         getUpcomingMovies()
     }
 
-
-    fun getPopularMovies() = viewModelScope.launch {
-        //_allPopularMovies.postValue(Resource.Loading())
-        val result = repository.getPopularMovies()
-        if(result.isSuccessful){
-            result.body()?.let { response->
-                _allPopularMovies.postValue(Resource.Success(response))
+    private fun handleResponse(response: Response<MovieResponse>): Resource<MovieResponse>{
+        if(response.isSuccessful){
+            response.body()?.let { resultResponse ->
+                return Resource(Resource.Status.SUCCESS, resultResponse, null)
             }
-        }else{
-            _allPopularMovies.postValue(Resource.Error(result.message()))
         }
+        return Resource(Resource.Status.ERROR, null, response.message())
+    }
+
+    private fun getPopularMovies() = viewModelScope.launch {
+        _allPopularMovies.postValue(Resource(Resource.Status.LOADING, null, null))
+        val result = repository.getPopularMovies(2)
+        _allPopularMovies.postValue(handleResponse(result))
 
     }
 
-    fun getUpcomingMovies() = viewModelScope.launch {
-        //_allUpcomingMovies.postValue(Resource.Loading())
-        val result = repository.getUpcomingMovies()
-        if(result.isSuccessful){
-            result.body()?.let { response->
-                _allUpcomingMovies.postValue(Resource.Success(response))
-            }
-        }else{
-            _allUpcomingMovies.postValue(Resource.Error(result.message()))
-        }
+    private fun getUpcomingMovies() = viewModelScope.launch {
+        _allUpcomingMovies.postValue(Resource(Resource.Status.LOADING, null, null))
+        val result = repository.getUpcomingMovies(2)
+        _allUpcomingMovies.postValue(handleResponse(result))
 
     }
 
     private fun getTrendingMovies() = viewModelScope.launch {
-        //_allTrendingMovies.postValue(Resource.Loading())
+        _allTrendingMovies.postValue(Resource(Resource.Status.LOADING, null, null))
         val result = repository.getTrendingMovies()
-        if(result.isSuccessful){
-            result.body()?.let { response->
-                _allTrendingMovies.postValue(Resource.Success(response))
-            }
-        }else{
-            _allTrendingMovies.postValue(Resource.Error(result.message()))
-        }
+        _allTrendingMovies.postValue(handleResponse(result))
     }
 
     private fun getGenreList() = viewModelScope.launch {
-       // _allGenres.postValue(Resource.Loading())
+       _allGenres.value = Resource(Resource.Status.LOADING, null, null)
         val result = repository.getGenreList()
         if (result.isSuccessful){
             result.body()?.let { response->
-                _allGenres.postValue(Resource.Success(response))
+                _allGenres.postValue(Resource(Resource.Status.SUCCESS, response, null))
             }
         }else{
-            _allGenres.postValue(Resource.Error(result.message()))
+            _allGenres.postValue(Resource(Resource.Status.ERROR, null, result.message()))
         }
+    }
+
+    init {
+        fetchData()
     }
 
 }

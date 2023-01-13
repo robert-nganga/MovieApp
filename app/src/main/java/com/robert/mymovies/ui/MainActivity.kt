@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration

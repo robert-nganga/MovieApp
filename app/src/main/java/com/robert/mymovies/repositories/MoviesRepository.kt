@@ -9,17 +9,18 @@ import javax.inject.Inject
 class MoviesRepository@Inject constructor(private val api: MoviesAPI): Repository {
 
 
-    override suspend fun getPopularMovies(): Response<MovieResponse> {
-        return api.getPopularMovies()
+    override suspend fun getPopularMovies(page: Int): Response<MovieResponse> {
+        return api.getPopularMovies(page = page)
     }
 
-    override suspend fun getUpcomingMovies(): Response<MovieResponse> {
-        return api.getUpcomingMovies()
+    override suspend fun getUpcomingMovies(page: Int): Response<MovieResponse> {
+        return api.getUpcomingMovies(page = page)
     }
 
     override suspend fun getGenreList(): Response<GenreResponse> {
         return api.getGenreList()
     }
+
 
     override suspend fun getTrendingMovies(): Response<MovieResponse> {
         return api.getTrendingMovies()

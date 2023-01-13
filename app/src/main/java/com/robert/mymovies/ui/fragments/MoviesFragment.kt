@@ -32,7 +32,17 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
         val tvMorePopular = view.findViewById<TextView>(R.id.tvMorePopular)
         tvMorePopular.setOnClickListener {
-            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment)
+            val bundle = Bundle().apply {
+                putString("category", "popular")
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
+        }
+        val tvMoreUpcoming = view.findViewById<TextView>(R.id.tvMoreUpcoming)
+        tvMoreUpcoming.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("category", "upcoming")
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
         }
 
         // Shimmer Layouts
@@ -55,8 +65,8 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         trendingRecyclerView.adapter = trendingAdapter
         popularRecyclerView.adapter = popularAdapter
         viewModel.allGenres.observe(viewLifecycleOwner){ response->
-            when(response){
-                is Resource.Success -> {
+            when(response.status){
+                Resource.Status.SUCCESS -> {
                     shimmerGenre.stopShimmer()
                     shimmerGenre.visibility = View.INVISIBLE
                     genresRecyclerView.visibility = View.VISIBLE
@@ -64,13 +74,13 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                         genresAdapter.updateList(it.genres)
                     }
                 }
-                is Resource.Loading -> {}
-                is Resource.Error -> {}
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {}
             }
         }
         viewModel.allTrendingMovies.observe(viewLifecycleOwner){ response->
-            when(response){
-                is  Resource.Success->{
+            when(response.status){
+                Resource.Status.SUCCESS ->{
                     shimmerTrending.stopShimmer()
                     shimmerTrending.visibility = View.INVISIBLE
                     trendingRecyclerView.visibility = View.VISIBLE
@@ -78,22 +88,22 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                         trendingAdapter.updateList(it.results)
                     }
                 }
-                is Resource.Loading -> {}
-                is Resource.Error -> {
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {
                     response.message?.let{message ->
                         Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
                             setAction("Retry"){
                                 viewModel.fetchData()
                             }
-                            }
+                        }
                     }
                 }
             }
         }
         viewModel.allPopularMovies.observe(viewLifecycleOwner){ response ->
 
-            when(response){
-                is Resource.Success ->{
+            when(response.status){
+                Resource.Status.SUCCESS ->{
                     shimmerPopular.stopShimmer()
                     shimmerPopular.visibility = View.INVISIBLE
                     popularRecyclerView.visibility = View.VISIBLE
@@ -101,15 +111,15 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                         popularAdapter.updateList(it.results)
                     }
                 }
-                is Resource.Loading -> {}
-                is Resource.Error -> {}
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {}
             }
 
         }
 
         viewModel.allUpcomingMovies.observe(viewLifecycleOwner){ response ->
-            when(response){
-                is Resource.Success ->{
+            when(response.status){
+                Resource.Status.SUCCESS ->{
                     shimmerUpcoming.stopShimmer()
                     shimmerUpcoming.visibility = View.INVISIBLE
                     upcomingRecyclerView.visibility = View.VISIBLE
@@ -117,8 +127,8 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                         upcomingAdapter.updateList(it.results)
                     }
                 }
-                is Resource.Loading -> {}
-                is Resource.Error -> {}
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {}
             }
 
         }

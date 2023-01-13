@@ -28,5 +28,9 @@
     <fragment
         android:id="@+id/moreFilmsFragment"
         android:name="com.robert.mymovies.ui.fragments.MoreFilmsFragment"
-        android:label="MoreFilmsFragment" />
+        android:label="MoreFilmsFragment" >
+        <argument
+            android:name="category"
+            app:argType="string" />
+    </fragment>
 </navigation>
