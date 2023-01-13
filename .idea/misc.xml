@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1185" />
+        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/drawable/transparent_gradient.xml" value="0.1185" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/activity_main.xml" value="0.18" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_more_films.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_movies.xml" value="0.18" />

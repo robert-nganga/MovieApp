@@ -20,16 +20,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSlider"
+                android:layout_width="0dp"
+                android:layout_height="220dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.denzcoskun.imageslider.ImageSlider
+                    android:id="@+id/image_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:iss_title_background="@drawable/transparent_gradient"
+                    app:iss_auto_cycle="true"
+                    app:iss_delay="0"
+                    app:iss_period="2000" />
+
+            </com.google.android.material.card.MaterialCardView>
+
             <TextView
                 android:id="@+id/tvTitleGenre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:text="Genres"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/cardSlider" />
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/genreShimmer"
@@ -72,56 +95,7 @@
                 app:layout_constraintTop_toTopOf="@id/genreShimmer"
                 tools:listitem="@layout/genre_item" />
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="Trending"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/genreShimmer" />
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/trendingShimmer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="7dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView5">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/shimmer_trending_item" />
-
-                    <include layout="@layout/shimmer_trending_item" />
-
-                    <include layout="@layout/shimmer_trending_item" />
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvTrending"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_marginEnd="7dp"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="@id/trendingShimmer"
-                app:layout_constraintStart_toStartOf="@id/trendingShimmer"
-                app:layout_constraintTop_toTopOf="@id/trendingShimmer"
-                tools:listitem="@layout/trending_item" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -133,7 +107,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/trendingShimmer" />
+                app:layout_constraintTop_toBottomOf="@id/genreShimmer" />
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/popularShimmer"
@@ -182,7 +156,7 @@
                 android:text="See all"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/trendingShimmer" />
+                app:layout_constraintTop_toBottomOf="@+id/genreShimmer" />
 
             <TextView
                 android:id="@+id/textView2"

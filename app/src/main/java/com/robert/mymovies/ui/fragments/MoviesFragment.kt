@@ -8,6 +8,9 @@ import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.denzcoskun.imageslider.ImageSlider
+import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.models.SlideModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
@@ -16,6 +19,7 @@ import com.robert.mymovies.adapters.GenresAdapter
 import com.robert.mymovies.adapters.TrendingAdapter
 import com.robert.mymovies.ui.MainActivity
 import com.robert.mymovies.ui.MovieViewModel
+import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.Resource
 
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
@@ -29,6 +33,9 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         val trendingAdapter = TrendingAdapter()
         val upcomingAdapter = TrendingAdapter()
         val genresAdapter = GenresAdapter()
+
+        val imageSlider = view.findViewById<ImageSlider>(R.id.image_slider)
+        val imageList = ArrayList<SlideModel>()
 
         val tvMorePopular = view.findViewById<TextView>(R.id.tvMorePopular)
         tvMorePopular.setOnClickListener {
@@ -48,8 +55,8 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         // Shimmer Layouts
         val shimmerGenre = view.findViewById<ShimmerFrameLayout>(R.id.genreShimmer)
         shimmerGenre.startShimmer()
-        val shimmerTrending = view.findViewById<ShimmerFrameLayout>(R.id.trendingShimmer)
-        shimmerTrending.startShimmer()
+        //val shimmerTrending = view.findViewById<ShimmerFrameLayout>(R.id.trendingShimmer)
+        //shimmerTrending.startShimmer()
         val shimmerPopular = view.findViewById<ShimmerFrameLayout>(R.id.popularShimmer)
         shimmerPopular.startShimmer()
         val shimmerUpcoming = view.findViewById<ShimmerFrameLayout>(R.id.upcomingShimmer)
@@ -57,12 +64,12 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
         //Recyclerview Layouts
         val upcomingRecyclerView = view.findViewById<RecyclerView>(R.id.rvUpcoming)
-        val trendingRecyclerView = view.findViewById<RecyclerView>(R.id.rvTrending)
+        //val trendingRecyclerView = view.findViewById<RecyclerView>(R.id.rvTrending)
         val popularRecyclerView = view.findViewById<RecyclerView>(R.id.rvPopular)
         val genresRecyclerView = view.findViewById<RecyclerView>(R.id.rvGenres)
         upcomingRecyclerView.adapter = upcomingAdapter
         genresRecyclerView.adapter = genresAdapter
-        trendingRecyclerView.adapter = trendingAdapter
+        //trendingRecyclerView.adapter = trendingAdapter
         popularRecyclerView.adapter = popularAdapter
         viewModel.allGenres.observe(viewLifecycleOwner){ response->
             when(response.status){
@@ -81,11 +88,16 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         viewModel.allTrendingMovies.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS ->{
-                    shimmerTrending.stopShimmer()
-                    shimmerTrending.visibility = View.INVISIBLE
-                    trendingRecyclerView.visibility = View.VISIBLE
+//                    shimmerTrending.stopShimmer()
+//                    shimmerTrending.visibility = View.INVISIBLE
+//                    trendingRecyclerView.visibility = View.VISIBLE
                     response.data?.let {
-                        trendingAdapter.updateList(it.results)
+                        //trendingAdapter.updateList(it.results)
+                        it.results.forEach { movie ->
+                            val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdrop_path}"
+                            imageList.add(SlideModel(imageUrl, movie.title ))
+                        }
+                        imageSlider.setImageList(imageList, ScaleTypes.FIT)
                     }
                 }
                 Resource.Status.LOADING -> {}
