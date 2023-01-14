@@ -2,6 +2,7 @@ package com.robert.mymovies.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         //Get the NavHostFragment
         val navHostFrag = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFrag.navController
+
 
         // Define AppBar Configuration
         val appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)

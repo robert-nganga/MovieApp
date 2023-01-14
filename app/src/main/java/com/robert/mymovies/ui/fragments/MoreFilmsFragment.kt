@@ -13,6 +13,7 @@ import com.robert.mymovies.R
 import com.robert.mymovies.adapters.AllMoviesAdapter
 import com.robert.mymovies.utils.Resource
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.robert.mymovies.ui.MoreFilmsFragmentViewModel
 import com.robert.mymovies.utils.Constants.QUERY_PAGE_SIZE
@@ -38,6 +39,13 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         paginationProgressBar = view.findViewById(R.id.paginationProgressBar)
         recyclerView = view.findViewById(R.id.rvMoreFilms)
         setUpRecyclerView()
+
+        adapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putInt("id", it.id)
+            }
+            findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
+        }
 
         viewModel.allFilms.observe(viewLifecycleOwner){response ->
             when(response.status){

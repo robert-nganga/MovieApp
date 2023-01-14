@@ -39,6 +39,7 @@ class AllMoviesAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllMo
 
     override fun onBindViewHolder(holder: AllMoviesViewHolder, position: Int) {
         val movie = differ.currentList[position]
+        holder.itemView.setOnClickListener { onItemClickListener?.let { it(movie) }}
         holder.setData(movie)
     }
 
@@ -47,8 +48,10 @@ class AllMoviesAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllMo
     inner class AllMoviesViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
         private val imgMoviePoster = itemView.findViewById<ImageView>(R.id.imgMoviePoster)
         private val tvMovieTitle = itemView.findViewById<TextView>(R.id.tvMovieTitle)
+        private var currentMovie: Movie? = null
 
         fun setData(movie: Movie){
+            currentMovie = movie
             val imageUrl = "$MOVIE_POSTER_BASE_URL${movie.poster_path}"
             val layoutParams = imgMoviePoster.layoutParams
             layoutParams.width = deviceWidth/2
@@ -56,9 +59,6 @@ class AllMoviesAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllMo
 
             Glide.with(itemView).load(imageUrl).into(imgMoviePoster)
             tvMovieTitle.text = movie.title
-            setOnItemClickListener {
-                onItemClickListener?.let{ it(movie)}
-            }
         }
     }
 }

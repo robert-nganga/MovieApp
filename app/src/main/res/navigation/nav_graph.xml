@@ -42,5 +42,9 @@
     <fragment
         android:id="@+id/movieFragment"
         android:name="com.robert.mymovies.ui.fragments.MovieFragment"
-        android:label="MovieFragment" />
+        android:label="MovieFragment">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
 </navigation>
