@@ -1,7 +1,9 @@
 package com.robert.mymovies.repositories
 
 import com.robert.mymovies.api.MoviesAPI
+import com.robert.mymovies.data.remote.CastResponse
 import com.robert.mymovies.data.remote.GenreResponse
+import com.robert.mymovies.data.remote.MovieDetailsResponse
 import com.robert.mymovies.data.remote.MovieResponse
 import retrofit2.Response
 import javax.inject.Inject
@@ -17,10 +19,21 @@ class MoviesRepository@Inject constructor(private val api: MoviesAPI): Repositor
         return api.getUpcomingMovies(page = page)
     }
 
+    override suspend fun getSimilarMovies(movieId: Int): Response<MovieResponse> {
+        return api.getSimilarMovies(filmId = movieId)
+    }
+
+    override suspend fun getMovieCredits(movieId: Int): Response<CastResponse> {
+        return api.getMovieCredits(filmId = movieId)
+    }
+
+    override suspend fun getMovieDetails(movieId: Int): Response<MovieDetailsResponse> {
+        return api.getMovieDetails(filmId = movieId)
+    }
+
     override suspend fun getGenreList(): Response<GenreResponse> {
         return api.getGenreList()
     }
-
 
     override suspend fun getTrendingMovies(): Response<MovieResponse> {
         return api.getTrendingMovies()

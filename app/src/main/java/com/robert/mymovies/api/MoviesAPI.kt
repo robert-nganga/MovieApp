@@ -1,10 +1,13 @@
 package com.robert.mymovies.api
 
 import com.robert.mymovies.BuildConfig
+import com.robert.mymovies.data.remote.CastResponse
 import com.robert.mymovies.data.remote.GenreResponse
+import com.robert.mymovies.data.remote.MovieDetailsResponse
 import com.robert.mymovies.data.remote.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MoviesAPI {
@@ -42,4 +45,34 @@ interface MoviesAPI {
         @Query("page")
         page: Int = 1
     ): Response<MovieResponse>
+
+    @GET("3/movie/{movie_id}/credits")
+    suspend fun getMovieCredits(
+        @Path("movie_id")
+        filmId: Int,
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("language")
+        language: String = "en-US",
+    ): Response<CastResponse>
+
+    @GET("3/movie/{movie_id}/similar")
+    suspend fun getSimilarMovies(
+        @Path("movie_id")
+        filmId: Int,
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("language")
+        language: String = "en-US",
+    ): Response<MovieResponse>
+
+    @GET("3/movie/{movie_id}")
+    suspend fun getMovieDetails(
+        @Path("movie_id")
+        filmId: Int,
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("language")
+        language: String = "en-US",
+    ): Response<MovieDetailsResponse>
 }

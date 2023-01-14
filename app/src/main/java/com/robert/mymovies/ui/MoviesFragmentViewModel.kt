@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
+class MoviesFragmentViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
     private val _allPopularMovies: MutableLiveData<Resource<MovieResponse>> = MutableLiveData()
     val allPopularMovies: LiveData<Resource<MovieResponse>>

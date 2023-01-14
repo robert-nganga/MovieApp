@@ -16,6 +16,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_moviesFragment_to_movieFragment"
+            app:destination="@id/movieFragment" />
     </fragment>
     <fragment
         android:id="@+id/seriesFragment"
@@ -32,5 +35,12 @@
         <argument
             android:name="category"
             app:argType="string" />
+        <action
+            android:id="@+id/action_moreFilmsFragment_to_movieFragment"
+            app:destination="@id/movieFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/movieFragment"
+        android:name="com.robert.mymovies.ui.fragments.MovieFragment"
+        android:label="MovieFragment" />
 </navigation>

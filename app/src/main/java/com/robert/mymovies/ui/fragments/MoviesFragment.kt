@@ -3,8 +3,6 @@ package com.robert.mymovies.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -14,17 +12,16 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
-import com.robert.mymovies.adapters.AllMoviesAdapter
 import com.robert.mymovies.adapters.GenresAdapter
 import com.robert.mymovies.adapters.TrendingAdapter
 import com.robert.mymovies.ui.MainActivity
-import com.robert.mymovies.ui.MovieViewModel
+import com.robert.mymovies.ui.MoviesFragmentViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.Resource
 
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
-    private lateinit var viewModel: MovieViewModel
+    private lateinit var viewModel: MoviesFragmentViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
