@@ -4,6 +4,7 @@ data class MovieDetailsResponse(
     val adult: Boolean,
     val backdrop_path: String,
     val belongs_to_collection: Any,
+    val genres: List<Genre>,
     val budget: Int,
     val homepage: String,
     val id: Int,

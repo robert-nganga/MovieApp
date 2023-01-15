@@ -34,7 +34,13 @@ class MainActivity : AppCompatActivity() {
         val navHostFrag = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFrag.navController
 
-
+        navController.addOnDestinationChangedListener{ _, destination, _ ->
+            if(destination.id == R.id.movieFragment){
+                toolBar.visibility = View.GONE
+            }else{
+                toolBar.visibility = View.VISIBLE
+            }
+        }
         // Define AppBar Configuration
         val appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
 
