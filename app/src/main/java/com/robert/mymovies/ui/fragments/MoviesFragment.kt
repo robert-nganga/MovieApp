@@ -8,12 +8,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.GenresAdapter
-import com.robert.mymovies.adapters.TrendingAdapter
+import com.robert.mymovies.adapters.MovieAdapter
 import com.robert.mymovies.ui.MainActivity
 import com.robert.mymovies.ui.MoviesFragmentViewModel
 import com.robert.mymovies.utils.Constants
@@ -26,9 +27,9 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as MainActivity).viewModel
-        val popularAdapter = TrendingAdapter()
-        val trendingAdapter = TrendingAdapter()
-        val upcomingAdapter = TrendingAdapter()
+        val popularAdapter = MovieAdapter()
+        val trendingAdapter = MovieAdapter()
+        val upcomingAdapter = MovieAdapter()
         val genresAdapter = GenresAdapter()
 
         val imageSlider = view.findViewById<ImageSlider>(R.id.image_slider)
@@ -68,6 +69,21 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         genresRecyclerView.adapter = genresAdapter
         //trendingRecyclerView.adapter = trendingAdapter
         popularRecyclerView.adapter = popularAdapter
+
+        //Set Adapter listeners
+        upcomingAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putInt("id", it.id)
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+        }
+
+        popularAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putInt("id", it.id)
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+        }
         viewModel.allGenres.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS -> {
@@ -117,7 +133,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                     shimmerPopular.visibility = View.INVISIBLE
                     popularRecyclerView.visibility = View.VISIBLE
                     response.data?.let {
-                        popularAdapter.updateList(it.results)
+                        popularAdapter.differ.submitList(it.results.toList())
                     }
                 }
                 Resource.Status.LOADING -> {}
@@ -133,7 +149,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                     shimmerUpcoming.visibility = View.INVISIBLE
                     upcomingRecyclerView.visibility = View.VISIBLE
                     response.data?.let {
-                        upcomingAdapter.updateList(it.results)
+                        upcomingAdapter.differ.submitList(it.results.toList())
                     }
                 }
                 Resource.Status.LOADING -> {}

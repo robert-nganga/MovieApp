@@ -4,20 +4,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.robert.mymovies.R
+import com.robert.mymovies.data.remote.Cast
 import com.robert.mymovies.data.remote.Movie
 import com.robert.mymovies.utils.Constants.MOVIE_POSTER_BASE_URL
 
-class TrendingAdapter: RecyclerView.Adapter<TrendingAdapter.TrendingViewHolder>() {
+class MovieAdapter: RecyclerView.Adapter<MovieAdapter.TrendingViewHolder>() {
 
-    private val movies = ArrayList<Movie>()
+    private val differCallBack = object: DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    fun updateList(newList: List<Movie>){
-        movies.clear()
-        movies.addAll(newList)
-        notifyDataSetChanged()
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, differCallBack)
+
+    private var onItemClickListener: ((Movie)->Unit)? = null
+
+    fun setOnItemClickListener(listener: (Movie)-> Unit){
+        onItemClickListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrendingViewHolder {
@@ -25,11 +38,12 @@ class TrendingAdapter: RecyclerView.Adapter<TrendingAdapter.TrendingViewHolder>(
     }
 
     override fun onBindViewHolder(holder: TrendingViewHolder, position: Int) {
-        val movie = movies[position]
+        val movie = differ.currentList[position]
+        holder.itemView.setOnClickListener {onItemClickListener?.let { it(movie) }}
         holder.setData(movie)
     }
 
-    override fun getItemCount(): Int = movies.size
+    override fun getItemCount(): Int = differ.currentList.size
 
     inner class TrendingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val imgTrending = itemView.findViewById<ImageView>(R.id.imgTrending)

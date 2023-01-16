@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.robert.mymovies.R
+import com.robert.mymovies.data.remote.Cast
 import com.robert.mymovies.data.remote.Movie
 import com.robert.mymovies.utils.Constants.MOVIE_POSTER_BASE_URL
 
@@ -48,10 +49,10 @@ class AllMoviesAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllMo
     inner class AllMoviesViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
         private val imgMoviePoster = itemView.findViewById<ImageView>(R.id.imgMoviePoster)
         private val tvMovieTitle = itemView.findViewById<TextView>(R.id.tvMovieTitle)
-        private var currentMovie: Movie? = null
+        private var currentCast: Movie? = null
 
         fun setData(movie: Movie){
-            currentMovie = movie
+            currentCast = movie
             val imageUrl = "$MOVIE_POSTER_BASE_URL${movie.poster_path}"
             val layoutParams = imgMoviePoster.layoutParams
             layoutParams.width = deviceWidth/2

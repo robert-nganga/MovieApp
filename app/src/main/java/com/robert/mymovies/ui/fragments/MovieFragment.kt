@@ -12,12 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.robert.mymovies.R
+import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.GenresAdapter
+import com.robert.mymovies.adapters.MovieAdapter
 import com.robert.mymovies.data.remote.MovieDetailsResponse
 import com.robert.mymovies.ui.MovieFragmentViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.glailton.expandabletextview.ExpandableTextView
 
 @AndroidEntryPoint
 class MovieFragment: Fragment(R.layout.fragment_movie) {
@@ -29,10 +32,14 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
     private lateinit var tvTagLine: TextView
     private lateinit var tvYearPublished: TextView
     private lateinit var tvRating: TextView
-    private lateinit var tvBudget: TextView
-    private lateinit var tvDescription: TextView
+    private lateinit var tvDuration: TextView
+    private lateinit var tvDescription: ExpandableTextView
     private lateinit var rvMovieGenres: RecyclerView
     private lateinit var genresAdapter: GenresAdapter
+    private lateinit var rvCast: RecyclerView
+    private lateinit var castAdapter: CastAdapter
+    private lateinit var rvSimilar: RecyclerView
+    private lateinit var similarAdapter: MovieAdapter
     private val args: MovieFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,10 +51,20 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         tvTagLine = view.findViewById(R.id.tvTagLine)
         tvYearPublished = view.findViewById(R.id.tvYearPublished)
         tvRating = view.findViewById(R.id.tvRating)
-        tvBudget = view.findViewById(R.id.tvBudget)
+        tvDuration = view.findViewById(R.id.tvDuration)
         rvMovieGenres = view.findViewById(R.id.rvMovieGenres)
+        rvCast= view.findViewById(R.id.rvCast)
+        rvSimilar = view.findViewById(R.id.rvSimilar)
         setupGenresRecyclerView()
-        viewModel.getMovieDetails(args.id)
+        setupCastRecyclerView()
+        setupSimilarRecyclerView()
+        //Fetching data using the id passed as argument
+        fetchData(args.id)
+
+        similarAdapter.setOnItemClickListener {
+            // Fetching data using id of clicked similar movie
+            fetchData(it.id)
+        }
 
         viewModel.movieDetails.observe(viewLifecycleOwner){ response->
             when(response.status){
@@ -65,16 +82,57 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
                 Resource.Status.ERROR -> {}
             }
         }
+
+        viewModel.castDetails.observe(viewLifecycleOwner){ response ->
+            when(response.status){
+                Resource.Status.SUCCESS -> {
+                    response.data?.let {
+                        castAdapter.differ.submitList(it.cast)
+                    }
+                }
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {}
+            }
+        }
+
+        viewModel.similarMovies.observe(viewLifecycleOwner){ response ->
+            when(response.status){
+                Resource.Status.SUCCESS -> {
+                    response.data?.let {
+                        similarAdapter.differ.submitList(it.results.toList())
+                    }
+                }
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {}
+            }
+        }
+    }
+
+    private fun fetchData(movieId: Int) {
+        viewModel.getMovieDetails(movieId)
+        viewModel.getCastDetails(movieId)
+        viewModel.getSimilarMovies(movieId)
+    }
+
+    private fun setupSimilarRecyclerView() {
+        similarAdapter = MovieAdapter()
+        rvSimilar.adapter = similarAdapter
+    }
+
+    private fun setupCastRecyclerView() {
+        castAdapter = CastAdapter()
+        rvCast.adapter = castAdapter
     }
 
     @SuppressLint("SetTextI18n")
     private fun setMovieDetails(movie: MovieDetailsResponse) {
-        collapsingToolBar.title = movie.original_title
+        collapsingToolBar.title = movie.title
         tvDescription.text = movie.overview
         tvTagLine.text = movie.tagline
+        tvTagLine.maxLines = 5
         tvYearPublished.text = movie.release_date
-        tvRating.text = "${movie.vote_average}/10"
-        tvBudget.text = "$${movie.budget}"
+        tvRating.text = "Rating ⭐: ${movie.vote_average}/10"
+        tvDuration.text = "Duration: ${movie.runtime} Mins"
     }
 
     private fun setupGenresRecyclerView() {

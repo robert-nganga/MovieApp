@@ -1,13 +1,10 @@
 package com.robert.mymovies.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.robert.mymovies.data.remote.Genre
 import com.robert.mymovies.data.remote.GenreResponse
-import com.robert.mymovies.data.remote.Movie
 import com.robert.mymovies.data.remote.MovieResponse
 import com.robert.mymovies.repositories.Repository
 import com.robert.mymovies.utils.Resource
@@ -15,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Response
-import java.time.Duration
 import javax.inject.Inject
 
 
