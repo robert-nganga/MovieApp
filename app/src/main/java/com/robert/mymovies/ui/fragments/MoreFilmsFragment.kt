@@ -15,6 +15,7 @@ import com.robert.mymovies.utils.Resource
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.ui.MoreFilmsFragmentViewModel
 import com.robert.mymovies.utils.Constants.QUERY_PAGE_SIZE
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,12 +67,13 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
                 Resource.Status.LOADING -> {showProgressbar()}
                 Resource.Status.ERROR -> {
                     hideProgressBar()
-                    Toast.makeText(view.context, response.message, Toast.LENGTH_LONG).show()
+                    displayError(view, response.message)
                 }
             }
         }
     }
 
+    //Pagination
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
@@ -123,7 +125,8 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     private fun getDeviceWidth(): Int {
         val displayMetrics = resources.displayMetrics
         val paddingWidthInDp = 26 // width in dp
-        val paddingWidthInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingWidthInDp.toFloat(), resources.displayMetrics).toInt()
+        val paddingWidthInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                paddingWidthInDp.toFloat(), resources.displayMetrics).toInt()
         return displayMetrics.widthPixels - paddingWidthInPx
     }
 
@@ -135,6 +138,16 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     private fun hideProgressBar(){
         isLoading = false
         paginationProgressBar.visibility = View.INVISIBLE
+    }
+
+    private fun displayError(view: View, message: String?) {
+        if (message != null) {
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
+                setAction("Retry"){
+                    getAppropriateData(args.category)
+                }.show()
+            }
+        }
     }
 
 }

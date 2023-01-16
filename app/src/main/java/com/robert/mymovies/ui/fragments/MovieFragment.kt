@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.GenresAdapter
@@ -42,6 +43,8 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
     private lateinit var similarAdapter: MovieAdapter
     private val args: MovieFragmentArgs by navArgs()
 
+    private var errorMessage: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collapsingToolBar = view.findViewById(R.id.collapsingToolBar)
@@ -59,11 +62,16 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         setupCastRecyclerView()
         setupSimilarRecyclerView()
         //Fetching data using the id passed as argument
-        fetchData(args.id)
+        if (viewModel.movieId != null) {
+            viewModel.fetchData(viewModel.movieId!!)
+        }else{
+            viewModel.fetchData(args.id)
+        }
 
         similarAdapter.setOnItemClickListener {
             // Fetching data using id of clicked similar movie
-            fetchData(it.id)
+            viewModel.movieId = it.id
+            viewModel.fetchData(it.id)
         }
 
         viewModel.movieDetails.observe(viewLifecycleOwner){ response->
@@ -79,7 +87,7 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
                     }
                 }
                 Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {}
+                Resource.Status.ERROR -> {errorMessage = response.message}
             }
         }
 
@@ -91,7 +99,7 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
                     }
                 }
                 Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {}
+                Resource.Status.ERROR -> {errorMessage = response.message}
             }
         }
 
@@ -103,15 +111,15 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
                     }
                 }
                 Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {}
+                Resource.Status.ERROR -> {
+                    if (errorMessage != null){
+                        displayError(view, errorMessage)
+                    }else{
+                        displayError(view, response.message)
+                    }
+                }
             }
         }
-    }
-
-    private fun fetchData(movieId: Int) {
-        viewModel.getMovieDetails(movieId)
-        viewModel.getCastDetails(movieId)
-        viewModel.getSimilarMovies(movieId)
     }
 
     private fun setupSimilarRecyclerView() {
@@ -138,5 +146,19 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
     private fun setupGenresRecyclerView() {
         genresAdapter = GenresAdapter()
         rvMovieGenres.adapter = genresAdapter
+    }
+
+    private fun displayError(view: View, message: String?) {
+        if (message != null) {
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
+                setAction("Retry"){
+                    if (viewModel.movieId != null) {
+                        viewModel.fetchData(viewModel.movieId!!)
+                    }else{
+                        viewModel.fetchData(args.id)
+                    }
+                }.show()
+            }
+        }
     }
 }

@@ -1,9 +1,10 @@
 package com.robert.mymovies.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import androidx.lifecycle.*
 import com.robert.mymovies.data.remote.GenreResponse
 import com.robert.mymovies.data.remote.MovieResponse
 import com.robert.mymovies.repositories.Repository
@@ -11,12 +12,14 @@ import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okio.IOException
 import retrofit2.Response
 import javax.inject.Inject
 
 
 @HiltViewModel
-class MoviesFragmentViewModel @Inject constructor(private val repository: Repository): ViewModel() {
+class MoviesFragmentViewModel @Inject constructor(app: Application, private val repository: Repository): AndroidViewModel(app) {
+
 
     private val _allPopularMovies: MutableLiveData<Resource<MovieResponse>> = MutableLiveData()
     val allPopularMovies: LiveData<Resource<MovieResponse>>
@@ -34,6 +37,10 @@ class MoviesFragmentViewModel @Inject constructor(private val repository: Reposi
     val allGenres: LiveData<Resource<GenreResponse>>
         get() = _allGenres
 
+    init {
+        fetchData()
+    }
+
     fun fetchData() = viewModelScope.launch {
         getGenreList()
         delay(100L)
@@ -44,7 +51,16 @@ class MoviesFragmentViewModel @Inject constructor(private val repository: Reposi
         getUpcomingMovies()
     }
 
-    private fun handleResponse(response: Response<MovieResponse>): Resource<MovieResponse>{
+    private fun handleMovieResponse(response: Response<MovieResponse>): Resource<MovieResponse>{
+        if(response.isSuccessful){
+            response.body()?.let { resultResponse ->
+                return Resource(Resource.Status.SUCCESS, resultResponse, null)
+            }
+        }
+        return Resource(Resource.Status.ERROR, null, response.message())
+    }
+
+    private fun handleGenreResponse(response: Response<GenreResponse>): Resource<GenreResponse>{
         if(response.isSuccessful){
             response.body()?.let { resultResponse ->
                 return Resource(Resource.Status.SUCCESS, resultResponse, null)
@@ -55,38 +71,90 @@ class MoviesFragmentViewModel @Inject constructor(private val repository: Reposi
 
     private fun getPopularMovies() = viewModelScope.launch {
         _allPopularMovies.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getPopularMovies(2)
-        _allPopularMovies.postValue(handleResponse(result))
-
+        try {
+            if(checkForInternet()){
+                val result = repository.getPopularMovies(2)
+                _allPopularMovies.postValue(handleMovieResponse(result))
+            }else{
+                _allPopularMovies.postValue(Resource(Resource.Status.ERROR, null, "No internet connection"))
+            }
+        } catch (t: Throwable){
+            when(t){
+                is IOException -> _allPopularMovies.postValue(Resource(Resource.Status.ERROR, null, "Network Failure"))
+                else -> _allPopularMovies.postValue(Resource(Resource.Status.ERROR, null, "Conversion Error"))
+            }
+        }
     }
 
     private fun getUpcomingMovies() = viewModelScope.launch {
         _allUpcomingMovies.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getUpcomingMovies(2)
-        _allUpcomingMovies.postValue(handleResponse(result))
-
+        try {
+            if(checkForInternet()){
+                val result = repository.getUpcomingMovies(2)
+                _allUpcomingMovies.postValue(handleMovieResponse(result))
+            }else{
+                _allUpcomingMovies.postValue(Resource(Resource.Status.ERROR, null, "No internet connection"))
+            }
+        } catch (t: Throwable){
+            when(t){
+                is IOException -> _allUpcomingMovies.postValue(Resource(Resource.Status.ERROR, null, "Network Failure"))
+                else -> _allUpcomingMovies.postValue(Resource(Resource.Status.ERROR, null, "Conversion Error"))
+            }
+        }
     }
 
     private fun getTrendingMovies() = viewModelScope.launch {
         _allTrendingMovies.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getTrendingMovies()
-        _allTrendingMovies.postValue(handleResponse(result))
-    }
-
-    private fun getGenreList() = viewModelScope.launch {
-       _allGenres.value = Resource(Resource.Status.LOADING, null, null)
-        val result = repository.getGenreList()
-        if (result.isSuccessful){
-            result.body()?.let { response->
-                _allGenres.postValue(Resource(Resource.Status.SUCCESS, response, null))
+        try {
+            if(checkForInternet()){
+                val result = repository.getTrendingMovies()
+                _allTrendingMovies.postValue(handleMovieResponse(result))
+            }else{
+                _allTrendingMovies.postValue(Resource(Resource.Status.ERROR, null, "No internet connection"))
             }
-        }else{
-            _allGenres.postValue(Resource(Resource.Status.ERROR, null, result.message()))
+        } catch (t: Throwable){
+            when(t){
+                is IOException -> _allTrendingMovies.postValue(Resource(Resource.Status.ERROR, null, "Network Failure"))
+                else -> _allTrendingMovies.postValue(Resource(Resource.Status.ERROR, null, "Conversion Error"))
+            }
         }
     }
 
-    init {
-        fetchData()
+    private fun getGenreList() = viewModelScope.launch {
+        _allGenres.value = Resource(Resource.Status.LOADING, null, null)
+        try {
+            if(checkForInternet()){
+                val result = repository.getGenreList()
+                _allGenres.postValue(handleGenreResponse(result))
+            }else{
+                _allGenres.postValue(Resource(Resource.Status.ERROR, null, "No internet connection"))
+            }
+        } catch (t: Throwable){
+            when(t){
+                is IOException -> _allGenres.postValue(Resource(Resource.Status.ERROR, null, "Network Failure"))
+                else -> _allGenres.postValue(Resource(Resource.Status.ERROR, null, "Conversion Error"))
+            }
+        }
+    }
+
+    private fun checkForInternet(): Boolean {
+        // register activity with the connectivity manager service
+        val connectivityManager = getApplication<com.robert.mymovies.Application>().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return when {
+            // Indicates this network uses a Wi-Fi transport,
+            // or WiFi has network connectivity
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            // Indicates this network uses a Cellular transport. or
+            // Cellular has network connectivity
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+
+            // else return false
+            else -> false
+        }
     }
 
 }

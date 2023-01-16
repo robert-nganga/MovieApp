@@ -8,7 +8,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
-import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
@@ -23,6 +22,7 @@ import com.robert.mymovies.utils.Resource
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
     private lateinit var viewModel: MoviesFragmentViewModel
+    private var error: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -95,7 +95,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                     }
                 }
                 Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {}
+                Resource.Status.ERROR -> { error = response.message}
             }
         }
         viewModel.allTrendingMovies.observe(viewLifecycleOwner){ response->
@@ -114,15 +114,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                     }
                 }
                 Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {
-                    response.message?.let{message ->
-                        Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
-                            setAction("Retry"){
-                                viewModel.fetchData()
-                            }
-                        }
-                    }
-                }
+                Resource.Status.ERROR -> {error = response.message}
             }
         }
         viewModel.allPopularMovies.observe(viewLifecycleOwner){ response ->
@@ -137,7 +129,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                     }
                 }
                 Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {}
+                Resource.Status.ERROR -> {error = response.message}
             }
 
         }
@@ -153,10 +145,26 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                     }
                 }
                 Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {}
+                Resource.Status.ERROR -> {
+                    if(error != null){
+                        displayError(view, error)
+                    }else{
+                        displayError(view, response.message)
+                    }
+                }
             }
 
         }
 
+    }
+
+    private fun displayError(view: View, message: String?) {
+        if (message != null) {
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
+                setAction("Retry"){
+                    viewModel.fetchData()
+                }.show()
+            }
+        }
     }
 }
