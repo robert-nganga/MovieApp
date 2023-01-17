@@ -73,16 +73,16 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         //Set Adapter listeners
         upcomingAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
-                putInt("id", it.id)
+                putInt("seriesId", it.id)
             }
-            findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+            findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }
 
         popularAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
-                putInt("id", it.id)
+                putInt("seriesId", it.id)
             }
-            findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+            findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }
 
         viewModel.allTopRatedSeries.observe(viewLifecycleOwner){ response->

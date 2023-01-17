@@ -35,11 +35,13 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFrag.navController
 
         navController.addOnDestinationChangedListener{ _, destination, _ ->
-            if(destination.id == R.id.movieFragment){
-                toolBar.visibility = View.GONE
-            }else{
-                toolBar.visibility = View.VISIBLE
+
+            when(destination.id){
+                R.id.movieFragment -> { toolBar.visibility = View.GONE}
+                R.id.seriesDetailsFragment -> {toolBar.visibility = View.GONE}
+                else -> {toolBar.visibility = View.VISIBLE}
             }
+
         }
         // Define AppBar Configuration
         val appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)

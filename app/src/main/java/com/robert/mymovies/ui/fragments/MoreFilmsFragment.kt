@@ -149,10 +149,10 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         recyclerView.addOnScrollListener(this@MoreFilmsFragment.scrollListener)
 
         seriesAdapter.setOnItemClickListener {
-//            val bundle = Bundle().apply {
-//                putInt("id", it.id)
-//            }
-//            findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
+            val bundle = Bundle().apply {
+                putInt("seriesId", it.id)
+            }
+            findNavController().navigate(R.id.action_moreFilmsFragment_to_seriesDetailsFragment, bundle)
         }
     }
 
