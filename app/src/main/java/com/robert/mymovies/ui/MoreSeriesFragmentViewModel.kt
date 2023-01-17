@@ -4,9 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.robert.mymovies.data.remote.MovieResponse
-import com.robert.mymovies.repositories.Repository
+import com.robert.mymovies.data.remote.SeriesResponse
 import com.robert.mymovies.repositories.RepositorySeries
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,45 +18,41 @@ import okio.IOException
 import retrofit2.Response
 import javax.inject.Inject
 
-
 @HiltViewModel
-class MoreFilmsFragmentViewModel@Inject constructor(
-    app: Application,
-    private val repository: Repository): AndroidViewModel(app) {
+class MoreSeriesFragmentViewModel@Inject constructor(app: Application, private val repository: RepositorySeries): AndroidViewModel(app) {
 
-    private val _allFilms: MutableLiveData<Resource<MovieResponse>> = MutableLiveData()
-    val allFilms: LiveData<Resource<MovieResponse>>
+
+    private val _allFilms: MutableLiveData<Resource<SeriesResponse>> = MutableLiveData()
+    val allFilms: LiveData<Resource<SeriesResponse>>
         get() = _allFilms
     var allFilmsPage = 1
 
-    private var allFilmsResponse: MovieResponse? = null
+    private var allFilmsResponse: SeriesResponse? = null
 
 
-
-    private fun handleMovieResponse(response: Response<MovieResponse>): Resource<MovieResponse>{
+    private fun handleSeriesResponse(response: Response<SeriesResponse>): Resource<SeriesResponse>{
         if (response.isSuccessful){
             response.body()?.let { resultResponse ->
                 allFilmsPage++
                 if (allFilmsResponse == null){
                     allFilmsResponse = resultResponse
                 }else{
-                    val oldMovies = allFilmsResponse?.results
-                    val newMovies = resultResponse.results
-                    oldMovies?.addAll(newMovies)
+                    val oldSeries = allFilmsResponse?.results
+                    val newSeries = resultResponse.results
+                    oldSeries?.addAll(newSeries)
                 }
-                return  Resource(Resource.Status.SUCCESS, allFilmsResponse ?:resultResponse, null)
+                return  Resource(Resource.Status.SUCCESS, allFilmsResponse ?: resultResponse, null)
             }
         }
         return Resource(Resource.Status.ERROR, null, response.message())
     }
 
-
-    fun getPopularMovies() = viewModelScope.launch {
+    fun getPopularSeries() = viewModelScope.launch {
         _allFilms.postValue(Resource(Resource.Status.LOADING, null, null))
         try {
             if (checkForInternet()){
-                val result = repository.getPopularMovies(allFilmsPage)
-                _allFilms.postValue(handleMovieResponse(result))
+                val result = repository.getPopularSeries(allFilmsPage)
+                _allFilms.postValue(handleSeriesResponse(result))
             } else{
                 _allFilms.postValue(Resource(Resource.Status.ERROR, null, "No internet connection"))
             }
@@ -67,13 +66,31 @@ class MoreFilmsFragmentViewModel@Inject constructor(
         }
     }
 
-
-    fun getUpcomingMovies() = viewModelScope.launch {
+    fun getOnAirSeries() = viewModelScope.launch {
         _allFilms.postValue(Resource(Resource.Status.LOADING, null, null))
         try {
             if (checkForInternet()){
-                val result = repository.getUpcomingMovies(allFilmsPage)
-                _allFilms.postValue(handleMovieResponse(result))
+                val result = repository.getOnAirSeries(allFilmsPage)
+                _allFilms.postValue(handleSeriesResponse(result))
+            } else{
+                _allFilms.postValue(Resource(Resource.Status.ERROR, null, "No internet connection"))
+            }
+        }catch (t: Throwable){
+            when(t){
+                is IOException -> {
+                    _allFilms.postValue(Resource(Resource.Status.ERROR, null, "Connection Time out"))
+                }
+                else -> _allFilms.postValue(Resource(Resource.Status.ERROR, null, "Connection Time out"))
+            }
+        }
+    }
+
+    fun getTopRatedSeries() = viewModelScope.launch {
+        _allFilms.postValue(Resource(Resource.Status.LOADING, null, null))
+        try {
+            if (checkForInternet()){
+                val result = repository.getTopRatedSeries(allFilmsPage)
+                _allFilms.postValue(handleSeriesResponse(result))
             } else{
                 _allFilms.postValue(Resource(Resource.Status.ERROR, null, "No internet connection"))
             }
@@ -102,11 +119,8 @@ class MoreFilmsFragmentViewModel@Inject constructor(
             // Indicates this network uses a Cellular transport. or
             // Cellular has network connectivity
             activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-
             // else return false
             else -> false
         }
     }
-
-
 }

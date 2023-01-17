@@ -1,10 +1,7 @@
 package com.robert.mymovies.api
 
 import com.robert.mymovies.BuildConfig
-import com.robert.mymovies.data.remote.CastResponse
-import com.robert.mymovies.data.remote.GenreResponse
-import com.robert.mymovies.data.remote.MovieDetailsResponse
-import com.robert.mymovies.data.remote.MovieResponse
+import com.robert.mymovies.data.remote.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -75,4 +72,75 @@ interface MoviesAPI {
         @Query("language")
         language: String = "en-US",
     ): Response<MovieDetailsResponse>
+
+
+    // Tv Shows
+
+    @GET("3/tv/popular")
+    suspend fun getPopularSeries(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("page")
+        page: Int = 1
+    ): Response<SeriesResponse>
+
+    @GET("3/genre/tv/list")
+    suspend fun getSeriesGenreList(
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("language")
+        language: String = "en-US",
+    ):Response<GenreResponse>
+
+    @GET("3/tv/on_the_air")
+    suspend fun getOnAirSeries(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("page")
+        page: Int = 1
+    ): Response<SeriesResponse>
+
+    @GET("3/tv/top_rated")
+    suspend fun getTopRatedSeries(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("page")
+        page: Int = 1
+    ): Response<SeriesResponse>
+
+    @GET("3/tv/{tv_id}/credits")
+    suspend fun getSeriesCredits(
+        @Path("tv_id")
+        filmId: Int,
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("language")
+        language: String = "en-US",
+    ): Response<CastResponse>
+
+    @GET("3/tv/{tv_id}/similar")
+    suspend fun getSimilarSeries(
+        @Path("tv_id")
+        filmId: Int,
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("language")
+        language: String = "en-US",
+    ): Response<SeriesResponse>
+
+    @GET("3/tv/{tv_id}")
+    suspend fun getSeriesDetails(
+        @Path("tv_id")
+        filmId: Int,
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("language")
+        language: String = "en-US",
+    ): Response<SeriesDetailsResponse>
 }

@@ -52,47 +52,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/genreShimmer" />
-
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/genreShimmer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="7dp"
-                app:layout_constraintEnd_toEndOf="@id/rvGenres"
-                app:layout_constraintStart_toStartOf="@id/rvGenres"
-                app:layout_constraintTop_toTopOf="@id/rvGenres">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/shimmer_genre_item" />
-
-                    <include layout="@layout/shimmer_genre_item" />
-
-                    <include layout="@layout/shimmer_genre_item" />
-
-                    <include layout="@layout/shimmer_genre_item" />
-
-                    <include layout="@layout/shimmer_genre_item" />
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvGenres"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="7dp"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/genre_item" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
 

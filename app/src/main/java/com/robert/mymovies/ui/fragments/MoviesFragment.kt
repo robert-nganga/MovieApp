@@ -30,7 +30,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         val popularAdapter = MovieAdapter()
         val trendingAdapter = MovieAdapter()
         val upcomingAdapter = MovieAdapter()
-        val genresAdapter = GenresAdapter()
+        //val genresAdapter = GenresAdapter()
 
         val imageSlider = view.findViewById<ImageSlider>(R.id.image_slider)
         val imageList = ArrayList<SlideModel>()
@@ -38,6 +38,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         val tvMorePopular = view.findViewById<TextView>(R.id.tvMorePopular)
         tvMorePopular.setOnClickListener {
             val bundle = Bundle().apply {
+                putString("type", "Movie")
                 putString("category", "popular")
             }
             findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
@@ -45,14 +46,15 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         val tvMoreUpcoming = view.findViewById<TextView>(R.id.tvMoreUpcoming)
         tvMoreUpcoming.setOnClickListener {
             val bundle = Bundle().apply {
+                putString("type", "Movie")
                 putString("category", "upcoming")
             }
             findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
         }
 
         // Shimmer Layouts
-        val shimmerGenre = view.findViewById<ShimmerFrameLayout>(R.id.genreShimmer)
-        shimmerGenre.startShimmer()
+//        val shimmerGenre = view.findViewById<ShimmerFrameLayout>(R.id.genreShimmer)
+//        shimmerGenre.startShimmer()
         //val shimmerTrending = view.findViewById<ShimmerFrameLayout>(R.id.trendingShimmer)
         //shimmerTrending.startShimmer()
         val shimmerPopular = view.findViewById<ShimmerFrameLayout>(R.id.popularShimmer)
@@ -64,9 +66,9 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         val upcomingRecyclerView = view.findViewById<RecyclerView>(R.id.rvUpcoming)
         //val trendingRecyclerView = view.findViewById<RecyclerView>(R.id.rvTrending)
         val popularRecyclerView = view.findViewById<RecyclerView>(R.id.rvPopular)
-        val genresRecyclerView = view.findViewById<RecyclerView>(R.id.rvGenres)
+        //val genresRecyclerView = view.findViewById<RecyclerView>(R.id.rvGenres)
         upcomingRecyclerView.adapter = upcomingAdapter
-        genresRecyclerView.adapter = genresAdapter
+        //genresRecyclerView.adapter = genresAdapter
         //trendingRecyclerView.adapter = trendingAdapter
         popularRecyclerView.adapter = popularAdapter
 
@@ -84,20 +86,20 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             }
             findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
         }
-        viewModel.allGenres.observe(viewLifecycleOwner){ response->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    shimmerGenre.stopShimmer()
-                    shimmerGenre.visibility = View.INVISIBLE
-                    genresRecyclerView.visibility = View.VISIBLE
-                    response.data?.let {
-                        genresAdapter.updateList(it.genres)
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> { error = response.message}
-            }
-        }
+//        viewModel.allGenres.observe(viewLifecycleOwner){ response->
+//            when(response.status){
+//                Resource.Status.SUCCESS -> {
+//                    shimmerGenre.stopShimmer()
+//                    shimmerGenre.visibility = View.INVISIBLE
+//                    genresRecyclerView.visibility = View.VISIBLE
+//                    response.data?.let {
+//                        genresAdapter.updateList(it.genres)
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> { error = response.message}
+//            }
+//        }
         viewModel.allTrendingMovies.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS ->{
@@ -105,7 +107,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
 //                    shimmerTrending.visibility = View.INVISIBLE
 //                    trendingRecyclerView.visibility = View.VISIBLE
                     response.data?.let {
-                        //trendingAdapter.updateList(it.results)
+                        //trendingAdapter.updateList(it.series)
                         it.results.forEach { movie ->
                             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdrop_path}"
                             imageList.add(SlideModel(imageUrl, movie.title ))

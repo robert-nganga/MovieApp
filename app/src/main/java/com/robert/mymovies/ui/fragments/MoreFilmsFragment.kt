@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.AbsListView
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,16 +15,20 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import com.robert.mymovies.adapters.AllSeriesAdapter
 import com.robert.mymovies.ui.MoreFilmsFragmentViewModel
+import com.robert.mymovies.ui.MoreSeriesFragmentViewModel
 import com.robert.mymovies.utils.Constants.QUERY_PAGE_SIZE
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
-    private val viewModel: MoreFilmsFragmentViewModel by viewModels()
+    private val moviesViewModel: MoreFilmsFragmentViewModel by viewModels()
+    private val seriesViewModel: MoreSeriesFragmentViewModel by viewModels()
     val args: MoreFilmsFragmentArgs by navArgs()
-    private lateinit var adapter: AllMoviesAdapter
+    private lateinit var moviesAdapter: AllMoviesAdapter
+    private lateinit var seriesAdapter: AllSeriesAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var paginationProgressBar: ProgressBar
 
@@ -35,29 +38,60 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Checks which button was clicked and calls the appropriate method
-        getAppropriateData(args.category)
+
         paginationProgressBar = view.findViewById(R.id.paginationProgressBar)
         recyclerView = view.findViewById(R.id.rvMoreFilms)
-        setUpRecyclerView()
 
-        adapter.setOnItemClickListener {
-            val bundle = Bundle().apply {
-                putInt("id", it.id)
-            }
-            findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
+        // Checks from where this fragment was called and calls the appropriate methods
+        if (args.type == "Movie") {
+            setUpMoviesRecyclerView()
+            getMovies(args.category)
+            observeMoviesLiveData(view)
+        }else{
+            setUpSeriesRecyclerView()
+            getSeries(args.category)
+            observeSeriesLiveData(view)
         }
+    }
 
-        viewModel.allFilms.observe(viewLifecycleOwner){response ->
+    private fun observeMoviesLiveData(view: View) {
+        moviesViewModel.allFilms.observe(viewLifecycleOwner){response ->
             when(response.status){
                 Resource.Status.SUCCESS ->{
                     hideProgressBar()
                     response.data?.let {
-                        adapter.differ.submitList(it.results.toList())
+                        moviesAdapter.differ.submitList(it.results.toList())
 
                         //Checking if it is last page
                         val totalPages = it.total_pages
-                        isLastPage = viewModel.allFilmsPage == totalPages
+                        isLastPage = moviesViewModel.allFilmsPage == totalPages
+
+                        if(isLastPage){
+                            recyclerView.setPadding(0,0,0,0)
+                        }
+                    }
+                }
+                Resource.Status.LOADING -> {showProgressbar()}
+                Resource.Status.ERROR -> {
+                    hideProgressBar()
+                    displayError(view, response.message)
+                }
+            }
+        }
+    }
+
+
+    private fun observeSeriesLiveData(view: View) {
+        seriesViewModel.allFilms.observe(viewLifecycleOwner){response ->
+            when(response.status){
+                Resource.Status.SUCCESS ->{
+                    hideProgressBar()
+                    response.data?.let {
+                        seriesAdapter.differ.submitList(it.results.toList())
+
+                        //Checking if it is last page
+                        val totalPages = it.total_pages
+                        isLastPage = seriesViewModel.allFilmsPage == totalPages
 
                         if(isLastPage){
                             recyclerView.setPadding(0,0,0,0)
@@ -97,28 +131,43 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
             val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning
                     && isTotalMoreThanVisible && isScrolling
             if(shouldPaginate){
-                getAppropriateData(args.category)
+                if(args.type == "Movie"){
+                    getMovies(args.category)
+                }else{
+                    getSeries(args.category)
+                }
                 isScrolling = false
             }
         }
     }
 
-    private fun setUpRecyclerView() {
+    private fun setUpSeriesRecyclerView() {
         val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        adapter = AllMoviesAdapter(getDeviceWidth())
-        recyclerView.adapter = adapter
+        seriesAdapter = AllSeriesAdapter(getDeviceWidth())
+        recyclerView.adapter = seriesAdapter
         recyclerView.addOnScrollListener(this@MoreFilmsFragment.scrollListener)
+
+        seriesAdapter.setOnItemClickListener {
+//            val bundle = Bundle().apply {
+//                putInt("id", it.id)
+//            }
+//            findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
+        }
     }
 
-    private fun getAppropriateData(category: String) {
-        when(category){
-            "popular" -> {
-                viewModel.getPopularMovies()
+    private fun setUpMoviesRecyclerView() {
+        val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+        moviesAdapter = AllMoviesAdapter(getDeviceWidth())
+        recyclerView.adapter = moviesAdapter
+        recyclerView.addOnScrollListener(this@MoreFilmsFragment.scrollListener)
+
+        moviesAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putInt("id", it.id)
             }
-            "upcoming" -> {
-                viewModel.getUpcomingMovies()
-            }
+            findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
         }
     }
 
@@ -144,8 +193,35 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         if (message != null) {
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
                 setAction("Retry"){
-                    getAppropriateData(args.category)
+                    if(args.type == "Movie"){
+                        getMovies(args.category)
+                    }else{
+                        getSeries(args.category)
+                    }
                 }.show()
+            }
+        }
+    }
+
+
+    private fun getSeries(category: String) {
+        when(category){
+            "popular" -> {
+                seriesViewModel.getPopularSeries()
+            }
+            "onAir" -> {
+                seriesViewModel.getOnAirSeries()
+            }
+        }
+    }
+
+    private fun getMovies(category: String) {
+        when(category){
+            "popular" -> {
+                moviesViewModel.getPopularMovies()
+            }
+            "upcoming" -> {
+                moviesViewModel.getUpcomingMovies()
             }
         }
     }
