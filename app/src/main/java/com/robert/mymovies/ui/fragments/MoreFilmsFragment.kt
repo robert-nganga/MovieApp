@@ -14,6 +14,7 @@ import com.robert.mymovies.utils.Resource
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.adapters.AllSeriesAdapter
 import com.robert.mymovies.ui.MoreFilmsFragmentViewModel
@@ -31,6 +32,8 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     private lateinit var seriesAdapter: AllSeriesAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var paginationProgressBar: ProgressBar
+    private lateinit var genreShimmer: ShimmerFrameLayout
+    private lateinit var rvGenres: RecyclerView
 
     var isLoading = false
     var isLastPage = false
@@ -41,6 +44,10 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
 
         paginationProgressBar = view.findViewById(R.id.paginationProgressBar)
         recyclerView = view.findViewById(R.id.rvMoreFilms)
+
+        genreShimmer = view.findViewById(R.id.genreShimmer)
+        genreShimmer.startShimmer()
+        rvGenres = view.findViewById(R.id.rvGenres)
 
         // Checks from where this fragment was called and calls the appropriate methods
         if (args.type == "Movie") {
@@ -60,6 +67,8 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
                 Resource.Status.SUCCESS ->{
                     hideProgressBar()
                     response.data?.let {
+                        genreShimmer.stopShimmer()
+                        rvGenres.visibility = View.VISIBLE
                         moviesAdapter.differ.submitList(it.results.toList())
 
                         //Checking if it is last page
@@ -87,6 +96,8 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
                 Resource.Status.SUCCESS ->{
                     hideProgressBar()
                     response.data?.let {
+                        genreShimmer.stopShimmer()
+                        rvGenres.visibility = View.VISIBLE
                         seriesAdapter.differ.submitList(it.results.toList())
 
                         //Checking if it is last page
@@ -98,7 +109,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
                         }
                     }
                 }
-                Resource.Status.LOADING -> {showProgressbar()}
+                Resource.Status.LOADING -> { showProgressbar()}
                 Resource.Status.ERROR -> {
                     hideProgressBar()
                     displayError(view, response.message)
