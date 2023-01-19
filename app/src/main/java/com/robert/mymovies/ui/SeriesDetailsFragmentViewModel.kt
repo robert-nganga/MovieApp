@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.robert.mymovies.data.remote.*
+import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.repositories.RepositorySeries
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

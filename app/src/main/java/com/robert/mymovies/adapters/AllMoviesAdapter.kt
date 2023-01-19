@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.robert.mymovies.R
-import com.robert.mymovies.data.remote.Cast
 import com.robert.mymovies.data.remote.Movie
 import com.robert.mymovies.utils.Constants.MOVIE_POSTER_BASE_URL
 

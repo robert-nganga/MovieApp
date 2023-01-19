@@ -1,8 +1,8 @@
 package com.robert.mymovies.repositories
 
 import com.robert.mymovies.api.MoviesAPI
-import com.robert.mymovies.data.remote.CastResponse
-import com.robert.mymovies.data.remote.GenreResponse
+import com.robert.mymovies.data.remote.responses.CastResponse
+import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.data.remote.SeriesDetailsResponse
 import com.robert.mymovies.data.remote.SeriesResponse
 import retrofit2.Response

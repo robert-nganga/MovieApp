@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.robert.mymovies.R
-import com.robert.mymovies.data.remote.Cast
+import com.robert.mymovies.model.Cast
 import com.robert.mymovies.utils.Constants
 
 class CastAdapter(): RecyclerView.Adapter<CastAdapter.CastViewHolder>() {

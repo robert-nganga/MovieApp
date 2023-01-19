@@ -5,7 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.*
-import com.robert.mymovies.data.remote.GenreResponse
+import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.data.remote.MovieResponse
 import com.robert.mymovies.repositories.Repository
 import com.robert.mymovies.utils.Resource

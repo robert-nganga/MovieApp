@@ -2,6 +2,9 @@ package com.robert.mymovies.api
 
 import com.robert.mymovies.BuildConfig
 import com.robert.mymovies.data.remote.*
+import com.robert.mymovies.data.remote.responses.CastResponse
+import com.robert.mymovies.data.remote.responses.FilmResponse
+import com.robert.mymovies.data.remote.responses.GenreResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -17,21 +20,39 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("page")
         page: Int = 1
-    ): Response<MovieResponse>
+    ): Response<FilmResponse>
+
+    @GET("3/movie/top_rated")
+    suspend fun getTopRatedMovies(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("page")
+        page: Int = 1
+    ): Response<FilmResponse>
+
+    @GET("3/movie/latest")
+    suspend fun getLatestMovies(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+    ): Response<FilmResponse>
 
     @GET("3/genre/movie/list")
-    suspend fun getGenreList(
+    suspend fun getMoviesGenreList(
         @Query("api_key")
         apiKey: String = BuildConfig.API_KEY,
         @Query("language")
         language: String = "en-US",
     ):Response<GenreResponse>
 
-    @GET("3/trending/movie/week")
+    @GET("3/trending/movie/day")
     suspend fun getTrendingMovies(
         @Query("api_key")
         apiKey: String = BuildConfig.API_KEY,
-    ): Response<MovieResponse>
+    ): Response<FilmResponse>
 
     @GET("3/movie/upcoming")
     suspend fun getUpcomingMovies(
@@ -41,7 +62,7 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("page")
         page: Int = 1
-    ): Response<MovieResponse>
+    ): Response<FilmResponse>
 
     @GET("3/movie/{movie_id}/credits")
     suspend fun getMovieCredits(
@@ -61,7 +82,7 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("language")
         language: String = "en-US",
-    ): Response<MovieResponse>
+    ): Response<FilmResponse>
 
     @GET("3/movie/{movie_id}")
     suspend fun getMovieDetails(
@@ -84,7 +105,15 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("page")
         page: Int = 1
-    ): Response<SeriesResponse>
+    ): Response<FilmResponse>
+
+    @GET("3/tv/latest")
+    suspend fun getLatestSeries(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+    ): Response<FilmResponse>
 
     @GET("3/genre/tv/list")
     suspend fun getSeriesGenreList(
@@ -102,7 +131,7 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("page")
         page: Int = 1
-    ): Response<SeriesResponse>
+    ): Response<FilmResponse>
 
     @GET("3/tv/top_rated")
     suspend fun getTopRatedSeries(
@@ -112,7 +141,13 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("page")
         page: Int = 1
-    ): Response<SeriesResponse>
+    ): Response<FilmResponse>
+
+    @GET("3/trending/tv/day")
+    suspend fun getTrendingSeries(
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+    ): Response<FilmResponse>
 
     @GET("3/tv/{tv_id}/credits")
     suspend fun getSeriesCredits(

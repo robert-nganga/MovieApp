@@ -1,4 +1,4 @@
-package com.robert.mymovies.data.remote
+package com.robert.mymovies.model
 
 data class Cast(
     val adult: Boolean,

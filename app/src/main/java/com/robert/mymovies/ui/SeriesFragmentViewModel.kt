@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.robert.mymovies.data.remote.GenreResponse
+import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.data.remote.SeriesResponse
 import com.robert.mymovies.repositories.RepositorySeries
 import com.robert.mymovies.utils.Resource

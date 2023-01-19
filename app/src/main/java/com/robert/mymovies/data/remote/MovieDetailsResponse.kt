@@ -1,5 +1,7 @@
 package com.robert.mymovies.data.remote
 
+import com.robert.mymovies.model.Genre
+
 data class MovieDetailsResponse(
     val adult: Boolean,
     val backdrop_path: String,
