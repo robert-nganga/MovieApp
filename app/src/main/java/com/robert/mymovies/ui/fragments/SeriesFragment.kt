@@ -1,53 +1,62 @@
 package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
-import com.robert.mymovies.adapters.GenresAdapter
-import com.robert.mymovies.adapters.MovieAdapter
-import com.robert.mymovies.adapters.SeriesAdapter
+import com.robert.mymovies.adapters.FilmAdapter
+import com.robert.mymovies.databinding.FragmentSeriesBinding
+import com.robert.mymovies.ui.FilmViewModel
 import com.robert.mymovies.ui.MainActivity
-import com.robert.mymovies.ui.MoviesFragmentViewModel
-import com.robert.mymovies.ui.SeriesFragmentViewModel
 import com.robert.mymovies.utils.Constants
+import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SeriesFragment: Fragment(R.layout.fragment_series) {
-    private val viewModel: SeriesFragmentViewModel by viewModels()
+
+    private var _binding: FragmentSeriesBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var viewModel: FilmViewModel
     private var error: String? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSeriesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val popularAdapter = SeriesAdapter()
-        //val trendingAdapter = SeriesAdapter()
-        val upcomingAdapter = SeriesAdapter()
+        viewModel = (activity as MainActivity).viewModel
+        // Fetch the data
+        viewModel.fetchSeriesData(FilmType.TVSHOW)
 
+        val popularAdapter = FilmAdapter()
+        val onAirAdapter = FilmAdapter()
 
-        val imageSlider = view.findViewById<ImageSlider>(R.id.seriesImageSlider)
         val imageList = ArrayList<SlideModel>()
 
-        val tvMorePopular = view.findViewById<TextView>(R.id.tvMorePopularSeries)
-        tvMorePopular.setOnClickListener {
+        binding.tvMorePopularSeries.setOnClickListener {
             val bundle = Bundle().apply {
                 putString("type", "Series")
                 putString("category", "popular")
             }
             findNavController().navigate(R.id.action_seriesFragment_to_moreFilmsFragment, bundle)
         }
-        val tvMoreUpcoming = view.findViewById<TextView>(R.id.tvMoreUpcoming)
-        tvMoreUpcoming.setOnClickListener {
+
+        binding.tvMoreOnAir.setOnClickListener {
             val bundle = Bundle().apply {
                 putString("type", "Series")
                 putString("category", "onAir")
@@ -55,23 +64,15 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             findNavController().navigate(R.id.action_seriesFragment_to_moreFilmsFragment, bundle)
         }
 
-        //val shimmerTrending = view.findViewById<ShimmerFrameLayout>(R.id.trendingShimmer)
-        //shimmerTrending.startShimmer()
-        val shimmerPopular = view.findViewById<ShimmerFrameLayout>(R.id.popularShimmerSeries)
-        shimmerPopular.startShimmer()
-        val shimmerUpcoming = view.findViewById<ShimmerFrameLayout>(R.id.upcomingShimmerSeries)
-        shimmerUpcoming.startShimmer()
 
-        //Recyclerview Layouts
-        val upcomingRecyclerView = view.findViewById<RecyclerView>(R.id.rvUpcomingSeries)
-        //val trendingRecyclerView = view.findViewById<RecyclerView>(R.id.rvTrending)
-        val popularRecyclerView = view.findViewById<RecyclerView>(R.id.rvPopularSeries)
-        upcomingRecyclerView.adapter = upcomingAdapter
-        //trendingRecyclerView.adapter = trendingAdapter
-        popularRecyclerView.adapter = popularAdapter
+        binding.popularShimmerSeries.startShimmer()
+        binding.onAirShimmerSeries.startShimmer()
+
+        binding.rvOnAirSeries.adapter = onAirAdapter
+        binding.rvPopularSeries.adapter = popularAdapter
 
         //Set Adapter listeners
-        upcomingAdapter.setOnItemClickListener {
+        onAirAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putInt("seriesId", it.id)
             }
@@ -85,32 +86,28 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }
 
-        viewModel.allTopRatedSeries.observe(viewLifecycleOwner){ response->
+        viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS ->{
-//                    shimmerTrending.stopShimmer()
-//                    shimmerTrending.visibility = View.INVISIBLE
-//                    trendingRecyclerView.visibility = View.VISIBLE
                     response.data?.let {
-                        //trendingAdapter.updateList(it.series)
                         it.results.forEach { series ->
-                            val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdrop_path}"
-                            imageList.add(SlideModel(imageUrl, series.name))
+                            val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
+                            imageList.add(SlideModel(imageUrl, series.title))
                         }
-                        imageSlider.setImageList(imageList, ScaleTypes.FIT)
+                        binding.seriesImageSlider.setImageList(imageList, ScaleTypes.FIT)
                     }
                 }
                 Resource.Status.LOADING -> {}
                 Resource.Status.ERROR -> {error = response.message}
             }
         }
-        viewModel.allPopularSeries.observe(viewLifecycleOwner){ response ->
+        viewModel.allPopularFilms.observe(viewLifecycleOwner){ response ->
 
             when(response.status){
                 Resource.Status.SUCCESS ->{
-                    shimmerPopular.stopShimmer()
-                    shimmerPopular.visibility = View.INVISIBLE
-                    popularRecyclerView.visibility = View.VISIBLE
+                    binding.popularShimmerSeries.stopShimmer()
+                    binding.popularShimmerSeries.visibility = View.INVISIBLE
+                    binding.rvPopularSeries.visibility = View.VISIBLE
                     response.data?.let {
                         popularAdapter.differ.submitList(it.results.toList())
                     }
@@ -121,14 +118,18 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
 
         }
 
-        viewModel.allOnAirSeries.observe(viewLifecycleOwner){ response ->
+        viewModel.allOnAirFilms.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS ->{
-                    shimmerUpcoming.stopShimmer()
-                    shimmerUpcoming.visibility = View.INVISIBLE
-                    upcomingRecyclerView.visibility = View.VISIBLE
+                    binding.onAirShimmerSeries.stopShimmer()
+                    binding.onAirShimmerSeries.visibility = View.INVISIBLE
+                    binding.rvOnAirSeries.visibility = View.VISIBLE
                     response.data?.let {
-                        upcomingAdapter.differ.submitList(it.results.toList())
+                        onAirAdapter.differ.submitList(it.results.toList())
+                    }
+
+                    if(error != null){
+                        displayError(view, error)
                     }
                 }
                 Resource.Status.LOADING -> {}
@@ -149,7 +150,7 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         if (message != null) {
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
                 setAction("Retry"){
-                    viewModel.fetchData()
+                    viewModel.fetchSeriesData(FilmType.TVSHOW)
                 }.show()
             }
         }

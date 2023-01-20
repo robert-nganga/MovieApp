@@ -6,27 +6,21 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.GenresAdapter
-import com.robert.mymovies.adapters.SeriesAdapter
 import com.robert.mymovies.data.remote.SeriesDetailsResponse
-import com.robert.mymovies.ui.SeriesDetailsFragmentViewModel
-import com.robert.mymovies.utils.Constants
-import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.glailton.expandabletextview.ExpandableTextView
 
 @AndroidEntryPoint
 class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
 
-    private val viewModel: SeriesDetailsFragmentViewModel by viewModels()
+
 
     private lateinit var collapsingToolBar: CollapsingToolbarLayout
     private lateinit var imgToolBar: ImageView
@@ -41,7 +35,7 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
     private lateinit var rvCast: RecyclerView
     private lateinit var castAdapter: CastAdapter
     private lateinit var rvSimilar: RecyclerView
-    private lateinit var similarAdapter: SeriesAdapter
+    //private lateinit var similarAdapter: SeriesAdapter
     private val args: SeriesDetailsFragmentArgs by navArgs()
 
     private var errorMessage: String? = null
@@ -65,74 +59,74 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
 
         setupGenresRecyclerView()
         setupCastRecyclerView()
-        setupSimilarRecyclerView()
+        //setupSimilarRecyclerView()
 
-        //Fetching data using the id passed as argument
-        if (viewModel.seriesId != null) {
-            viewModel.fetchData(viewModel.seriesId!!)
-        }else{
-            viewModel.fetchData(args.seriesId)
-        }
-
-        similarAdapter.setOnItemClickListener {
-            // Fetching data using id of clicked similar movie
-            viewModel.seriesId = it.id
-            viewModel.fetchData(it.id)
-        }
-
-        viewModel.seriesDetails.observe(viewLifecycleOwner){ response->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    response.data?.let {
-                        val backDropImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.backdrop_path}"
-                        val posterImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.poster_path}"
-                        Glide.with(view).load(backDropImageUrl).into(imgToolBar)
-                        Glide.with(view).load(posterImageUrl).into(imgPoster)
-                        displaySeriesDetails(it)
-                        genresAdapter.updateList(it.genres)
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {errorMessage = response.message}
-            }
-        }
-
-        viewModel.castDetails.observe(viewLifecycleOwner){ response ->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    response.data?.let {
-                        castAdapter.differ.submitList(it.cast)
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {errorMessage = response.message}
-            }
-        }
-
-        viewModel.similarSeries.observe(viewLifecycleOwner){ response ->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    response.data?.let {
-                        similarAdapter.differ.submitList(it.results.toList())
-
-                        // Check if there was any error
-                        if (errorMessage != null){
-                            displayError(view, errorMessage)
-                        }else{
-                            displayError(view, response.message)
-                        }
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {
-                    if (errorMessage != null){
-                        displayError(view, errorMessage)
-                    }else{
-                        displayError(view, response.message)
-                    }
-                }
-            }
-        }
+//        //Fetching data using the id passed as argument
+//        if (viewModel.seriesId != null) {
+//            viewModel.fetchData(viewModel.seriesId!!)
+//        }else{
+//            viewModel.fetchData(args.seriesId)
+//        }
+//
+//        similarAdapter.setOnItemClickListener {
+//            // Fetching data using id of clicked similar movie
+//            viewModel.seriesId = it.id
+//            viewModel.fetchData(it.id)
+//        }
+//
+//        viewModel.seriesDetails.observe(viewLifecycleOwner){ response->
+//            when(response.status){
+//                Resource.Status.SUCCESS -> {
+//                    response.data?.let {
+//                        val backDropImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.backdrop_path}"
+//                        val posterImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.poster_path}"
+//                        Glide.with(view).load(backDropImageUrl).into(imgToolBar)
+//                        Glide.with(view).load(posterImageUrl).into(imgPoster)
+//                        displaySeriesDetails(it)
+//                        genresAdapter.updateList(it.genres)
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> {errorMessage = response.message}
+//            }
+//        }
+//
+//        viewModel.castDetails.observe(viewLifecycleOwner){ response ->
+//            when(response.status){
+//                Resource.Status.SUCCESS -> {
+//                    response.data?.let {
+//                        castAdapter.differ.submitList(it.cast)
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> {errorMessage = response.message}
+//            }
+//        }
+//
+//        viewModel.similarSeries.observe(viewLifecycleOwner){ response ->
+//            when(response.status){
+//                Resource.Status.SUCCESS -> {
+//                    response.data?.let {
+//                        similarAdapter.differ.submitList(it.results.toList())
+//
+//                        // Check if there was any error
+//                        if (errorMessage != null){
+//                            displayError(view, errorMessage)
+//                        }else{
+//                            displayError(view, response.message)
+//                        }
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> {
+//                    if (errorMessage != null){
+//                        displayError(view, errorMessage)
+//                    }else{
+//                        displayError(view, response.message)
+//                    }
+//                }
+//            }
+//        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -146,10 +140,10 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         tvEpisodeDuration.text = "Episode runtime: ${series.episode_run_time} Mins"
     }
 
-    private fun setupSimilarRecyclerView() {
-        similarAdapter = SeriesAdapter()
-        rvSimilar.adapter = similarAdapter
-    }
+//    private fun setupSimilarRecyclerView() {
+//        similarAdapter = SeriesAdapter()
+//        rvSimilar.adapter = similarAdapter
+//    }
 
     private fun setupCastRecyclerView() {
         castAdapter = CastAdapter()
@@ -165,11 +159,11 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         if (message != null) {
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
                 setAction("Retry"){
-                    if (viewModel.seriesId != null) {
-                        viewModel.fetchData(viewModel.seriesId!!)
-                    }else{
-                        viewModel.fetchData(args.seriesId)
-                    }
+//                    if (viewModel.seriesId != null) {
+//                        viewModel.fetchData(viewModel.seriesId!!)
+//                    }else{
+//                        viewModel.fetchData(args.seriesId)
+//                    }
                 }.show()
             }
         }

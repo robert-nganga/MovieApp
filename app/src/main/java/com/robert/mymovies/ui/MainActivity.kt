@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    val viewModel: MoviesFragmentViewModel by viewModels()
+    val viewModel: FilmViewModel by viewModels()
     private lateinit var toolBar: MaterialToolbar
     private lateinit var navController: NavController
     private lateinit var navigationView: NavigationView

@@ -23,7 +23,6 @@ data class SeriesDetailsResponse(
     val overview: String,
     val popularity: Double,
     val poster_path: String,
-    val seasons: List<Season>,
     val status: String,
     val tagline: String,
     val type: String,

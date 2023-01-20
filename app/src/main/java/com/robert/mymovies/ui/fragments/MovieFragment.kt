@@ -15,9 +15,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.GenresAdapter
-import com.robert.mymovies.adapters.MovieAdapter
+import com.robert.mymovies.adapters.FilmAdapter
 import com.robert.mymovies.data.remote.MovieDetailsResponse
-import com.robert.mymovies.ui.MovieFragmentViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +25,7 @@ import io.github.glailton.expandabletextview.ExpandableTextView
 @AndroidEntryPoint
 class MovieFragment: Fragment(R.layout.fragment_movie) {
 
-    private val viewModel: MovieFragmentViewModel by viewModels()
+    //private val viewModel: MovieFragmentViewModel by viewModels()
     private lateinit var collapsingToolBar: CollapsingToolbarLayout
     private lateinit var imgToolBar: ImageView
     private lateinit var imgPoster: ImageView
@@ -40,7 +39,7 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
     private lateinit var rvCast: RecyclerView
     private lateinit var castAdapter: CastAdapter
     private lateinit var rvSimilar: RecyclerView
-    private lateinit var similarAdapter: MovieAdapter
+    private lateinit var similarAdapter: FilmAdapter
     private val args: MovieFragmentArgs by navArgs()
 
     private var errorMessage: String? = null
@@ -62,68 +61,68 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         setupCastRecyclerView()
         setupSimilarRecyclerView()
         //Fetching data using the id passed as argument
-        if (viewModel.movieId != null) {
-            viewModel.fetchData(viewModel.movieId!!)
-        }else{
-            viewModel.fetchData(args.id)
-        }
+//        if (viewModel.movieId != null) {
+//            viewModel.fetchData(viewModel.movieId!!)
+//        }else{
+//            viewModel.fetchData(args.id)
+//        }
+//
+//        similarAdapter.setOnItemClickListener {
+//            // Fetching data using id of clicked similar movie
+//            viewModel.movieId = it.id
+//            viewModel.fetchData(it.id)
+//        }
 
-        similarAdapter.setOnItemClickListener {
-            // Fetching data using id of clicked similar movie
-            viewModel.movieId = it.id
-            viewModel.fetchData(it.id)
-        }
-
-        viewModel.movieDetails.observe(viewLifecycleOwner){ response->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    response.data?.let {
-                        val backDropImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.backdrop_path}"
-                        val posterImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.poster_path}"
-                        Glide.with(view).load(backDropImageUrl).into(imgToolBar)
-                        Glide.with(view).load(posterImageUrl).into(imgPoster)
-                        setMovieDetails(it)
-                        genresAdapter.updateList(it.genres)
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {errorMessage = response.message}
-            }
-        }
-
-        viewModel.castDetails.observe(viewLifecycleOwner){ response ->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    response.data?.let {
-                        castAdapter.differ.submitList(it.cast)
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {errorMessage = response.message}
-            }
-        }
-
-        viewModel.similarMovies.observe(viewLifecycleOwner){ response ->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    response.data?.let {
-                        similarAdapter.differ.submitList(it.results.toList())
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {
-                    if (errorMessage != null){
-                        displayError(view, errorMessage)
-                    }else{
-                        displayError(view, response.message)
-                    }
-                }
-            }
-        }
+//        viewModel.movieDetails.observe(viewLifecycleOwner){ response->
+//            when(response.status){
+//                Resource.Status.SUCCESS -> {
+//                    response.data?.let {
+//                        val backDropImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.backdrop_path}"
+//                        val posterImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.poster_path}"
+//                        Glide.with(view).load(backDropImageUrl).into(imgToolBar)
+//                        Glide.with(view).load(posterImageUrl).into(imgPoster)
+//                        setMovieDetails(it)
+//                        genresAdapter.updateList(it.genres)
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> {errorMessage = response.message}
+//            }
+//        }
+//
+//        viewModel.castDetails.observe(viewLifecycleOwner){ response ->
+//            when(response.status){
+//                Resource.Status.SUCCESS -> {
+//                    response.data?.let {
+//                        castAdapter.differ.submitList(it.cast)
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> {errorMessage = response.message}
+//            }
+//        }
+//
+//        viewModel.similarMovies.observe(viewLifecycleOwner){ response ->
+//            when(response.status){
+//                Resource.Status.SUCCESS -> {
+//                    response.data?.let {
+//                        similarAdapter.differ.submitList(it.results.toList())
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> {
+//                    if (errorMessage != null){
+//                        displayError(view, errorMessage)
+//                    }else{
+//                        displayError(view, response.message)
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun setupSimilarRecyclerView() {
-        similarAdapter = MovieAdapter()
+        similarAdapter = FilmAdapter()
         rvSimilar.adapter = similarAdapter
     }
 
@@ -152,11 +151,11 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         if (message != null) {
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
                 setAction("Retry"){
-                    if (viewModel.movieId != null) {
-                        viewModel.fetchData(viewModel.movieId!!)
-                    }else{
-                        viewModel.fetchData(args.id)
-                    }
+//                    if (viewModel.movieId != null) {
+//                        viewModel.fetchData(viewModel.movieId!!)
+//                    }else{
+//                        viewModel.fetchData(args.id)
+//                    }
                 }.show()
             }
         }

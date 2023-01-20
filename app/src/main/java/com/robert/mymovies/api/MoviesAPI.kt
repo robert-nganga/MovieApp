@@ -167,7 +167,7 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("language")
         language: String = "en-US",
-    ): Response<SeriesResponse>
+    ): Response<FilmResponse>
 
     @GET("3/tv/{tv_id}")
     suspend fun getSeriesDetails(

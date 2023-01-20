@@ -2,110 +2,101 @@ package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AbsListView
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.robert.mymovies.R
-import com.robert.mymovies.adapters.AllMoviesAdapter
 import com.robert.mymovies.utils.Resource
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
-import com.robert.mymovies.adapters.AllSeriesAdapter
+import com.robert.mymovies.adapters.AllFilmsAdapter
+import com.robert.mymovies.adapters.GenresAdapter
+import com.robert.mymovies.databinding.FragmentMoreFilmsBinding
 import com.robert.mymovies.ui.MoreFilmsFragmentViewModel
-import com.robert.mymovies.ui.MoreSeriesFragmentViewModel
 import com.robert.mymovies.utils.Constants.QUERY_PAGE_SIZE
+import com.robert.mymovies.utils.FilmType
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
-    private val moviesViewModel: MoreFilmsFragmentViewModel by viewModels()
-    private val seriesViewModel: MoreSeriesFragmentViewModel by viewModels()
+    private val filmsViewModel: MoreFilmsFragmentViewModel by viewModels()
     val args: MoreFilmsFragmentArgs by navArgs()
-    private lateinit var moviesAdapter: AllMoviesAdapter
-    private lateinit var seriesAdapter: AllSeriesAdapter
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var paginationProgressBar: ProgressBar
-    private lateinit var genreShimmer: ShimmerFrameLayout
-    private lateinit var rvGenres: RecyclerView
+
+    private lateinit var filmsAdapter: AllFilmsAdapter
+    private lateinit var genresAdapter: GenresAdapter
+
+    private var _binding: FragmentMoreFilmsBinding? = null
+    private val binding get() = _binding!!
 
     var isLoading = false
     var isLastPage = false
     var isScrolling = false
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        paginationProgressBar = view.findViewById(R.id.paginationProgressBar)
-        recyclerView = view.findViewById(R.id.rvMoreFilms)
-
-        genreShimmer = view.findViewById(R.id.genreShimmer)
-        genreShimmer.startShimmer()
-        rvGenres = view.findViewById(R.id.rvGenres)
-
-        // Checks from where this fragment was called and calls the appropriate methods
-        if (args.type == "Movie") {
-            setUpMoviesRecyclerView()
-            getMovies(args.category)
-            observeMoviesLiveData(view)
-        }else{
-            setUpSeriesRecyclerView()
-            getSeries(args.category)
-            observeSeriesLiveData(view)
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMoreFilmsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun observeMoviesLiveData(view: View) {
-        moviesViewModel.allFilms.observe(viewLifecycleOwner){response ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.genreShimmer.startShimmer()
+        genresAdapter = GenresAdapter()
+        binding.rvGenres.adapter = genresAdapter
+        setUpRecyclerView(args.type)
+        // Checks from where this fragment was called and calls the appropriate methods
+        if (args.type == "Movie") {
+            filmsViewModel.getGenres(FilmType.MOVIE)
+            getMovies(args.category)
+            observeLiveData(view)
+        }else{
+            filmsViewModel.getGenres(FilmType.TVSHOW)
+            getSeries(args.category)
+            observeLiveData(view)
+        }
+
+        filmsViewModel.genres.observe(viewLifecycleOwner){ response ->
             when(response.status){
-                Resource.Status.SUCCESS ->{
-                    hideProgressBar()
+                Resource.Status.SUCCESS -> {
+                    binding.genreShimmer.stopShimmer()
+                    binding.genreShimmer.visibility = View.GONE
+                    binding.rvGenres.visibility = View.VISIBLE
                     response.data?.let {
-                        genreShimmer.stopShimmer()
-                        rvGenres.visibility = View.VISIBLE
-                        moviesAdapter.differ.submitList(it.results.toList())
-
-                        //Checking if it is last page
-                        val totalPages = it.total_pages
-                        isLastPage = moviesViewModel.allFilmsPage == totalPages
-
-                        if(isLastPage){
-                            recyclerView.setPadding(0,0,0,0)
-                        }
+                        genresAdapter.updateList(it.genres)
                     }
                 }
-                Resource.Status.LOADING -> {showProgressbar()}
-                Resource.Status.ERROR -> {
-                    hideProgressBar()
-                    displayError(view, response.message)
-                }
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {}
             }
         }
     }
 
 
-    private fun observeSeriesLiveData(view: View) {
-        seriesViewModel.allFilms.observe(viewLifecycleOwner){response ->
+
+    private fun observeLiveData(view: View) {
+        filmsViewModel.allFilms.observe(viewLifecycleOwner){response ->
             when(response.status){
                 Resource.Status.SUCCESS ->{
                     hideProgressBar()
                     response.data?.let {
-                        genreShimmer.stopShimmer()
-                        rvGenres.visibility = View.VISIBLE
-                        seriesAdapter.differ.submitList(it.results.toList())
+                        filmsAdapter.differ.submitList(it.results.toList())
 
                         //Checking if it is last page
                         val totalPages = it.total_pages
-                        isLastPage = seriesViewModel.allFilmsPage == totalPages
+                        isLastPage = filmsViewModel.allFilmsPage == totalPages
 
                         if(isLastPage){
-                            recyclerView.setPadding(0,0,0,0)
+                            binding.rvMoreFilms.setPadding(0,0,0,0)
                         }
                     }
                 }
@@ -152,33 +143,25 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         }
     }
 
-    private fun setUpSeriesRecyclerView() {
+    private fun setUpRecyclerView(type: String) {
         val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-        seriesAdapter = AllSeriesAdapter(getDeviceWidth())
-        recyclerView.adapter = seriesAdapter
-        recyclerView.addOnScrollListener(this@MoreFilmsFragment.scrollListener)
+        binding.rvMoreFilms.layoutManager = layoutManager
+        filmsAdapter = AllFilmsAdapter(getDeviceWidth())
+        binding.rvMoreFilms.adapter = filmsAdapter
+        binding.rvMoreFilms.addOnScrollListener(this@MoreFilmsFragment.scrollListener)
 
-        seriesAdapter.setOnItemClickListener {
-            val bundle = Bundle().apply {
-                putInt("seriesId", it.id)
-            }
-            findNavController().navigate(R.id.action_moreFilmsFragment_to_seriesDetailsFragment, bundle)
-        }
-    }
-
-    private fun setUpMoviesRecyclerView() {
-        val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-        moviesAdapter = AllMoviesAdapter(getDeviceWidth())
-        recyclerView.adapter = moviesAdapter
-        recyclerView.addOnScrollListener(this@MoreFilmsFragment.scrollListener)
-
-        moviesAdapter.setOnItemClickListener {
+        filmsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putInt("id", it.id)
             }
-            findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
+            if (args.type == "Movie") {
+                findNavController().navigate(
+                    R.id.action_moreFilmsFragment_to_seriesDetailsFragment,
+                    bundle
+                )
+            }else{
+                findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
+            }
         }
     }
 
@@ -191,13 +174,13 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     }
 
     private fun showProgressbar(){
-        paginationProgressBar.visibility = View.VISIBLE
+        binding.paginationProgressBar.visibility = View.VISIBLE
         isLoading = true
     }
 
     private fun hideProgressBar(){
         isLoading = false
-        paginationProgressBar.visibility = View.INVISIBLE
+        binding.paginationProgressBar.visibility = View.INVISIBLE
     }
 
     private fun displayError(view: View, message: String?) {
@@ -218,10 +201,10 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     private fun getSeries(category: String) {
         when(category){
             "popular" -> {
-                seriesViewModel.getPopularSeries()
+                filmsViewModel.getPopularFilms(FilmType.TVSHOW)
             }
             "onAir" -> {
-                seriesViewModel.getOnAirSeries()
+                filmsViewModel.getOnAirFilms(FilmType.TVSHOW)
             }
         }
     }
@@ -229,10 +212,10 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     private fun getMovies(category: String) {
         when(category){
             "popular" -> {
-                moviesViewModel.getPopularMovies()
+                filmsViewModel.getPopularFilms(FilmType.MOVIE)
             }
             "upcoming" -> {
-                moviesViewModel.getUpcomingMovies()
+                filmsViewModel.getUpcomingFilms(FilmType.MOVIE)
             }
         }
     }

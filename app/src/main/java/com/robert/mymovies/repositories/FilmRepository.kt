@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.robert.mymovies.api.MoviesAPI
-import com.robert.mymovies.data.remote.MovieResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.utils.FilmType

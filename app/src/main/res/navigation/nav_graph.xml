@@ -76,7 +76,7 @@
         android:name="com.robert.mymovies.ui.fragments.SeriesDetailsFragment"
         android:label="SeriesDetailsFragment" >
         <argument
-            android:name="seriesId"
+            android:name="id"
             app:argType="integer" />
     </fragment>
 </navigation>

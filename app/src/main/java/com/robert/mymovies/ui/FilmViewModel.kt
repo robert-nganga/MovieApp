@@ -11,10 +11,11 @@ import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @HiltViewModel
-class FilmViewModel(private val repository: RepositoryFilm): ViewModel() {
+class FilmViewModel@Inject constructor(private val repository: RepositoryFilm): ViewModel() {
 
     private val _allPopularFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val allPopularFilms: LiveData<Resource<FilmResponse>> = _allPopularFilms
@@ -38,13 +39,16 @@ class FilmViewModel(private val repository: RepositoryFilm): ViewModel() {
     val allGenres: LiveData<Resource<GenreResponse>> = _allGenres
 
 
-    fun fetchData(filmType: FilmType){
+    fun fetchSeriesData(filmType: FilmType){
+        getTopRated(filmType)
+        getPopularFilms(filmType)
+        getOnAirFilms(filmType)
+    }
+
+    fun fetchMovieData(filmType: FilmType){
         getPopularFilms(filmType)
         getUpcomingFilms(filmType)
         getTrendingFilms(filmType)
-        getTopRated(filmType)
-        getOnAirFilms(filmType)
-        getLatestFilms(filmType)
     }
 
 

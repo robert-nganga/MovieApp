@@ -1,8 +1,6 @@
 package com.robert.mymovies.di
 
 import com.robert.mymovies.api.MoviesAPI
-import com.robert.mymovies.repositories.MoviesRepository
-import com.robert.mymovies.repositories.Repository
 import com.robert.mymovies.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides

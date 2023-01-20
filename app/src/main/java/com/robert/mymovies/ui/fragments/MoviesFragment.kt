@@ -1,50 +1,61 @@
 package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
-import com.robert.mymovies.adapters.GenresAdapter
-import com.robert.mymovies.adapters.MovieAdapter
+import com.robert.mymovies.adapters.FilmAdapter
+import com.robert.mymovies.databinding.FragmentMoviesBinding
+import com.robert.mymovies.ui.FilmViewModel
 import com.robert.mymovies.ui.MainActivity
-import com.robert.mymovies.ui.MoviesFragmentViewModel
 import com.robert.mymovies.utils.Constants
+import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
-    private lateinit var viewModel: MoviesFragmentViewModel
+    private var _binding: FragmentMoviesBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var viewModel: FilmViewModel
     private var error: String? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMoviesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as MainActivity).viewModel
-        val popularAdapter = MovieAdapter()
-        val trendingAdapter = MovieAdapter()
-        val upcomingAdapter = MovieAdapter()
-        //val genresAdapter = GenresAdapter()
+        // Fetch the data
+        viewModel.fetchMovieData(FilmType.MOVIE)
 
-        val imageSlider = view.findViewById<ImageSlider>(R.id.image_slider)
+        val popularAdapter = FilmAdapter()
+        val upcomingAdapter = FilmAdapter()
+
         val imageList = ArrayList<SlideModel>()
 
-        val tvMorePopular = view.findViewById<TextView>(R.id.tvMorePopular)
-        tvMorePopular.setOnClickListener {
+        // Set listeners for the see more buttons
+        binding.tvMorePopular.setOnClickListener {
             val bundle = Bundle().apply {
                 putString("type", "Movie")
                 putString("category", "popular")
             }
             findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
         }
-        val tvMoreUpcoming = view.findViewById<TextView>(R.id.tvMoreUpcoming)
-        tvMoreUpcoming.setOnClickListener {
+
+        binding.tvMoreUpcoming.setOnClickListener {
             val bundle = Bundle().apply {
                 putString("type", "Movie")
                 putString("category", "upcoming")
@@ -52,27 +63,15 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
         }
 
-        // Shimmer Layouts
-//        val shimmerGenre = view.findViewById<ShimmerFrameLayout>(R.id.genreShimmer)
-//        shimmerGenre.startShimmer()
-        //val shimmerTrending = view.findViewById<ShimmerFrameLayout>(R.id.trendingShimmer)
-        //shimmerTrending.startShimmer()
-        val shimmerPopular = view.findViewById<ShimmerFrameLayout>(R.id.popularShimmer)
-        shimmerPopular.startShimmer()
-        val shimmerUpcoming = view.findViewById<ShimmerFrameLayout>(R.id.upcomingShimmer)
-        shimmerUpcoming.startShimmer()
+        //Start the shimmer effect
+        binding.popularShimmer.startShimmer()
+        binding.upcomingShimmer.startShimmer()
 
-        //Recyclerview Layouts
-        val upcomingRecyclerView = view.findViewById<RecyclerView>(R.id.rvUpcoming)
-        //val trendingRecyclerView = view.findViewById<RecyclerView>(R.id.rvTrending)
-        val popularRecyclerView = view.findViewById<RecyclerView>(R.id.rvPopular)
-        //val genresRecyclerView = view.findViewById<RecyclerView>(R.id.rvGenres)
-        upcomingRecyclerView.adapter = upcomingAdapter
-        //genresRecyclerView.adapter = genresAdapter
-        //trendingRecyclerView.adapter = trendingAdapter
-        popularRecyclerView.adapter = popularAdapter
+        //set the recycler view adapters
+        binding.rvUpcoming.adapter = upcomingAdapter
+        binding.rvPopular.adapter = popularAdapter
 
-        //Set Adapter listeners
+        //Set listeners for each movie
         upcomingAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putInt("id", it.id)
@@ -86,46 +85,29 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             }
             findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
         }
-//        viewModel.allGenres.observe(viewLifecycleOwner){ response->
-//            when(response.status){
-//                Resource.Status.SUCCESS -> {
-//                    shimmerGenre.stopShimmer()
-//                    shimmerGenre.visibility = View.INVISIBLE
-//                    genresRecyclerView.visibility = View.VISIBLE
-//                    response.data?.let {
-//                        genresAdapter.updateList(it.genres)
-//                    }
-//                }
-//                Resource.Status.LOADING -> {}
-//                Resource.Status.ERROR -> { error = response.message}
-//            }
-//        }
-        viewModel.allTrendingMovies.observe(viewLifecycleOwner){ response->
+
+        viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS ->{
-//                    shimmerTrending.stopShimmer()
-//                    shimmerTrending.visibility = View.INVISIBLE
-//                    trendingRecyclerView.visibility = View.VISIBLE
                     response.data?.let {
-                        //trendingAdapter.updateList(it.series)
                         it.results.forEach { movie ->
-                            val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdrop_path}"
+                            val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdropPath}"
                             imageList.add(SlideModel(imageUrl, movie.title ))
                         }
-                        imageSlider.setImageList(imageList, ScaleTypes.FIT)
+                        binding.imageSlider.setImageList(imageList, ScaleTypes.FIT)
                     }
                 }
                 Resource.Status.LOADING -> {}
                 Resource.Status.ERROR -> {error = response.message}
             }
         }
-        viewModel.allPopularMovies.observe(viewLifecycleOwner){ response ->
+        viewModel.allPopularFilms.observe(viewLifecycleOwner){ response ->
 
             when(response.status){
                 Resource.Status.SUCCESS ->{
-                    shimmerPopular.stopShimmer()
-                    shimmerPopular.visibility = View.INVISIBLE
-                    popularRecyclerView.visibility = View.VISIBLE
+                    binding.popularShimmer.stopShimmer()
+                    binding.popularShimmer.visibility = View.INVISIBLE
+                    binding.rvPopular.visibility = View.VISIBLE
                     response.data?.let {
                         popularAdapter.differ.submitList(it.results.toList())
                     }
@@ -136,14 +118,19 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
         }
 
-        viewModel.allUpcomingMovies.observe(viewLifecycleOwner){ response ->
+        viewModel.allUpcomingFilms.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS ->{
-                    shimmerUpcoming.stopShimmer()
-                    shimmerUpcoming.visibility = View.INVISIBLE
-                    upcomingRecyclerView.visibility = View.VISIBLE
+                    binding.upcomingShimmer.stopShimmer()
+                    binding.upcomingShimmer.visibility = View.INVISIBLE
+                    binding.rvUpcoming.visibility = View.VISIBLE
                     response.data?.let {
                         upcomingAdapter.differ.submitList(it.results.toList())
+                    }
+
+                    //Check if there was an error
+                    if(error != null){
+                        displayError(view, error)
                     }
                 }
                 Resource.Status.LOADING -> {}
@@ -164,9 +151,14 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         if (message != null) {
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
                 setAction("Retry"){
-                    viewModel.fetchData()
+                    viewModel.fetchMovieData(FilmType.MOVIE)
                 }.show()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
