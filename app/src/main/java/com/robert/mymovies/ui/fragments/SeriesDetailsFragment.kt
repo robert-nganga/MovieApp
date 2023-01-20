@@ -128,7 +128,7 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         binding.collapsingToolBarSeries.title = series.name
         binding.tvDescriptionSeries.text = series.overview
         binding.tvTagLineSeries.text = series.tagline
-        binding.tvTagLineSeries.text = series.first_air_date
+        binding.tvFirstAirDate.text = series.first_air_date
         binding.tvRatingSeries.text = "Rating ⭐: ${series.vote_average}/10"
         binding.tvEpisodeDuration.text = "Episode runtime: ${series.episode_run_time} Mins"
     }

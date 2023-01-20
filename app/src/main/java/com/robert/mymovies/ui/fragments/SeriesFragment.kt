@@ -74,14 +74,14 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         //Set Adapter listeners
         onAirAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
-                putInt("seriesId", it.id)
+                putInt("id", it.id)
             }
             findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }
 
         popularAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
-                putInt("seriesId", it.id)
+                putInt("id", it.id)
             }
             findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }

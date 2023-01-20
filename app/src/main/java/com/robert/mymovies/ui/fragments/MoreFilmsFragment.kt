@@ -50,7 +50,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.genreShimmer.startShimmer()
+        //binding.genreShimmer.startShimmer()
         genresAdapter = GenresAdapter()
         //binding.rvGenres.adapter = genresAdapter
         setUpRecyclerView(args.type)
