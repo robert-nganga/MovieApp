@@ -178,12 +178,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView2"
                 tools:listitem="@layout/trending_item" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvUpcoming"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

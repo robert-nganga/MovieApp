@@ -17,26 +17,26 @@ import javax.inject.Inject
 @HiltViewModel
 class FilmViewModel@Inject constructor(private val repository: RepositoryFilm): ViewModel() {
 
-    private val _allPopularFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allPopularFilms: LiveData<Resource<FilmResponse>> = _allPopularFilms
+    private var _allPopularFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
+    val allPopularFilms: LiveData<Resource<FilmResponse>> get() =  _allPopularFilms
 
-    private val _allUpcomingFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allUpcomingFilms: LiveData<Resource<FilmResponse>> = _allUpcomingFilms
+    private var _allUpcomingFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
+    val allUpcomingFilms: LiveData<Resource<FilmResponse>> get() =  _allUpcomingFilms
 
-    private val _allTrendingFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allTrendingFilms: LiveData<Resource<FilmResponse>> = _allTrendingFilms
+    private var _allTrendingFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
+    val allTrendingFilms: LiveData<Resource<FilmResponse>> get() =  _allTrendingFilms
 
-    private val _allTopRatedFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allTopRatedFilms: LiveData<Resource<FilmResponse>> = _allTopRatedFilms
+    private var _allTopRatedFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
+    val allTopRatedFilms: LiveData<Resource<FilmResponse>> get() =  _allTopRatedFilms
 
-    private val _allOnAirFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allOnAirFilms: LiveData<Resource<FilmResponse>> = _allOnAirFilms
+    private var _allOnAirFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
+    val allOnAirFilms: LiveData<Resource<FilmResponse>> get() =  _allOnAirFilms
 
-    private val _allLatestFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allLatestFilms: LiveData<Resource<FilmResponse>> = _allLatestFilms
+    private var _allLatestFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
+    val allLatestFilms: LiveData<Resource<FilmResponse>> get() =  _allLatestFilms
 
-    private val _allGenres: MutableLiveData<Resource<GenreResponse>> = MutableLiveData()
-    val allGenres: LiveData<Resource<GenreResponse>> = _allGenres
+    private var _allGenres: MutableLiveData<Resource<GenreResponse>> = MutableLiveData()
+    val allGenres: LiveData<Resource<GenreResponse>> get() =  _allGenres
 
 
     fun fetchSeriesData(filmType: FilmType){

@@ -17,6 +17,8 @@ import com.robert.mymovies.ui.MainActivity
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
+import dagger.hilt.android.AndroidEntryPoint
+
 
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
 

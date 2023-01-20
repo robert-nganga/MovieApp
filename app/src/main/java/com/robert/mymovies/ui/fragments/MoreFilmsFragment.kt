@@ -52,7 +52,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         super.onViewCreated(view, savedInstanceState)
         binding.genreShimmer.startShimmer()
         genresAdapter = GenresAdapter()
-        binding.rvGenres.adapter = genresAdapter
+        //binding.rvGenres.adapter = genresAdapter
         setUpRecyclerView(args.type)
         // Checks from where this fragment was called and calls the appropriate methods
         if (args.type == "Movie") {
@@ -68,9 +68,9 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         filmsViewModel.genres.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS -> {
-                    binding.genreShimmer.stopShimmer()
-                    binding.genreShimmer.visibility = View.GONE
-                    binding.rvGenres.visibility = View.VISIBLE
+                    //binding.genreShimmer.stopShimmer()
+                    //binding.genreShimmer.visibility = View.GONE
+                    //binding.rvGenres.visibility = View.VISIBLE
                     response.data?.let {
                         genresAdapter.updateList(it.genres)
                     }
@@ -156,11 +156,11 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
             }
             if (args.type == "Movie") {
                 findNavController().navigate(
-                    R.id.action_moreFilmsFragment_to_seriesDetailsFragment,
+                    R.id.action_moreFilmsFragment_to_movieFragment,
                     bundle
                 )
             }else{
-                findNavController().navigate(R.id.action_moreFilmsFragment_to_movieFragment, bundle)
+                findNavController().navigate(R.id.action_moreFilmsFragment_to_seriesDetailsFragment, bundle)
             }
         }
     }

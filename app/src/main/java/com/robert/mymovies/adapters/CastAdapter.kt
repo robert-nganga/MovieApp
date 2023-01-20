@@ -48,6 +48,7 @@ class CastAdapter(): RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
     inner class CastViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val imgCast = itemView.findViewById<ImageView>(R.id.imgCast)
         private val tvCastName = itemView.findViewById<TextView>(R.id.tvCastName)
+        private val tvCastCharacter = itemView.findViewById<TextView>(R.id.tvCastCharacter)
         private var currentCast: Cast? = null
 
         fun setData(cast: Cast){
@@ -56,6 +57,7 @@ class CastAdapter(): RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
 
             Glide.with(itemView).load(imageUrl).into(imgCast)
             tvCastName.text = cast.name
+            tvCastCharacter.text = cast.character
         }
     }
 }
