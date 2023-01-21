@@ -40,15 +40,19 @@ class FilmViewModel@Inject constructor(private val repository: RepositoryFilm): 
 
 
     fun fetchSeriesData(filmType: FilmType){
+        getTrendingFilms(filmType)
+        getLatestFilms(filmType)
         getTopRated(filmType)
         getPopularFilms(filmType)
         getOnAirFilms(filmType)
     }
 
     fun fetchMovieData(filmType: FilmType){
+        getTrendingFilms(filmType)
+        getLatestFilms(filmType)
         getPopularFilms(filmType)
         getUpcomingFilms(filmType)
-        getTrendingFilms(filmType)
+        getTopRated(filmType)
     }
 
 

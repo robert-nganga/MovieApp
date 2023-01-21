@@ -1,6 +1,7 @@
 package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -144,6 +145,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     }
 
     private fun setUpRecyclerView(type: String) {
+        Log.i("MoreFilmsFragment", getDeviceWidth().toString())
         val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         binding.rvMoreFilms.layoutManager = layoutManager
         filmsAdapter = AllFilmsAdapter(getDeviceWidth())
@@ -206,6 +208,9 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
             "onAir" -> {
                 filmsViewModel.getOnAirFilms(FilmType.TVSHOW)
             }
+            "topRated" -> {
+                filmsViewModel.getTopRatedFilms(FilmType.TVSHOW)
+            }
         }
     }
 
@@ -216,6 +221,9 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
             }
             "upcoming" -> {
                 filmsViewModel.getUpcomingFilms(FilmType.MOVIE)
+            }
+            "topRated" -> {
+                filmsViewModel.getTopRatedFilms(FilmType.MOVIE)
             }
         }
     }

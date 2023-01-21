@@ -117,7 +117,7 @@ class FilmRepository@Inject constructor(
         if (filmType == FilmType.MOVIE){
             return try {
                 if (checkForInternet()){
-                    val response = handleFilmResponse(api.getTopRatedSeries(page = page))
+                    val response = handleFilmResponse(api.getTopRatedMovies(page = page))
                     Resource(Resource.Status.SUCCESS, response.data, null)
                 }else{
                     Resource(Resource.Status.ERROR, null, "No internet connection")

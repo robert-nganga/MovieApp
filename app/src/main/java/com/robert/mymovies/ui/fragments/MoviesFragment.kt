@@ -1,10 +1,12 @@
 package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
@@ -19,13 +21,13 @@ import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: FilmViewModel
+    private val viewModel: FilmViewModel by viewModels()
     private var error: String? = null
 
     override fun onCreateView(
@@ -39,12 +41,12 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as MainActivity).viewModel
         // Fetch the data
         viewModel.fetchMovieData(FilmType.MOVIE)
 
         val popularAdapter = FilmAdapter()
         val upcomingAdapter = FilmAdapter()
+        val topRatedAdapter = FilmAdapter()
 
         val imageList = ArrayList<SlideModel>()
 
@@ -65,6 +67,14 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
         }
 
+        binding.tvMoreTopRated.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("type", "Movie")
+                putString("category", "topRated")
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
+        }
+
         //Start the shimmer effect
         binding.popularShimmer.startShimmer()
         binding.upcomingShimmer.startShimmer()
@@ -72,6 +82,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         //set the recycler view adapters
         binding.rvUpcoming.adapter = upcomingAdapter
         binding.rvPopular.adapter = popularAdapter
+        binding.rvTopRated.adapter = topRatedAdapter
 
         //Set listeners for each movie
         upcomingAdapter.setOnItemClickListener {
@@ -103,6 +114,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                 Resource.Status.ERROR -> {error = response.message}
             }
         }
+
         viewModel.allPopularFilms.observe(viewLifecycleOwner){ response ->
 
             when(response.status){
@@ -129,23 +141,33 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                     response.data?.let {
                         upcomingAdapter.differ.submitList(it.results.toList())
                     }
+                }
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {
+                    error = response.message
+                }
+            }
+        }
 
-                    //Check if there was an error
-                    if(error != null){
-                        displayError(view, error)
+        viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response ->
+            when(response.status){
+                Resource.Status.SUCCESS -> {
+                    response.data?.let {
+                        topRatedAdapter.differ.submitList(it.results.toList())
                     }
                 }
                 Resource.Status.LOADING -> {}
                 Resource.Status.ERROR -> {
                     if(error != null){
-                        displayError(view, error)
+                    displayError(view, error)
                     }else{
                         displayError(view, response.message)
                     }
                 }
             }
-
         }
+
+
 
     }
 

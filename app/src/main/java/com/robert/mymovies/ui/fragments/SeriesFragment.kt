@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
@@ -25,7 +26,7 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
     private var _binding: FragmentSeriesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: FilmViewModel
+    private val viewModel: FilmViewModel by viewModels()
     private var error: String? = null
 
     override fun onCreateView(
@@ -39,12 +40,12 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as MainActivity).viewModel
         // Fetch the data
         viewModel.fetchSeriesData(FilmType.TVSHOW)
 
         val popularAdapter = FilmAdapter()
         val onAirAdapter = FilmAdapter()
+        val topRatedAdapter = FilmAdapter()
 
         val imageList = ArrayList<SlideModel>()
 
@@ -64,12 +65,21 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             findNavController().navigate(R.id.action_seriesFragment_to_moreFilmsFragment, bundle)
         }
 
+        binding.tvMoreTopRatedSeries.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("type", "Series")
+                putString("category", "topRated")
+            }
+            findNavController().navigate(R.id.action_seriesFragment_to_moreFilmsFragment, bundle)
+        }
+
 
         binding.popularShimmerSeries.startShimmer()
         binding.onAirShimmerSeries.startShimmer()
 
         binding.rvOnAirSeries.adapter = onAirAdapter
         binding.rvPopularSeries.adapter = popularAdapter
+        binding.rvTopRatedSeries.adapter = topRatedAdapter
 
         //Set Adapter listeners
         onAirAdapter.setOnItemClickListener {
@@ -86,15 +96,27 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }
 
-        viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response->
+        viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response ->
             when(response.status){
-                Resource.Status.SUCCESS ->{
+                Resource.Status.SUCCESS -> {
                     response.data?.let {
                         it.results.forEach { series ->
                             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
                             imageList.add(SlideModel(imageUrl, series.title))
                         }
                         binding.seriesImageSlider.setImageList(imageList, ScaleTypes.FIT)
+                    }
+                }
+                Resource.Status.LOADING -> {}
+                Resource.Status.ERROR -> {error = response.message}
+            }
+        }
+
+        viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response->
+            when(response.status){
+                Resource.Status.SUCCESS ->{
+                    response.data?.let {
+                        topRatedAdapter.differ.submitList(it.results.toList())
                     }
                 }
                 Resource.Status.LOADING -> {}
@@ -127,7 +149,6 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
                     response.data?.let {
                         onAirAdapter.differ.submitList(it.results.toList())
                     }
-
                     if(error != null){
                         displayError(view, error)
                     }
@@ -141,7 +162,6 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
                     }
                 }
             }
-
         }
 
     }

@@ -126,11 +126,13 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
     @SuppressLint("SetTextI18n")
     private fun displaySeriesDetails(series: SeriesDetailsResponse){
         binding.collapsingToolBarSeries.title = series.name
+        binding.tvDescriptionSeries.text = ""
         binding.tvDescriptionSeries.text = series.overview
         binding.tvTagLineSeries.text = series.tagline
         binding.tvFirstAirDate.text = series.first_air_date
         binding.tvRatingSeries.text = "Rating ⭐: ${series.vote_average}/10"
         binding.tvEpisodeDuration.text = "Episode runtime: ${series.episode_run_time} Mins"
+        binding.tvSeasons.text = "Seasons: ${series.number_of_seasons}"
     }
 
     private fun setupSimilarRecyclerView() {

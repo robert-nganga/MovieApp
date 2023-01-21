@@ -93,5 +93,25 @@ class MoreFilmsFragmentViewModel@Inject constructor(
         }
     }
 
+    fun getTopRatedFilms(filmType: FilmType) = viewModelScope.launch {
+        _allFilms.postValue(Resource(Resource.Status.LOADING, null, null))
+        val result = repository.getTopRatedFilms(allFilmsPage, filmType)
+        if (result.status == Resource.Status.SUCCESS){
+            result.data?.let { resultResponse ->
+                allFilmsPage++
+                if (allFilmsResponse == null){
+                    allFilmsResponse = resultResponse
+                }else{
+                    val oldMovies = allFilmsResponse?.results
+                    val newMovies = resultResponse.results
+                    oldMovies?.addAll(newMovies)
+                }
+                _allFilms.postValue(Resource(Resource.Status.SUCCESS, allFilmsResponse ?:resultResponse, null))
+            }
+        }else{
+            _allFilms.postValue(result)
+        }
+    }
+
 
 }
