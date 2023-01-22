@@ -24,9 +24,9 @@
                 android:id="@+id/imgToolBarSeries"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@drawable/ic_baseline_movie_24"
                 android:scaleType="fitXY"
                 app:layout_collapseMode="parallax"
+                app:srcCompat="@drawable/image_background"
                 android:fitsSystemWindows="true" />
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -53,26 +53,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/imgPosterShimmer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="@id/imgPosterSeries"
-                app:layout_constraintStart_toStartOf="@id/imgPosterSeries"
-                app:layout_constraintTop_toTopOf="@id/imgPosterSeries">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/shimmer_movie_poster" />
-
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
             <ImageView
                 android:id="@+id/imgPosterSeries"
                 android:layout_width="120dp"
@@ -80,10 +60,9 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:scaleType="fitXY"
-                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_movie_24" />
+                app:srcCompat="@drawable/image_background" />
 
             <io.github.glailton.expandabletextview.ExpandableTextView
                 android:id="@+id/tvDescriptionSeries"

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -61,11 +62,21 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
             // Fetching data using id of clicked similar movie
             viewModel.movieId = it.id
             viewModel.fetchData(it.id)
+            view.invalidate()
         }
+
+        binding.movieGenresShimmer.startShimmer()
+        binding.movieCastShimmer.startShimmer()
+        binding.movieSimilarShimmer.startShimmer()
 
         viewModel.movieDetails.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+
+                    binding.movieGenresShimmer.stopShimmer()
+                    binding.movieGenresShimmer.visibility = View.INVISIBLE
+                    binding.rvMovieGenres.visibility = View.VISIBLE
+
                     response.data?.let {
                         val backDropImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.backdrop_path}"
                         val posterImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.poster_path}"
@@ -83,6 +94,9 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         viewModel.movieCast.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+                    binding.movieCastShimmer.startShimmer()
+                    binding.movieCastShimmer.visibility = View.INVISIBLE
+                    binding.rvCast.visibility = View.VISIBLE
                     response.data?.let {
                         castAdapter.differ.submitList(it.cast)
                     }
@@ -95,6 +109,9 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         viewModel.similarMovies.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+                    binding.movieSimilarShimmer.stopShimmer()
+                    binding.movieSimilarShimmer.visibility = View.INVISIBLE
+                    binding.rvSimilar.visibility = View.VISIBLE
                     response.data?.let {
                         similarAdapter.differ.submitList(it.results.toList())
                     }

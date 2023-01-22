@@ -62,7 +62,6 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         setupCastRecyclerView()
         setupSimilarRecyclerView()
 
-        binding.imgPosterShimmer.startShimmer()
         binding.seriesGenresShimmer.startShimmer()
         binding.seriesCastShimmer.startShimmer()
         binding.seriesSimilarShimmer.startShimmer()
@@ -83,9 +82,6 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         viewModel.seriesDetails.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS -> {
-                    binding.imgPosterShimmer.stopShimmer()
-                    binding.imgPosterShimmer.visibility = View.INVISIBLE
-                    binding.imgPosterSeries.visibility = View.VISIBLE
 
                     binding.seriesGenresShimmer.stopShimmer()
                     binding.seriesGenresShimmer.visibility = View.INVISIBLE
@@ -94,7 +90,7 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
                         val backDropImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.backdrop_path}"
                         val posterImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.poster_path}"
                         Glide.with(view).load(backDropImageUrl).into(binding.imgToolBarSeries)
-                        Glide.with(view).load(posterImageUrl).into(binding.imgPosterSeries)
+                        Glide.with(view).load(posterImageUrl).error(R.drawable.error_movie).into(binding.imgPosterSeries)
                         displaySeriesDetails(it)
                         genresAdapter.updateList(it.genres)
                     }
