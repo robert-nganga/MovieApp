@@ -53,6 +53,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/imgPosterShimmer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/imgPosterSeries"
+                app:layout_constraintStart_toStartOf="@id/imgPosterSeries"
+                app:layout_constraintTop_toTopOf="@id/imgPosterSeries">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/shimmer_movie_poster" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
             <ImageView
                 android:id="@+id/imgPosterSeries"
                 android:layout_width="120dp"
@@ -60,6 +80,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:scaleType="fitXY"
+                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_movie_24" />
@@ -86,10 +107,11 @@
 
 
             <LinearLayout
+                android:id="@+id/movieDetails"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="180dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginHorizontal="10dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imgPosterSeries"
@@ -99,7 +121,6 @@
                     android:id="@+id/tvTagLineSeries"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:text=""
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -109,7 +130,7 @@
                     android:id="@+id/tvFirstAirDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginTop="5dp"
                     android:text=""
                     android:textAppearance="@style/TextAppearance.AppCompat.Small" />
@@ -118,7 +139,6 @@
                     android:id="@+id/tvRatingSeries"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="10dp"
                     android:text=""
@@ -128,8 +148,6 @@
                     android:id="@+id/tvEpisodeDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
                     android:layout_marginTop="5dp"
                     android:text=""
                     android:textAppearance="@style/TextAppearance.AppCompat.Small" />
@@ -138,7 +156,6 @@
                     android:id="@+id/tvSeasons"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:layout_marginTop="5dp"
                     android:text=""
@@ -146,7 +163,29 @@
 
             </LinearLayout>
 
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/seriesGenresShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/rvSeriesGenres"
+                app:layout_constraintStart_toStartOf="@id/rvSeriesGenres"
+                app:layout_constraintTop_toTopOf="@id/rvSeriesGenres">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/shimmer_genre_item" />
+                    <include layout="@layout/shimmer_genre_item" />
+                    <include layout="@layout/shimmer_genre_item" />
+                    <include layout="@layout/shimmer_genre_item" />
+                    <include layout="@layout/shimmer_genre_item" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvSeriesGenres"
@@ -155,6 +194,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginHorizontal="7dp"
                 android:orientation="horizontal"
+                android:visibility="invisible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -171,9 +211,30 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvSeriesGenres" />
+                app:layout_constraintTop_toBottomOf="@+id/seriesGenresShimmer" />
 
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/seriesCastShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/rvCastSeries"
+                app:layout_constraintStart_toStartOf="@id/rvCastSeries"
+                app:layout_constraintTop_toTopOf="@id/rvCastSeries">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/cast_shimmer_item" />
+                    <include layout="@layout/cast_shimmer_item" />
+                    <include layout="@layout/cast_shimmer_item" />
+                    <include layout="@layout/cast_shimmer_item" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCastSeries"
@@ -182,6 +243,7 @@
                 android:layout_marginHorizontal="7dp"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal"
+                android:visibility="invisible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -198,7 +260,30 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvCastSeries" />
+                app:layout_constraintTop_toBottomOf="@+id/seriesCastShimmer" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/seriesSimilarShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/rvSimilarSeries"
+                app:layout_constraintStart_toStartOf="@id/rvSimilarSeries"
+                app:layout_constraintTop_toTopOf="@id/rvSimilarSeries">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/cast_shimmer_item" />
+                    <include layout="@layout/cast_shimmer_item" />
+                    <include layout="@layout/cast_shimmer_item" />
+                    <include layout="@layout/cast_shimmer_item" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvSimilarSeries"
@@ -207,6 +292,7 @@
                 android:layout_marginHorizontal="7dp"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal"
+                android:visibility="invisible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -62,6 +62,11 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         setupCastRecyclerView()
         setupSimilarRecyclerView()
 
+        binding.imgPosterShimmer.startShimmer()
+        binding.seriesGenresShimmer.startShimmer()
+        binding.seriesCastShimmer.startShimmer()
+        binding.seriesSimilarShimmer.startShimmer()
+
         //Fetching data using the id passed as argument
         if (viewModel.seriesId != null) {
             viewModel.fetchData(viewModel.seriesId!!)
@@ -78,6 +83,13 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         viewModel.seriesDetails.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+                    binding.imgPosterShimmer.stopShimmer()
+                    binding.imgPosterShimmer.visibility = View.INVISIBLE
+                    binding.imgPosterSeries.visibility = View.VISIBLE
+
+                    binding.seriesGenresShimmer.stopShimmer()
+                    binding.seriesGenresShimmer.visibility = View.INVISIBLE
+                    binding.rvSeriesGenres.visibility = View.VISIBLE
                     response.data?.let {
                         val backDropImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.backdrop_path}"
                         val posterImageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${it.poster_path}"
@@ -95,6 +107,10 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         viewModel.seriesCast.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+
+                    binding.seriesCastShimmer.startShimmer()
+                    binding.seriesCastShimmer.visibility = View.INVISIBLE
+                    binding.rvCastSeries.visibility = View.VISIBLE
                     response.data?.let {
                         castAdapter.differ.submitList(it.cast)
                     }
@@ -107,6 +123,9 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         viewModel.similarSeries.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+                    binding.seriesSimilarShimmer.startShimmer()
+                    binding.seriesSimilarShimmer.visibility = View.INVISIBLE
+                    binding.rvSimilarSeries.visibility = View.VISIBLE
                     response.data?.let {
                         similarAdapter.differ.submitList(it.results.toList())
                     }
@@ -125,13 +144,17 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
 
     @SuppressLint("SetTextI18n")
     private fun displaySeriesDetails(series: SeriesDetailsResponse){
+        var runtime = "N/A"
+        if(series.episode_run_time.isNotEmpty()){
+            runtime = "${series.episode_run_time[0].toString()} Mins"
+        }
         binding.collapsingToolBarSeries.title = series.name
-        binding.tvDescriptionSeries.text = ""
+        binding.tvDescriptionSeries.invalidate()
         binding.tvDescriptionSeries.text = series.overview
         binding.tvTagLineSeries.text = series.tagline
         binding.tvFirstAirDate.text = series.first_air_date
         binding.tvRatingSeries.text = "Rating ⭐: ${series.vote_average}/10"
-        binding.tvEpisodeDuration.text = "Episode runtime: ${series.episode_run_time} Mins"
+        binding.tvEpisodeDuration.text = "Episode runtime: $runtime"
         binding.tvSeasons.text = "Seasons: ${series.number_of_seasons}"
     }
 

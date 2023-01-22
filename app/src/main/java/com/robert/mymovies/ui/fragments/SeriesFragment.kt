@@ -76,6 +76,8 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
 
         binding.popularShimmerSeries.startShimmer()
         binding.onAirShimmerSeries.startShimmer()
+        binding.topRatedShimmerSeries.startShimmer()
+        binding.sliderShimmerSeries.startShimmer()
 
         binding.rvOnAirSeries.adapter = onAirAdapter
         binding.rvPopularSeries.adapter = popularAdapter
@@ -99,6 +101,9 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+                    binding.sliderShimmerSeries.stopShimmer()
+                    binding.sliderShimmerSeries.visibility = View.INVISIBLE
+                    binding.seriesCardSlider.visibility = View.VISIBLE
                     response.data?.let {
                         it.results.forEach { series ->
                             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
@@ -115,6 +120,9 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS ->{
+                    binding.topRatedShimmerSeries.stopShimmer()
+                    binding.topRatedShimmerSeries.visibility = View.INVISIBLE
+                    binding.rvTopRatedSeries.visibility = View.VISIBLE
                     response.data?.let {
                         topRatedAdapter.differ.submitList(it.results.toList())
                     }

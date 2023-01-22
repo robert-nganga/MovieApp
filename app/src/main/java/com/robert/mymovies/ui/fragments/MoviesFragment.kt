@@ -15,7 +15,6 @@ import com.robert.mymovies.R
 import com.robert.mymovies.adapters.FilmAdapter
 import com.robert.mymovies.databinding.FragmentMoviesBinding
 import com.robert.mymovies.ui.FilmViewModel
-import com.robert.mymovies.ui.MainActivity
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
@@ -76,8 +75,10 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         }
 
         //Start the shimmer effect
+        binding.topRatedShimmer.startShimmer()
         binding.popularShimmer.startShimmer()
         binding.upcomingShimmer.startShimmer()
+        binding.sliderShimmer.startShimmer()
 
         //set the recycler view adapters
         binding.rvUpcoming.adapter = upcomingAdapter
@@ -102,11 +103,16 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS ->{
+                    binding.sliderShimmer.stopShimmer()
+                    binding.sliderShimmer.visibility = View.INVISIBLE
+                    binding.cardSlider.visibility = View.VISIBLE
+                    Log.i("MoviesFragment", "Set card slider visibility")
                     response.data?.let {
                         it.results.forEach { movie ->
                             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdropPath}"
                             imageList.add(SlideModel(imageUrl, movie.title ))
                         }
+                        Log.i("MoviesFragment", "Image list added too image slider:: ${imageList.size.toString()}")
                         binding.imageSlider.setImageList(imageList, ScaleTypes.FIT)
                     }
                 }
@@ -152,6 +158,9 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response ->
             when(response.status){
                 Resource.Status.SUCCESS -> {
+                    binding.topRatedShimmer.stopShimmer()
+                    binding.topRatedShimmer.visibility = View.INVISIBLE
+                    binding.rvTopRated.visibility = View.VISIBLE
                     response.data?.let {
                         topRatedAdapter.differ.submitList(it.results.toList())
                     }

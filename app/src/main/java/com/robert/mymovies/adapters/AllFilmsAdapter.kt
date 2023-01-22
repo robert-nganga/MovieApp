@@ -57,7 +57,7 @@ class AllFilmsAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllFil
             layoutParams.width = deviceWidth/2
             imgMoviePoster.layoutParams = layoutParams
 
-            Glide.with(itemView).load(imageUrl).into(imgMoviePoster)
+            Glide.with(itemView).load(imageUrl).error(R.drawable.error_movie).into(imgMoviePoster)
             tvMovieTitle.text = film.title
         }
     }

@@ -14,9 +14,9 @@
         <ImageView
             android:id="@+id/imgMoviePoster"
             android:layout_width="120dp"
-            android:layout_height="180dp"
-            android:scaleType="fitXY"
-            android:background="@color/shimmer_color" />
+            android:layout_height="166dp"
+            android:background="@color/shimmer_color"
+            android:scaleType="fitXY" />
 
     </LinearLayout>
 

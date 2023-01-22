@@ -51,6 +51,7 @@ class FilmAdapter: RecyclerView.Adapter<FilmAdapter.FilmViewHolder>() {
             val imageUrl = "$MOVIE_POSTER_BASE_URL${film.posterPath}"
             Glide.with(itemView)
                 .load(imageUrl)
+                .error(R.drawable.error_movie)
                 .into(imgTrending)
         }
     }

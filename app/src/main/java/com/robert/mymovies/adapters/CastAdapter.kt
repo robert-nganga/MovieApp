@@ -55,7 +55,7 @@ class CastAdapter(): RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
             currentCast = cast
             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${cast.profile_path}"
 
-            Glide.with(itemView).load(imageUrl).into(imgCast)
+            Glide.with(itemView).load(imageUrl).error(R.drawable.error_profile).into(imgCast)
             tvCastName.text = cast.name
             tvCastCharacter.text = cast.character
         }

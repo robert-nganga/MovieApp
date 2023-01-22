@@ -20,6 +20,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/sliderShimmerSeries"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/seriesCardSlider"
+                app:layout_constraintStart_toStartOf="@id/seriesCardSlider"
+                app:layout_constraintTop_toTopOf="@id/seriesCardSlider">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/shimmer_image_slider" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/seriesCardSlider"
                 android:layout_width="0dp"
@@ -27,6 +47,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="10dp"
+                android:visibility="invisible"
                 app:cardCornerRadius="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +87,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seriesCardSlider" />
+                app:layout_constraintTop_toBottomOf="@+id/sliderShimmerSeries" />
 
             <TextView
                 android:id="@+id/tvMoreTopRatedSeries"
@@ -77,7 +98,32 @@
                 android:text="See more"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seriesCardSlider" />
+                app:layout_constraintTop_toBottomOf="@+id/sliderShimmerSeries" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/topRatedShimmerSeries"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/rvTopRatedSeries"
+                app:layout_constraintStart_toStartOf="@id/rvTopRatedSeries"
+                app:layout_constraintTop_toTopOf="@id/rvTopRatedSeries">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/shimmer_trending_item" />
+
+                    <include layout="@layout/shimmer_trending_item" />
+
+                    <include layout="@layout/shimmer_trending_item" />
+
+                    <include layout="@layout/shimmer_trending_item" />
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTopRatedSeries"
@@ -86,6 +132,7 @@
                 android:layout_marginHorizontal="7dp"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
+                android:visibility="invisible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -103,13 +150,13 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rvTopRatedSeries" />
+                app:layout_constraintTop_toBottomOf="@id/topRatedShimmerSeries" />
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/popularShimmerSeries"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@id/rvPopularSeries"
                 app:layout_constraintStart_toStartOf="@id/rvPopularSeries"
                 app:layout_constraintTop_toTopOf="@id/rvPopularSeries">
@@ -118,6 +165,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
+                    <include layout="@layout/shimmer_trending_item" />
 
                     <include layout="@layout/shimmer_trending_item" />
 
@@ -133,10 +182,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="7dp"
-                android:layout_marginStart="7dp"
-                android:layout_marginEnd="7dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="invisible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -152,7 +200,7 @@
                 android:text="See more"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvTopRatedSeries" />
+                app:layout_constraintTop_toBottomOf="@+id/topRatedShimmerSeries" />
 
             <TextView
                 android:id="@+id/tvOnAirSeries"
@@ -182,6 +230,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@id/rvOnAirSeries"
                 app:layout_constraintStart_toStartOf="@id/rvOnAirSeries"
                 app:layout_constraintTop_toTopOf="@id/rvOnAirSeries">
@@ -206,9 +255,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="7dp"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="invisible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
