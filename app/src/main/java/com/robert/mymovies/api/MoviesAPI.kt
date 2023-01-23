@@ -5,12 +5,27 @@ import com.robert.mymovies.data.remote.*
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
+import com.robert.mymovies.model.SearchResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MoviesAPI {
+
+    @GET("3/search/multi")
+    suspend fun searchFilms(
+        @Query("language")
+        language: String = "en-US",
+        @Query("api_key")
+        apiKey: String = BuildConfig.API_KEY,
+        @Query("page")
+        page: Int = 1,
+        @Query("query")
+        query: String = "",
+        @Query("include_adult")
+        adult: Boolean = true
+    ): Response<SearchResponse>
 
     @GET("3/movie/popular")
     suspend fun getPopularMovies(

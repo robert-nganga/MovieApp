@@ -91,6 +91,13 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }
 
+        topRatedAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putInt("id", it.id)
+            }
+            findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
+        }
+
         popularAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putInt("id", it.id)

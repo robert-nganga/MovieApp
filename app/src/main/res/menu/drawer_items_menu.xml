@@ -11,5 +11,9 @@
             android:id="@+id/seriesFragment"
             android:title="Series"
             android:icon="@drawable/ic_baseline_live_tv_24"/>
+        <item
+            android:id="@+id/searchFragment"
+            android:title="Search"
+            android:icon="@drawable/ic_baseline_search_24"/>
     </group>
 </menu>

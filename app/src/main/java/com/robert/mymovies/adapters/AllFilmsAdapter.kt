@@ -1,17 +1,13 @@
 package com.robert.mymovies.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.robert.mymovies.R
 import com.robert.mymovies.databinding.MovieItemBinding
-import com.robert.mymovies.databinding.TrendingItemBinding
 import com.robert.mymovies.model.Film
 import com.robert.mymovies.utils.Constants
 

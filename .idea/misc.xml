@@ -15,6 +15,7 @@
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_more_films.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_movie.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_movies.xml" value="0.18" />
+        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_search.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_series.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_series_details.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/genre_item.xml" value="0.1675929884566054" />
@@ -28,6 +29,8 @@
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/shimmer_trending_item.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/trending_item.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/menu/drawer_items_menu.xml" value="0.1675929884566054" />
+        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/menu/options_menu.xml" value="0.1675929884566054" />
+        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/xml/searchable.xml" value="0.1675929884566054" />
       </map>
     </option>
   </component>
