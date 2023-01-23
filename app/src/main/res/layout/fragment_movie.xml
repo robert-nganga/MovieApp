@@ -53,6 +53,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/moviePosterShimmer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/imgPoster"
+                app:layout_constraintStart_toStartOf="@id/imgPoster"
+                app:layout_constraintTop_toTopOf="@id/imgPoster">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/shimmer_movie_poster" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
             <ImageView
                 android:id="@+id/imgPoster"
                 android:layout_width="120dp"
@@ -78,8 +98,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imgPoster" />
 
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/movieDetailsLayoutShimmer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/movieDetailsLayout"
+                app:layout_constraintStart_toStartOf="@id/movieDetailsLayout"
+                app:layout_constraintTop_toTopOf="@id/movieDetailsLayout">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/shimmer_details" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
 
             <LinearLayout
+                android:id="@+id/movieDetailsLayout"
                 android:layout_width="0dp"
                 android:layout_height="180dp"
                 android:layout_marginTop="10dp"
@@ -120,8 +161,8 @@
                     android:id="@+id/tvDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
                     android:text=""
                     android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 

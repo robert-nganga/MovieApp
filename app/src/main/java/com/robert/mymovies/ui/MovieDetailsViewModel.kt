@@ -30,11 +30,6 @@ class MovieDetailsViewModel@Inject constructor(
     private var _movieCast: MutableLiveData<Resource<CastResponse>> = MutableLiveData()
     val movieCast: LiveData<Resource<CastResponse>> get() =  _movieCast
 
-    fun getMovieDetails(filmId: Int) = viewModelScope.launch {
-        _movieDetails.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getMovieDetails(filmId = filmId)
-        _movieDetails.postValue(result)
-    }
 
     fun fetchData(filmId: Int){
         getMovieDetails(filmId)
@@ -42,13 +37,20 @@ class MovieDetailsViewModel@Inject constructor(
         getSimilarMovie(filmId)
     }
 
-    fun getMovieCast(filmId: Int) = viewModelScope.launch {
+
+    private fun getMovieDetails(filmId: Int) = viewModelScope.launch {
+        _movieDetails.postValue(Resource(Resource.Status.LOADING, null, null))
+        val result = repository.getMovieDetails(filmId = filmId)
+        _movieDetails.postValue(result)
+    }
+
+    private fun getMovieCast(filmId: Int) = viewModelScope.launch {
         _movieCast.postValue(Resource(Resource.Status.LOADING, null, null))
         val result = repository.getMovieCast(filmId = filmId)
         _movieCast.postValue(result)
     }
 
-    fun getSimilarMovie(filmId: Int) = viewModelScope.launch {
+    private fun getSimilarMovie(filmId: Int) = viewModelScope.launch {
         _similarMovies.postValue(Resource(Resource.Status.LOADING, null, null))
         val result = repository.getSimilarMovies(filmId = filmId)
         _similarMovies.postValue(result)

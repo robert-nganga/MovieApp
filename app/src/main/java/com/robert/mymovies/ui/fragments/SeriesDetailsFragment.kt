@@ -62,6 +62,8 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         setupCastRecyclerView()
         setupSimilarRecyclerView()
 
+        binding.seriesPosterShimmer.startShimmer()
+        binding.seriesDetailsLayoutShimmer.startShimmer()
         binding.seriesGenresShimmer.startShimmer()
         binding.seriesCastShimmer.startShimmer()
         binding.seriesSimilarShimmer.startShimmer()
@@ -82,7 +84,10 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         viewModel.seriesDetails.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS -> {
-
+                    binding.seriesPosterShimmer.stopShimmer()
+                    binding.seriesPosterShimmer.visibility = View.INVISIBLE
+                    binding.seriesDetailsLayoutShimmer.stopShimmer()
+                    binding.seriesDetailsLayoutShimmer.visibility = View.INVISIBLE
                     binding.seriesGenresShimmer.stopShimmer()
                     binding.seriesGenresShimmer.visibility = View.INVISIBLE
                     binding.rvSeriesGenres.visibility = View.VISIBLE
