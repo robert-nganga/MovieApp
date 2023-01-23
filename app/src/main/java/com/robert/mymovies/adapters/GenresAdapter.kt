@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.robert.mymovies.R
+import com.robert.mymovies.databinding.GenreItemBinding
+import com.robert.mymovies.databinding.TrendingItemBinding
 import com.robert.mymovies.model.Genre
 
 class GenresAdapter: RecyclerView.Adapter<GenresAdapter.GenresViewHolder>() {
@@ -19,7 +21,8 @@ class GenresAdapter: RecyclerView.Adapter<GenresAdapter.GenresViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenresViewHolder {
-        return GenresViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.genre_item, parent, false))
+        val binding = GenreItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return GenresViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: GenresViewHolder, position: Int) {
@@ -29,11 +32,10 @@ class GenresAdapter: RecyclerView.Adapter<GenresAdapter.GenresViewHolder>() {
 
     override fun getItemCount(): Int = genres.size
 
-    inner class GenresViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        private val tvGenre= itemView.findViewById<TextView>(R.id.tvGenre)
+    inner class GenresViewHolder(private val binding: GenreItemBinding): RecyclerView.ViewHolder(binding.root){
 
         fun setData(genre: Genre){
-            tvGenre.text = genre.name
+            binding.tvGenre.text = genre.name
         }
     }
 }

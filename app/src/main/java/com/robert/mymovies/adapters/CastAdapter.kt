@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.robert.mymovies.R
+import com.robert.mymovies.databinding.CastItemBinding
+import com.robert.mymovies.databinding.TrendingItemBinding
 import com.robert.mymovies.model.Cast
 import com.robert.mymovies.utils.Constants
 
@@ -34,7 +36,8 @@ class CastAdapter(): RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
     val differ = AsyncListDiffer(this, differCallBack)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastViewHolder {
-        return CastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.cast_item, parent, false))
+        val binding = CastItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CastViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CastViewHolder, position: Int) {
@@ -45,19 +48,16 @@ class CastAdapter(): RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    inner class CastViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val imgCast = itemView.findViewById<ImageView>(R.id.imgCast)
-        private val tvCastName = itemView.findViewById<TextView>(R.id.tvCastName)
-        private val tvCastCharacter = itemView.findViewById<TextView>(R.id.tvCastCharacter)
+    inner class CastViewHolder(private val binding: CastItemBinding): RecyclerView.ViewHolder(binding.root) {
         private var currentCast: Cast? = null
 
         fun setData(cast: Cast){
             currentCast = cast
             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${cast.profile_path}"
 
-            Glide.with(itemView).load(imageUrl).error(R.drawable.error_profile).into(imgCast)
-            tvCastName.text = cast.name
-            tvCastCharacter.text = cast.character
+            Glide.with(itemView).load(imageUrl).error(R.drawable.error_profile).into(binding.imgCast)
+            binding.tvCastName.text = cast.name
+            binding.tvCastCharacter.text = cast.character
         }
     }
 }
