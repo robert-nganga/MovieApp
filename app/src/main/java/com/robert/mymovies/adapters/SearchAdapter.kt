@@ -43,16 +43,14 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     override fun getItemCount(): Int = differ.currentList.size
     inner class SearchViewHolder(private val binding: SearchItemBinding):RecyclerView.ViewHolder(binding.root) {
-        val adapter = GenresAdapter()
+
         fun setData(search: Search) {
             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${search.posterPath}"
             Glide.with(itemView).load(imageUrl).error(R.drawable.error_movie).into(binding.imgSearch)
             binding.filmType.text = search.mediaType
             binding.searchTitle.text = search.title
-            binding.searchDuration.text = search.releaseDate
+            binding.searchReleaseDate.text = search.releaseDate
             binding.searchRating.text = "Rating ⭐: ${search.voteAverage}"
-            binding.rvSearchGenre.adapter = adapter
-            search.genres?.let { adapter.updateList(it) }
         }
     }
 }

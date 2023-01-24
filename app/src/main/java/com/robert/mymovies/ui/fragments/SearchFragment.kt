@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.SearchAdapter
 import com.robert.mymovies.databinding.FragmentSearchBinding
@@ -41,6 +42,17 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
 
         searchAdapter = SearchAdapter()
         binding.rvSearch.adapter = searchAdapter
+
+        searchAdapter.setOnItemClickListener { search ->
+            val bundle = Bundle().apply {
+                putInt("id", search.id!!)
+            }
+            if (search.mediaType == "movie"){
+                findNavController().navigate(R.id.action_searchFragment_to_movieFragment, bundle)
+            }else{
+                findNavController().navigate(R.id.action_searchFragment_to_seriesDetailsFragment, bundle)
+            }
+        }
 
         var job: Job? = null
         binding.tvSearch.addTextChangedListener { editable ->
