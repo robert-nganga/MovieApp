@@ -18,6 +18,10 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
+    abstract fun bindSearchRepository(searchRepository: SearchRepository): RepositorySearch
+
+    @Binds
+    @Singleton
     abstract fun bindMovieDetailsRepository(movieDetailsRepository: MovieDetailsRepository): RepositoryMovieDetails
 
     @Binds

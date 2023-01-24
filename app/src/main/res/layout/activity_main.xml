@@ -31,7 +31,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:elevation="4dp"
-                    app:menu="@menu/options_menu"
                     app:layout_scrollFlags="scroll|enterAlways" />
 
             </com.google.android.material.appbar.AppBarLayout>

@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             when(destination.id){
                 R.id.movieFragment -> { toolBar.visibility = View.GONE}
                 R.id.seriesDetailsFragment -> {toolBar.visibility = View.GONE}
+                R.id.searchFragment -> {toolBar.visibility = View.GONE}
                 else -> {toolBar.visibility = View.VISIBLE}
             }
 
@@ -57,16 +58,6 @@ class MainActivity : AppCompatActivity() {
         navigationView.setupWithNavController(navController)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.options_menu, menu)
-
-        // Associate searchable configuration with the SearchView
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu.findItem(R.id.search).actionView as SearchView).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }
-        return true
-    }
 
     override fun onBackPressed() {
         if(drawerLayout.isOpen){

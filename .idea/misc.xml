@@ -7,6 +7,7 @@
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/drawable/circular_background.xml" value="0.1185" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/drawable/circular_image_background.xml" value="0.1185" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/drawable/image_background.xml" value="0.1185" />
+        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/drawable/rounded_corners.xml" value="0.1185" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/drawable/transparent_gradient.xml" value="0.1185" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/activity_main.xml" value="0.18" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/cast_item.xml" value="0.25" />
@@ -15,12 +16,13 @@
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_more_films.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_movie.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_movies.xml" value="0.18" />
-        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_search.xml" value="0.1675929884566054" />
+        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_search.xml" value="0.22" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_series.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/fragment_series_details.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/genre_item.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/img_movie_item.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/movie_item.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/search_item.xml" value="0.25" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/shimmer_details.xml" value="0.1675929884566054" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/shimmer_genre_item.xml" value="0.16547066272688898" />
         <entry key="..\:/Users/rober/Documents/kotlin/MyMovies/app/src/main/res/layout/shimmer_image_slider.xml" value="0.1675929884566054" />
