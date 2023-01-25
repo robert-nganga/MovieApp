@@ -31,9 +31,8 @@
                 android:id="@+id/filmType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="3dp"
                 android:text="Movie"
-                android:background="@color/purple_200"
+                android:background="#dcdcde"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
             <TextView

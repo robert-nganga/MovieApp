@@ -1,5 +1,6 @@
 package com.robert.mymovies.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -44,10 +45,15 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
     override fun getItemCount(): Int = differ.currentList.size
     inner class SearchViewHolder(private val binding: SearchItemBinding):RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun setData(search: Search) {
             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${search.posterPath}"
             Glide.with(itemView).load(imageUrl).error(R.drawable.error_movie).into(binding.imgSearch)
-            binding.filmType.text = search.mediaType
+            if(search.mediaType == "tv"){
+                binding.filmType.text = "Series"
+            }else{
+                binding.filmType.text = search.mediaType
+            }
             binding.searchTitle.text = search.title
             binding.searchReleaseDate.text = search.releaseDate
             binding.searchRating.text = "Rating ⭐: ${search.voteAverage}"

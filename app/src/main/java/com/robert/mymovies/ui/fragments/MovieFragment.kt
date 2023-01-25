@@ -64,8 +64,7 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
             viewModel.fetchData(it.id)
         }
 
-        binding.moviePosterShimmer.startShimmer()
-        binding.movieDetailsLayoutShimmer.startShimmer()
+
         binding.movieGenresShimmer.startShimmer()
         binding.movieCastShimmer.startShimmer()
         binding.movieSimilarShimmer.startShimmer()
@@ -73,10 +72,7 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         viewModel.movieDetails.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS -> {
-                    binding.moviePosterShimmer.stopShimmer()
-                    binding.moviePosterShimmer.visibility = View.INVISIBLE
-                    binding.movieDetailsLayoutShimmer.stopShimmer()
-                    binding.movieDetailsLayoutShimmer.visibility = View.INVISIBLE
+
                     binding.movieGenresShimmer.stopShimmer()
                     binding.movieGenresShimmer.visibility = View.INVISIBLE
                     binding.rvMovieGenres.visibility = View.VISIBLE

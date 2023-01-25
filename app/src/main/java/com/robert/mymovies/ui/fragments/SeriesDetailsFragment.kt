@@ -62,8 +62,6 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         setupCastRecyclerView()
         setupSimilarRecyclerView()
 
-        binding.seriesPosterShimmer.startShimmer()
-        binding.seriesDetailsLayoutShimmer.startShimmer()
         binding.seriesGenresShimmer.startShimmer()
         binding.seriesCastShimmer.startShimmer()
         binding.seriesSimilarShimmer.startShimmer()
@@ -84,10 +82,6 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         viewModel.seriesDetails.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS -> {
-                    binding.seriesPosterShimmer.stopShimmer()
-                    binding.seriesPosterShimmer.visibility = View.GONE
-                    binding.seriesDetailsLayoutShimmer.stopShimmer()
-                    binding.seriesDetailsLayoutShimmer.visibility = View.GONE
                     binding.seriesGenresShimmer.stopShimmer()
                     binding.seriesGenresShimmer.visibility = View.INVISIBLE
                     binding.rvSeriesGenres.visibility = View.VISIBLE
@@ -147,10 +141,9 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
     private fun displaySeriesDetails(series: SeriesDetailsResponse){
         var runtime = "N/A"
         if(series.episode_run_time.isNotEmpty()){
-            runtime = "${series.episode_run_time[0].toString()} Mins"
+            runtime = "${series.episode_run_time[0]} Mins"
         }
         binding.collapsingToolBarSeries.title = series.name
-        binding.tvDescriptionSeries.invalidate()
         binding.tvDescriptionSeries.text = series.overview
         binding.tvTagLineSeries.text = series.tagline
         binding.tvFirstAirDate.text = series.first_air_date

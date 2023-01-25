@@ -32,23 +32,23 @@ class SearchViewModel@Inject constructor(
     }
 
 
-    fun getPagedSearchResults(query: String) = viewModelScope.launch {
-        _searchResult.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.searchFilms(query = query, page = searchPage)
-        if (result.status == Resource.Status.SUCCESS){
-            result.data?.let { resultResponse ->
-                searchPage++
-                if (searchResponse == null){
-                    searchResponse = resultResponse
-                }else{
-                    val oldMovies = searchResponse?.results
-                    val newMovies = resultResponse.results
-                    oldMovies?.addAll(newMovies)
-                }
-                _searchResult.postValue(Resource(Resource.Status.SUCCESS, searchResponse ?:resultResponse, null))
-            }
-        }else{
-            _searchResult.postValue(result)
-        }
-    }
+//    fun getPagedSearchResults(query: String) = viewModelScope.launch {
+//        _searchResult.postValue(Resource(Resource.Status.LOADING, null, null))
+//        val result = repository.searchFilms(query = query, page = searchPage)
+//        if (result.status == Resource.Status.SUCCESS){
+//            result.data?.let { resultResponse ->
+//                searchPage++
+//                if (searchResponse == null){
+//                    searchResponse = resultResponse
+//                }else{
+//                    val oldMovies = searchResponse?.results
+//                    val newMovies = resultResponse.results
+//                    oldMovies?.addAll(newMovies)
+//                }
+//                _searchResult.postValue(Resource(Resource.Status.SUCCESS, searchResponse ?:resultResponse, null))
+//            }
+//        }else{
+//            _searchResult.postValue(result)
+//        }
+//    }
 }
