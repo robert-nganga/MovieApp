@@ -85,9 +85,9 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
             when(response.status){
                 Resource.Status.SUCCESS -> {
                     binding.seriesPosterShimmer.stopShimmer()
-                    binding.seriesPosterShimmer.visibility = View.INVISIBLE
+                    binding.seriesPosterShimmer.visibility = View.GONE
                     binding.seriesDetailsLayoutShimmer.stopShimmer()
-                    binding.seriesDetailsLayoutShimmer.visibility = View.INVISIBLE
+                    binding.seriesDetailsLayoutShimmer.visibility = View.GONE
                     binding.seriesGenresShimmer.stopShimmer()
                     binding.seriesGenresShimmer.visibility = View.INVISIBLE
                     binding.rvSeriesGenres.visibility = View.VISIBLE

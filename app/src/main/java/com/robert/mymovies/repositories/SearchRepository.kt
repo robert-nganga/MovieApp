@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.robert.mymovies.api.MoviesAPI
 import com.robert.mymovies.data.remote.responses.GenreResponse
+import com.robert.mymovies.model.Search
 import com.robert.mymovies.model.SearchResponse
 import com.robert.mymovies.utils.Resource
 import okio.IOException
@@ -32,6 +33,7 @@ class SearchRepository@Inject constructor(
             }
         }
     }
+
 
     private fun handleSearchResponse(response: Response<SearchResponse>): Resource<SearchResponse> {
         if(response.isSuccessful){
