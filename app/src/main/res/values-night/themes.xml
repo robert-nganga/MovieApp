@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base moviesApplication theme. -->
-    <style name="Theme.MyMovies" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.MyMovies" parent="Theme.Material3.Dark.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#2F2525</item>
         <item name="colorPrimaryVariant">#362929</item>

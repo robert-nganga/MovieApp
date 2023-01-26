@@ -1,17 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base moviesApplication theme. -->
-    <style name="Theme.MyMovies" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.MyMovies" parent="Theme.Material3.Dark.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#FFCDBD</item>
-        <item name="colorPrimaryVariant">#FFCDBD</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">#2F2525</item>
+        <item name="colorPrimaryVariant">#362929</item>
+        <item name="colorOnPrimary">#EDE0DF</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
-        <item name="colorSurface">#F5F0F0</item>
+        <item name="backgroundColor">#211A1A</item>
+        <item name="colorSurface">#2F2525</item>
+        <item name="android:textColor">#EDE0DF</item>
     </style>
 </resources>
