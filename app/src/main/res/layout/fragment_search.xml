@@ -26,15 +26,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:elevation="5dp"
+        android:background="#2F2525"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/imageButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="18dp"
             android:layout_marginStart="10dp"
             android:background="@color/transparent"
             android:paddingVertical="10dp"
@@ -45,8 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/rounded_corners"
-            android:theme="@style/ThemeOverlay.AppCompat.DayNight"
+            android:background="#EDE0DF"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:iconifiedByDefault="false"
             app:queryHint="Search films" />
     </LinearLayout>

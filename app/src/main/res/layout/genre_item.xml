@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="3dp"
+    android:elevation="2dp"
+    app:cardBackgroundColor="#2F2525"
+    app:cardCornerRadius="5dp">
 
     <TextView
         android:id="@+id/tvGenre"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_margin="5dp"
+        android:layout_margin="3dp"
         android:text="Adventure"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>

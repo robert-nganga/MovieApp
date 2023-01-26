@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/moreFilmsFragment"
         android:name="com.robert.mymovies.ui.fragments.MoreFilmsFragment"
-        android:label="MoreFilmsFragment" >
+        android:label="More Films">
         <argument
             android:name="category"
             app:argType="string" />
@@ -51,7 +51,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="type"
             app:argType="string" />
@@ -61,7 +61,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/movieFragment"

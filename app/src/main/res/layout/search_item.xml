@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="3dp"
+    app:cardBackgroundColor="#362929"
     app:cardCornerRadius="10dp"
     app:cardElevation="4dp">
 
@@ -31,8 +32,10 @@
                 android:id="@+id/filmType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="Movie"
-                android:background="#dcdcde"
+                android:textColor="#BF6466"
+                android:background="#2F2525"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
             <TextView
