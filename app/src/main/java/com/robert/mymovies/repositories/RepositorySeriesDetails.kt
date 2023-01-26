@@ -1,6 +1,6 @@
 package com.robert.mymovies.repositories
 
-import com.robert.mymovies.data.remote.SeriesDetailsResponse
+import com.robert.mymovies.data.remote.responses.SeriesDetailsResponse
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.utils.Resource

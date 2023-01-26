@@ -19,7 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.adapters.AllFilmsAdapter
 import com.robert.mymovies.adapters.GenresAdapter
 import com.robert.mymovies.databinding.FragmentMoreFilmsBinding
-import com.robert.mymovies.ui.MoreFilmsFragmentViewModel
+import com.robert.mymovies.viewmodels.MoreFilmsFragmentViewModel
 import com.robert.mymovies.utils.Constants.QUERY_PAGE_SIZE
 import com.robert.mymovies.utils.FilmType
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,9 +51,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //binding.genreShimmer.startShimmer()
         genresAdapter = GenresAdapter()
-        //binding.rvGenres.adapter = genresAdapter
         setUpRecyclerView(args.type)
         // Checks from where this fragment was called and calls the appropriate methods
         if (args.type == "Movie") {
@@ -172,6 +170,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         val paddingWidthInDp = 26 // width in dp
         val paddingWidthInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 paddingWidthInDp.toFloat(), resources.displayMetrics).toInt()
+        Log.i("MoreFilmsFragment", displayMetrics.widthPixels.toString())
         return displayMetrics.widthPixels - paddingWidthInPx
     }
 

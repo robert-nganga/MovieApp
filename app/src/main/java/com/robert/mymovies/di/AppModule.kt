@@ -1,6 +1,6 @@
 package com.robert.mymovies.di
 
-import com.robert.mymovies.api.MoviesAPI
+import com.robert.mymovies.data.remote.MoviesAPI
 import com.robert.mymovies.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMoviesApi(): MoviesAPI{
+    fun provideMoviesApi(): MoviesAPI {
         val logging = HttpLoggingInterceptor()
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client = OkHttpClient.Builder()

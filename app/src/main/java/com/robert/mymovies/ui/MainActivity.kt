@@ -1,13 +1,9 @@
 package com.robert.mymovies.ui
 
-import android.app.SearchManager
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import androidx.activity.viewModels
-import androidx.appcompat.widget.SearchView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -16,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.robert.mymovies.R
+import com.robert.mymovies.viewmodels.FilmViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener{ _, destination, _ ->
 
             when(destination.id){
-                R.id.movieFragment -> { toolBar.visibility = View.GONE}
+                R.id.movieDetailsFragment -> { toolBar.visibility = View.GONE}
                 R.id.seriesDetailsFragment -> {toolBar.visibility = View.GONE}
                 R.id.searchFragment -> {toolBar.visibility = View.GONE}
                 else -> {toolBar.visibility = View.VISIBLE}

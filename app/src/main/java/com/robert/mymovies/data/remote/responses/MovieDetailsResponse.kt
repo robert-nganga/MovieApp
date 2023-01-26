@@ -1,4 +1,4 @@
-package com.robert.mymovies.data.remote
+package com.robert.mymovies.data.remote.responses
 
 import com.robert.mymovies.model.Genre
 

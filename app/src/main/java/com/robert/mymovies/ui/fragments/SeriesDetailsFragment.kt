@@ -5,29 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.FilmAdapter
 import com.robert.mymovies.adapters.GenresAdapter
-import com.robert.mymovies.data.remote.SeriesDetailsResponse
-import com.robert.mymovies.databinding.FragmentMovieBinding
-import com.robert.mymovies.databinding.FragmentMoviesBinding
+import com.robert.mymovies.data.remote.responses.SeriesDetailsResponse
 import com.robert.mymovies.databinding.FragmentSeriesDetailsBinding
-import com.robert.mymovies.ui.MovieDetailsViewModel
-import com.robert.mymovies.ui.SeriesDetailsViewModel
+import com.robert.mymovies.viewmodels.SeriesDetailsViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.glailton.expandabletextview.ExpandableTextView
 
 @AndroidEntryPoint
 class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
@@ -65,6 +58,10 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
         binding.seriesGenresShimmer.startShimmer()
         binding.seriesCastShimmer.startShimmer()
         binding.seriesSimilarShimmer.startShimmer()
+        //set the navigation icon click listener
+        binding.toolbarSeries.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
 
         //Fetching data using the id passed as argument
         if (viewModel.seriesId != null) {

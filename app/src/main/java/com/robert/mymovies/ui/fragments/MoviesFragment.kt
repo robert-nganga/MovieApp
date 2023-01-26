@@ -9,12 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.FilmAdapter
 import com.robert.mymovies.databinding.FragmentMoviesBinding
-import com.robert.mymovies.ui.FilmViewModel
+import com.robert.mymovies.viewmodels.FilmViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
@@ -48,6 +49,20 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         val topRatedAdapter = FilmAdapter()
 
         val imageList = ArrayList<SlideModel>()
+
+        binding.imageSlider.setItemClickListener(object : ItemClickListener {
+            override fun onItemSelected(position: Int) {
+                displayError(view, "Slider clicked:: $position")
+                Log.i("SeriesFragment", "slider clicked in position:: $position")
+                val id = viewModel.getId(position)
+                val bundle = Bundle().apply {
+                    if (id != null) {
+                        putInt("id", id)
+                    }
+                }
+                findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+            }
+        })
 
         // Set listeners for the see more buttons
         binding.tvMorePopular.setOnClickListener {
@@ -93,6 +108,13 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
         }
 
         popularAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putInt("id", it.id)
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+        }
+
+        topRatedAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putInt("id", it.id)
             }

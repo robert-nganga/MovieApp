@@ -1,11 +1,10 @@
-package com.robert.mymovies.ui
+package com.robert.mymovies.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.robert.mymovies.data.remote.MovieDetailsResponse
-import com.robert.mymovies.data.remote.SeriesDetailsResponse
+import com.robert.mymovies.data.remote.responses.MovieDetailsResponse
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.repositories.RepositoryMovieDetails

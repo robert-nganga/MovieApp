@@ -1,4 +1,6 @@
-package com.robert.mymovies.model
+package com.robert.mymovies.data.remote.responses
+
+import com.robert.mymovies.model.Search
 
 data class SearchResponse(
     val page: Int,

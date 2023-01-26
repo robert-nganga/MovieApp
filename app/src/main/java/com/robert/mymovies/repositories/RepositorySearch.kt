@@ -1,6 +1,6 @@
 package com.robert.mymovies.repositories
 
-import com.robert.mymovies.model.SearchResponse
+import com.robert.mymovies.data.remote.responses.SearchResponse
 import com.robert.mymovies.utils.Resource
 
 interface RepositorySearch {

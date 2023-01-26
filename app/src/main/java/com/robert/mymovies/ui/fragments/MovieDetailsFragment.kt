@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -15,23 +15,23 @@ import com.robert.mymovies.R
 import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.GenresAdapter
 import com.robert.mymovies.adapters.FilmAdapter
-import com.robert.mymovies.data.remote.MovieDetailsResponse
-import com.robert.mymovies.databinding.FragmentMovieBinding
-import com.robert.mymovies.ui.MovieDetailsViewModel
+import com.robert.mymovies.data.remote.responses.MovieDetailsResponse
+import com.robert.mymovies.databinding.FragmentMovieDetailsBinding
+import com.robert.mymovies.viewmodels.MovieDetailsViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MovieFragment: Fragment(R.layout.fragment_movie) {
+class MovieDetailsFragment: Fragment(R.layout.fragment_movie_details) {
 
-    private val viewModel: MovieDetailsViewModel  by viewModels()
+    private val viewModel: MovieDetailsViewModel by viewModels()
     private lateinit var genresAdapter: GenresAdapter
     private lateinit var castAdapter: CastAdapter
     private lateinit var similarAdapter: FilmAdapter
-    private val args: MovieFragmentArgs by navArgs()
+    private val args: MovieDetailsFragmentArgs by navArgs()
 
-    private var _binding : FragmentMovieBinding? = null
+    private var _binding : FragmentMovieDetailsBinding? = null
     private val binding get() = _binding!!
 
     private var errorMessage: String? = null
@@ -41,7 +41,7 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMovieBinding.inflate(inflater, container, false)
+        _binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -56,6 +56,11 @@ class MovieFragment: Fragment(R.layout.fragment_movie) {
             viewModel.fetchData(viewModel.movieId!!)
         }else{
             viewModel.fetchData(args.id)
+        }
+
+        //set the navigation icon click listener
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
 
         similarAdapter.setOnItemClickListener {

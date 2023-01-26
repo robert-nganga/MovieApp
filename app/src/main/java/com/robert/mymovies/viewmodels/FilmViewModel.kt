@@ -1,4 +1,4 @@
-package com.robert.mymovies.ui
+package com.robert.mymovies.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -54,6 +54,16 @@ class FilmViewModel@Inject constructor(private val repository: RepositoryFilm): 
         getUpcomingFilms(filmType)
         getTopRated(filmType)
     }
+
+    fun getId(position: Int): Int?{
+        val films = _allTrendingFilms.value?.data?.results
+        var id : Int? = null
+        if (films != null){
+            id = films[position].id
+        }
+        return id
+    }
+
 
 
     private fun getPopularFilms(filmType: FilmType) = viewModelScope.launch {

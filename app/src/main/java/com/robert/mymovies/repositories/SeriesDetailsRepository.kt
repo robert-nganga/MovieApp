@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.robert.mymovies.api.MoviesAPI
-import com.robert.mymovies.data.remote.SeriesDetailsResponse
+import com.robert.mymovies.data.remote.MoviesAPI
+import com.robert.mymovies.data.remote.responses.SeriesDetailsResponse
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.utils.Resource
@@ -14,8 +14,8 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class SeriesDetailsRepository@Inject constructor(
-        private val api: MoviesAPI,
-        private val app: Application): RepositorySeriesDetails {
+    private val api: MoviesAPI,
+    private val app: Application): RepositorySeriesDetails {
 
 
     override suspend fun getSeriesCastDetails(filmId: Int): Resource<CastResponse> {

@@ -1,10 +1,10 @@
-package com.robert.mymovies.ui.fragments
+package com.robert.mymovies.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.robert.mymovies.model.SearchResponse
+import com.robert.mymovies.data.remote.responses.SearchResponse
 import com.robert.mymovies.repositories.RepositorySearch
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

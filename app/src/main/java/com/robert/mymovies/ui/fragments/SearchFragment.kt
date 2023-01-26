@@ -14,6 +14,7 @@ import com.robert.mymovies.adapters.SearchAdapter
 import com.robert.mymovies.databinding.FragmentSearchBinding
 import com.robert.mymovies.model.Search
 import com.robert.mymovies.utils.Resource
+import com.robert.mymovies.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -43,6 +44,10 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
 
         searchAdapter = SearchAdapter()
         binding.rvSearch.adapter = searchAdapter
+
+        binding.imageButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         searchAdapter.setOnItemClickListener { search ->
             val bundle = Bundle().apply {

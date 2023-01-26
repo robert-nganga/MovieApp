@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.robert.mymovies.api.MoviesAPI
+import com.robert.mymovies.data.remote.MoviesAPI
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.utils.FilmType
@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 class FilmRepository@Inject constructor(
         private val app: Application,
-        private val api: MoviesAPI): RepositoryFilm {
+        private val api: MoviesAPI
+): RepositoryFilm {
 
     override suspend fun getPopularFilms(page: Int, filmType: FilmType): Resource<FilmResponse> {
         if (filmType == FilmType.MOVIE){

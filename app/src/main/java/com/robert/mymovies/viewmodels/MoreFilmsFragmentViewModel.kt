@@ -1,4 +1,4 @@
-package com.robert.mymovies.ui
+package com.robert.mymovies.viewmodels
 
 import androidx.lifecycle.*
 import com.robert.mymovies.data.remote.responses.FilmResponse

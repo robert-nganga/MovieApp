@@ -4,10 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.robert.mymovies.api.MoviesAPI
-import com.robert.mymovies.data.remote.responses.GenreResponse
-import com.robert.mymovies.model.Search
-import com.robert.mymovies.model.SearchResponse
+import com.robert.mymovies.data.remote.MoviesAPI
+import com.robert.mymovies.data.remote.responses.SearchResponse
 import com.robert.mymovies.utils.Resource
 import okio.IOException
 import retrofit2.Response
@@ -15,7 +13,8 @@ import javax.inject.Inject
 
 class SearchRepository@Inject constructor(
         private val app: Application,
-        private val api: MoviesAPI): RepositorySearch {
+        private val api: MoviesAPI
+): RepositorySearch {
 
 
     override suspend fun searchFilms(query: String, page: Int): Resource<SearchResponse> {

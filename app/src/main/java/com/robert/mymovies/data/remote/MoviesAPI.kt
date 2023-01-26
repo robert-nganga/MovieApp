@@ -1,11 +1,8 @@
-package com.robert.mymovies.api
+package com.robert.mymovies.data.remote
 
 import com.robert.mymovies.BuildConfig
-import com.robert.mymovies.data.remote.*
-import com.robert.mymovies.data.remote.responses.CastResponse
-import com.robert.mymovies.data.remote.responses.FilmResponse
-import com.robert.mymovies.data.remote.responses.GenreResponse
-import com.robert.mymovies.model.SearchResponse
+import com.robert.mymovies.data.remote.responses.*
+import com.robert.mymovies.data.remote.responses.SearchResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

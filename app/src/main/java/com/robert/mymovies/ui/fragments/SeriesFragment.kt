@@ -1,6 +1,7 @@
 package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.FilmAdapter
 import com.robert.mymovies.databinding.FragmentSeriesBinding
-import com.robert.mymovies.ui.FilmViewModel
-import com.robert.mymovies.ui.MainActivity
+import com.robert.mymovies.viewmodels.FilmViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
@@ -48,6 +49,19 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         val topRatedAdapter = FilmAdapter()
 
         val imageList = ArrayList<SlideModel>()
+
+        binding.seriesImageSlider.setItemClickListener(object : ItemClickListener {
+            override fun onItemSelected(position: Int) {
+                val id = viewModel.getId(position)
+                Log.i("SeriesFragment", "slider clicked in position:: $position")
+                val bundle = Bundle().apply {
+                    if (id != null) {
+                        putInt("id", id)
+                    }
+                }
+                findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+            }
+        })
 
         binding.tvMorePopularSeries.setOnClickListener {
             val bundle = Bundle().apply {
