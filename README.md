@@ -7,7 +7,7 @@ FunFlix is a Kotlin-based movie app that consumes the TMDB API to display the cu
       ```
       API_KEY="YOUR_API_KEY"
       ```
-   2. Open your .gitignore file and add the gradle.properties file so that it will not be included in the git repository, therefore not visible to others.
+   2. Open your .gitignore file and add the gradle.properties file so that it will not be included in the git repository, therefore not visible by others.
       ```
       gradle.properties
       ```
