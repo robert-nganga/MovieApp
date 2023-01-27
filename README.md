@@ -36,6 +36,7 @@ FunFlix is a Kotlin-based movie app that consumes the TMDB API to display the cu
    * [Facebook Shimmer](https://github.com/facebook/shimmer-android) A library that provides a shimmering effect for loading placeholder.
    
 ## Screenshots
-   ![](screenshots/screenshot1.jpg)
    ![](screenshots/screenshot2.jpg)
+   ![](screenshots/screenshot1.jpg)
+   
    
