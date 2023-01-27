@@ -11,14 +11,14 @@ FunFlix is a Kotlin-based movie app that consumes the TMDB API to display the cu
       ```
       gradle.properties
       ```
-   3. In your app-level build.gradle file, add the following line in the buidConfig block
+   3. In your app-level build.gradle file, add the following line in the buidConfig block.
       ```
       buildConfig{
       ...
       buildConfigField("String", "API_KEY", API_KEY)
       }
       ```
-   4. Finaly, you can access the key from anywhere in your app
+   4. Finaly, you can access the key from anywhere in your app.
       ```
       BuildConfig.API_KEY
       ```
