@@ -7,18 +7,18 @@ FunFlix is a Kotlin-based movie app that consumes the TMDB API to display the cu
       ```
       API_KEY="YOUR_API_KEY"
       ```
-   2. Open your .gitignore file and add the gradle.properties file so that it will not be included in the git repository, therefore not visible to others.
+   2. Open your .gitignore file and add the gradle.properties file so that it will not be included in the git repository, therefore not visible by others.
       ```
       gradle.properties
       ```
-   3. In your app-level build.gradle file, add the following line in the buidConfig block
+   3. In your app-level build.gradle file, add the following line in the buidConfig block.
       ```
       buildConfig{
       ...
       buildConfigField("String", "API_KEY", API_KEY)
       }
       ```
-   4. Finaly, you can access the key from anywhere in your app
+   4. Finaly, you can access the key from anywhere in your app.
       ```
       BuildConfig.API_KEY
       ```
@@ -34,3 +34,9 @@ FunFlix is a Kotlin-based movie app that consumes the TMDB API to display the cu
    * [Gson](https://github.com/google/gson) A Java library that can be used to convert Java Objects into their JSON representation.
    * [Okhttp](https://square.github.io/okhttp/) An HTTP client for Android and Java. Used to Log HTTP request and response data.
    * [Facebook Shimmer](https://github.com/facebook/shimmer-android) A library that provides a shimmering effect for loading placeholder.
+   
+## Screenshots
+   ![](screenshots/screenshot2.jpg)
+   ![](screenshots/screenshot1.jpg)
+   
+   
