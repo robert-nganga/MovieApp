@@ -1,10 +1,15 @@
 package com.robert.mymovies.di
 
+import android.content.Context
+import androidx.room.Room
+import com.robert.mymovies.data.local.FilmDatabase
 import com.robert.mymovies.data.remote.MoviesAPI
 import com.robert.mymovies.utils.Constants.BASE_URL
+import com.robert.mymovies.utils.Constants.FILM_DB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -34,4 +39,13 @@ object AppModule {
             .build()
             .create(MoviesAPI::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideFilmDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
+        context,
+        FilmDatabase::class.java,
+        FILM_DB
+    ).build()
+
 }

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
-import com.robert.mymovies.repositories.RepositoryFilm
+import com.robert.mymovies.repositories.FilmRepository
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class FilmViewModel@Inject constructor(private val repository: RepositoryFilm): ViewModel() {
+class FilmViewModel@Inject constructor(private val repository: FilmRepository): ViewModel() {
 
     private var _allPopularFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val allPopularFilms: LiveData<Resource<FilmResponse>> get() =  _allPopularFilms

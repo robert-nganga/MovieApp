@@ -3,7 +3,7 @@ package com.robert.mymovies.viewmodels
 import androidx.lifecycle.*
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
-import com.robert.mymovies.repositories.RepositoryFilm
+import com.robert.mymovies.repositories.FilmRepository
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MoreFilmsFragmentViewModel@Inject constructor(
-        private val repository: RepositoryFilm): ViewModel() {
+        private val repository: FilmRepository): ViewModel() {
 
     private val _allFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val allFilms: LiveData<Resource<FilmResponse>>

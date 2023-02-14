@@ -1,7 +1,11 @@
 package com.robert.mymovies.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+
+@Entity(tableName = "films")
 data class Film(
     @SerializedName("adult")
     val adult: Boolean,
@@ -10,15 +14,12 @@ data class Film(
     @SerializedName("poster_path")
     val posterPath: String?,
     @SerializedName("genre_ids")
-    val genreIds: List<Int>?,
-    @SerializedName("genres")
     val genres: List<Genre>?,
     @SerializedName("media_type")
     val mediaType: String?,
     @SerializedName("id")
+    @PrimaryKey
     val id: Int,
-    @SerializedName("imdb_id")
-    val imdbId: String?,
     @SerializedName("original_language")
     val originalLanguage: String,
     @SerializedName("overview")
@@ -31,10 +32,9 @@ data class Film(
     val runtime: Int?,
     @SerializedName("title", alternate = ["name"])
     val title: String,
-    @SerializedName("video")
-    val video: Boolean,
     @SerializedName("vote_average")
     val voteAverage: Double,
     @SerializedName("vote_count")
-    val voteCount: Int
+    val voteCount: Int,
+    val category: String
 )
