@@ -14,11 +14,17 @@ interface FilmDao {
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         suspend fun insertFilms(films: List<Film>)
 
-        @Query("SELECT * FROM films WHERE category = :category")
-        fun getFilms(category: String): Flow<List<Film>>
+        @Query("SELECT * FROM films WHERE category = :category AND mediaType = 'tv'")
+        fun getTvShows(category: String): Flow<List<Film>>
 
-        @Query("DELETE FROM films WHERE category = :category")
-        suspend fun deleteFilms(category: String)
+        @Query("SELECT * FROM films WHERE category = :category AND mediaType = 'movie'")
+        fun getMovies(category: String): Flow<List<Film>>
+
+        @Query("DELETE FROM films WHERE category = :category AND mediaType = 'movie'")
+        suspend fun deleteMovies(category: String)
+
+        @Query("DELETE FROM films WHERE category = :category AND mediaType = 'tv'")
+        suspend fun deleteTvShows(category: String)
 
         @Query("DELETE FROM films")
         suspend fun deleteAllFilms()

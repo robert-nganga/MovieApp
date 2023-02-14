@@ -50,7 +50,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
         val imageList = ArrayList<SlideModel>()
 
-        binding.imageSlider.setItemClickListener(object : ItemClickListener {
+        /*binding.imageSlider.setItemClickListener(object : ItemClickListener {
             override fun onItemSelected(position: Int) {
                 displayError(view, "Slider clicked:: $position")
                 Log.i("SeriesFragment", "slider clicked in position:: $position")
@@ -63,6 +63,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                 findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
             }
         })
+         */
 
         // Set listeners for the see more buttons
         binding.tvMorePopular.setOnClickListener {
@@ -120,12 +121,27 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             }
             findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
         }
+//        viewModel.trending.observe(viewLifecycleOwner){response ->
+//            when(response.status){
+//                Resource.Status.SUCCESS ->{
+//                    response.data?.let {
+//                        it.forEach { movie ->
+//                            val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdropPath}"
+//                            imageList.add(SlideModel(imageUrl, movie.title ))
+//                        }
+//                        binding.imageSlider.setImageList(imageList, ScaleTypes.FIT)
+//                    }
+//                }
+//                Resource.Status.LOADING -> {}
+//                Resource.Status.ERROR -> {error = response.message}
+//            }
+//        }
 
         viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response->
             when(response.status){
                 Resource.Status.SUCCESS ->{
                     response.data?.let {
-                        it.results.forEach { movie ->
+                        it.forEach { movie ->
                             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdropPath}"
                             imageList.add(SlideModel(imageUrl, movie.title ))
                         }
@@ -197,6 +213,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
     }
 
     private fun displayError(view: View, message: String?) {
+        Log.e("MoviesFragment", "Error: $message")
         if (message != null) {
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
                 setAction("Retry"){

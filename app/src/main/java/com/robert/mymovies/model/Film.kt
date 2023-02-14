@@ -13,8 +13,6 @@ data class Film(
     val backdropPath: String?,
     @SerializedName("poster_path")
     val posterPath: String?,
-    @SerializedName("genre_ids")
-    val genres: List<Genre>?,
     @SerializedName("media_type")
     val mediaType: String?,
     @SerializedName("id")

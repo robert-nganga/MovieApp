@@ -1,21 +1,25 @@
 package com.robert.mymovies.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
+import com.robert.mymovies.model.Film
 import com.robert.mymovies.repositories.FilmRepository
+import com.robert.mymovies.repositories.FilmRepositoryImpl
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class FilmViewModel@Inject constructor(private val repository: FilmRepository): ViewModel() {
+class FilmViewModel@Inject constructor(
+        private val repository: FilmRepository): ViewModel() {
+
+    private var _trending: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
+    val trending: LiveData<Resource<List<Film>>> get() =  _trending
 
     private var _allPopularFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val allPopularFilms: LiveData<Resource<FilmResponse>> get() =  _allPopularFilms
@@ -23,8 +27,8 @@ class FilmViewModel@Inject constructor(private val repository: FilmRepository): 
     private var _allUpcomingFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val allUpcomingFilms: LiveData<Resource<FilmResponse>> get() =  _allUpcomingFilms
 
-    private var _allTrendingFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allTrendingFilms: LiveData<Resource<FilmResponse>> get() =  _allTrendingFilms
+    private var _allTrendingFilms: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
+    val allTrendingFilms: LiveData<Resource<List<Film>>> get() =  _allTrendingFilms
 
     private var _allTopRatedFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val allTopRatedFilms: LiveData<Resource<FilmResponse>> get() =  _allTopRatedFilms
@@ -41,30 +45,28 @@ class FilmViewModel@Inject constructor(private val repository: FilmRepository): 
 
     fun fetchSeriesData(filmType: FilmType){
         getTrendingFilms(filmType)
-        getLatestFilms(filmType)
+        //getLatestFilms(filmType)
         getTopRated(filmType)
         getPopularFilms(filmType)
         getOnAirFilms(filmType)
     }
 
     fun fetchMovieData(filmType: FilmType){
+        //getTrending(filmType)
         getTrendingFilms(filmType)
-        getLatestFilms(filmType)
+        //getLatestFilms(filmType)
         getPopularFilms(filmType)
         getUpcomingFilms(filmType)
         getTopRated(filmType)
     }
 
-    fun getId(position: Int): Int?{
-        val films = _allTrendingFilms.value?.data?.results
-        var id : Int? = null
-        if (films != null){
-            id = films[position].id
-        }
-        return id
-    }
+//    fun getId(position: Int): Int?{
+//        return _allTrendingFilms.value?.data?.results?.let { it[position].id }
+//    }
 
-
+//    private fun getTrending(filmType: FilmType) {
+//        _trending.value = repository.getTrending(filmType).asLiveData().value
+//    }
 
     private fun getPopularFilms(filmType: FilmType) = viewModelScope.launch {
         _allPopularFilms.postValue(Resource(Resource.Status.LOADING, null, null))
@@ -79,9 +81,12 @@ class FilmViewModel@Inject constructor(private val repository: FilmRepository): 
     }
 
     private fun getTrendingFilms(filmType: FilmType) = viewModelScope.launch {
-        _allTrendingFilms.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getTrendingFilms( filmType)
-        _allTrendingFilms.postValue(result)
+//        _allTrendingFilms.postValue(Resource(Resource.Status.LOADING, null, null))
+//        val result = repository.getTrendingFilms( filmType)
+//        _allTrendingFilms.postValue(result)
+        repository.getTrending(filmType).collect{
+            _allTrendingFilms.postValue(it)
+        }
     }
 
     private fun getTopRated(filmType: FilmType) = viewModelScope.launch {

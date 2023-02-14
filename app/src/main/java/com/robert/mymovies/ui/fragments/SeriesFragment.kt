@@ -50,18 +50,18 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
 
         val imageList = ArrayList<SlideModel>()
 
-        binding.seriesImageSlider.setItemClickListener(object : ItemClickListener {
-            override fun onItemSelected(position: Int) {
-                val id = viewModel.getId(position)
-                Log.i("SeriesFragment", "slider clicked in position:: $position")
-                val bundle = Bundle().apply {
-                    if (id != null) {
-                        putInt("id", id)
-                    }
-                }
-                findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
-            }
-        })
+//        binding.seriesImageSlider.setItemClickListener(object : ItemClickListener {
+//            override fun onItemSelected(position: Int) {
+//                val id = viewModel.getId(position)
+//                Log.i("SeriesFragment", "slider clicked in position:: $position")
+//                val bundle = Bundle().apply {
+//                    if (id != null) {
+//                        putInt("id", id)
+//                    }
+//                }
+//                findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
+//            }
+//        })
 
         binding.tvMorePopularSeries.setOnClickListener {
             val bundle = Bundle().apply {
@@ -126,7 +126,7 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
                     binding.sliderShimmerSeries.visibility = View.INVISIBLE
                     binding.seriesCardSlider.visibility = View.VISIBLE
                     response.data?.let {
-                        it.results.forEach { series ->
+                        it.forEach { series ->
                             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
                             imageList.add(SlideModel(imageUrl, series.title))
                         }

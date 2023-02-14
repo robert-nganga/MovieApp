@@ -4,21 +4,57 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.room.withTransaction
+import com.robert.mymovies.data.local.FilmDatabase
 import com.robert.mymovies.data.remote.MoviesAPI
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
+import com.robert.mymovies.utils.networkBoundResource
 import okio.IOException
 import retrofit2.Response
 import javax.inject.Inject
 
 class FilmRepositoryImpl@Inject constructor(
         private val app: Application,
+        private val database: FilmDatabase,
         private val api: MoviesAPI
 ): FilmRepository {
 
+    private val filmDao = database.filmDao()
+
+    override fun getTrending(filmType: FilmType) = networkBoundResource(
+            query = { if (filmType == FilmType.MOVIE) {
+                    filmDao.getMovies("trending")
+                } else {
+                    filmDao.getTvShows("trending")
+                }
+            },
+            fetch = { if (filmType == FilmType.MOVIE) { api.getTrendingMovies() } else { api.getTrendingSeries() } },
+            saveFetchResult = { response ->
+                val films = if (filmType == FilmType.MOVIE) {
+                    response.body()?.results?.map { it.copy(mediaType = "movie", category = "trending") }
+                } else {
+                    response.body()?.results?.map { it.copy(mediaType = "tv", category = "trending") }
+                }
+                films?.let {
+                    database.withTransaction {
+                        if (filmType == FilmType.MOVIE) {
+                            filmDao.deleteMovies("trending")
+                            filmDao.insertFilms(it)
+                        } else {
+                            filmDao.deleteTvShows("trending")
+                            filmDao.insertFilms(it)
+                        }
+                    }
+                }
+            }
+    )
+
     override suspend fun getPopularFilms(page: Int, filmType: FilmType): Resource<FilmResponse> {
+
+
         if (filmType == FilmType.MOVIE){
             return try {
                 if (checkForInternet()){
