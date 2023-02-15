@@ -10,19 +10,15 @@ import retrofit2.Response
 
 interface FilmRepository {
 
-    fun getTrending(filmType: FilmType): Flow<Resource<List<Film>>>
+    fun getPopularFilms(filmType: FilmType): Flow<Resource<List<Film>>>
 
-    suspend fun getPopularFilms(page: Int, filmType: FilmType): Resource<FilmResponse>
+    fun getUpcomingFilms(): Flow<Resource<List<Film>>>
 
-    suspend fun getUpcomingFilms(page: Int, filmType: FilmType): Resource<FilmResponse>
+    fun getTrendingFilms(filmType: FilmType): Flow<Resource<List<Film>>>
 
-    suspend fun getTrendingFilms(filmType: FilmType): Resource<FilmResponse>
+    fun getOnAirFilms(): Flow<Resource<List<Film>>>
 
-    suspend fun getOnAirFilms(page: Int, filmType: FilmType): Resource<FilmResponse>
-
-    suspend fun getTopRatedFilms(page: Int, filmType: FilmType): Resource<FilmResponse>
-
-    suspend fun getLatestFilms(filmType: FilmType): Resource<FilmResponse>
+    fun getTopRatedFilms(filmType: FilmType): Flow<Resource<List<Film>>>
 
     suspend fun getGenreList(filmType: FilmType): Resource<GenreResponse>
 }

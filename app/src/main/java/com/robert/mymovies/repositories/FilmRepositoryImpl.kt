@@ -24,195 +24,103 @@ class FilmRepositoryImpl@Inject constructor(
 
     private val filmDao = database.filmDao()
 
-    override fun getTrending(filmType: FilmType) = networkBoundResource(
-            query = { if (filmType == FilmType.MOVIE) {
-                    filmDao.getMovies("trending")
-                } else {
-                    filmDao.getTvShows("trending")
-                }
-            },
-            fetch = { if (filmType == FilmType.MOVIE) { api.getTrendingMovies() } else { api.getTrendingSeries() } },
-            saveFetchResult = { response ->
-                val films = if (filmType == FilmType.MOVIE) {
-                    response.body()?.results?.map { it.copy(mediaType = "movie", category = "trending") }
-                } else {
-                    response.body()?.results?.map { it.copy(mediaType = "tv", category = "trending") }
-                }
-                films?.let {
-                    database.withTransaction {
-                        if (filmType == FilmType.MOVIE) {
-                            filmDao.deleteMovies("trending")
-                            filmDao.insertFilms(it)
-                        } else {
-                            filmDao.deleteTvShows("trending")
-                            filmDao.insertFilms(it)
-                        }
+
+    override fun getPopularFilms(filmType: FilmType) = networkBoundResource(
+        query = { if (filmType == FilmType.MOVIE) { filmDao.getMovies("popular") } else { filmDao.getTvShows("popular") } },
+        fetch = { if (filmType == FilmType.MOVIE) { api.getPopularMovies() } else { api.getPopularSeries() } },
+        saveFetchResult = { response ->
+            val films = if (filmType == FilmType.MOVIE) {
+                response.body()?.results?.map { it.copy(mediaType = "movie", category = "popular") }
+            } else {
+                response.body()?.results?.map { it.copy(mediaType = "tv", category = "popular") }
+            }
+            films?.let {
+                database.withTransaction {
+                    if (filmType == FilmType.MOVIE) {
+                        filmDao.deleteMovies("popular")
+                        filmDao.insertFilms(it)
+                    } else {
+                        filmDao.deleteTvShows("popular")
+                        filmDao.insertFilms(it)
                     }
                 }
             }
+        }
     )
 
-    override suspend fun getPopularFilms(page: Int, filmType: FilmType): Resource<FilmResponse> {
-
-
-        if (filmType == FilmType.MOVIE){
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getPopularMovies(page = page))
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
-                }
-            }
-        }else{
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getPopularSeries(page = page))
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
+    override fun getUpcomingFilms() = networkBoundResource(
+        query = { filmDao.getMovies("upcoming")},
+        fetch = { api.getUpcomingMovies() },
+        saveFetchResult = { response ->
+            val films = response.body()?.results?.map { it.copy(mediaType = "movie", category = "upcoming") }
+            films?.let {
+                database.withTransaction {
+                        filmDao.deleteMovies("upcoming")
+                        filmDao.insertFilms(it)
                 }
             }
         }
-    }
+    )
 
-    override suspend fun getUpcomingFilms(page: Int, filmType: FilmType): Resource<FilmResponse> {
-        return try {
-            if (checkForInternet()){
-                val response = handleFilmResponse(api.getUpcomingMovies(page = page))
-                Resource(Resource.Status.SUCCESS, response.data, null)
-            }else{
-                Resource(Resource.Status.ERROR, null, "No internet connection")
+    override fun getTrendingFilms(filmType: FilmType) = networkBoundResource(
+        query = { if (filmType == FilmType.MOVIE) { filmDao.getMovies("trending") } else { filmDao.getTvShows("trending") } },
+        fetch = { if (filmType == FilmType.MOVIE) { api.getTrendingMovies() } else { api.getTrendingSeries() } },
+        saveFetchResult = { response ->
+            val films = if (filmType == FilmType.MOVIE) {
+                response.body()?.results?.map { it.copy(mediaType = "movie", category = "trending") }
+            } else {
+                response.body()?.results?.map { it.copy(mediaType = "tv", category = "trending") }
             }
-        }catch (t: Throwable){
-            when(t){
-                is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
-            }
-        }
-    }
-
-    override suspend fun getTrendingFilms(filmType: FilmType): Resource<FilmResponse> {
-        if (filmType == FilmType.MOVIE){
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getTrendingMovies())
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
-                }
-            }
-        }else{
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getTrendingSeries())
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
+            films?.let {
+                database.withTransaction {
+                    if (filmType == FilmType.MOVIE) {
+                        filmDao.deleteMovies("trending")
+                        filmDao.insertFilms(it)
+                    } else {
+                        filmDao.deleteTvShows("trending")
+                        filmDao.insertFilms(it)
+                    }
                 }
             }
         }
-    }
+    )
 
-    override suspend fun getOnAirFilms(page: Int, filmType: FilmType): Resource<FilmResponse> {
-        return try {
-            if (checkForInternet()){
-                val response = handleFilmResponse(api.getOnAirSeries(page = page))
-                Resource(Resource.Status.SUCCESS, response.data, null)
-            }else{
-                Resource(Resource.Status.ERROR, null, "No internet connection")
-            }
-        }catch (t: Throwable){
-            when(t){
-                is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
-            }
-        }
-    }
-
-    override suspend fun getTopRatedFilms(page: Int, filmType: FilmType): Resource<FilmResponse> {
-        if (filmType == FilmType.MOVIE){
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getTopRatedMovies(page = page))
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
-                }
-            }
-        }else{
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getTopRatedSeries(page = page))
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
+    override fun getOnAirFilms() = networkBoundResource(
+        query = { filmDao.getTvShows("onAir")},
+        fetch = { api.getOnAirSeries() },
+        saveFetchResult = { response ->
+            val films = response.body()?.results?.map { it.copy(mediaType = "tv", category = "onAir") }
+            films?.let {
+                database.withTransaction {
+                        filmDao.deleteTvShows("onAir")
+                        filmDao.insertFilms(it)
                 }
             }
         }
-    }
+    )
 
-    override suspend fun getLatestFilms(filmType: FilmType): Resource<FilmResponse> {
-        if (filmType == FilmType.MOVIE){
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getLatestMovies())
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
-                }
+    override fun getTopRatedFilms(filmType: FilmType) = networkBoundResource(
+        query = { if (filmType == FilmType.MOVIE) { filmDao.getMovies("topRated") } else { filmDao.getTvShows("topRated") } },
+        fetch = { if (filmType == FilmType.MOVIE) { api.getTopRatedMovies() } else { api.getTopRatedSeries() } },
+        saveFetchResult = { response ->
+            val films = if (filmType == FilmType.MOVIE) {
+                response.body()?.results?.map { it.copy(mediaType = "movie", category = "topRated") }
+            } else {
+                response.body()?.results?.map { it.copy(mediaType = "tv", category = "topRated") }
             }
-        }else{
-            return try {
-                if (checkForInternet()){
-                    val response = handleFilmResponse(api.getLatestSeries())
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
+            films?.let {
+                database.withTransaction {
+                    if (filmType == FilmType.MOVIE) {
+                        filmDao.deleteMovies("topRated")
+                        filmDao.insertFilms(it)
+                    } else {
+                        filmDao.deleteTvShows("topRated")
+                        filmDao.insertFilms(it)
+                    }
                 }
             }
         }
-    }
+    )
 
     override suspend fun getGenreList(filmType: FilmType): Resource<GenreResponse> {
         if (filmType == FilmType.MOVIE){

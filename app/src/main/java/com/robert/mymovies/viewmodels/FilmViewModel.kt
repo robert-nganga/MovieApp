@@ -9,6 +9,7 @@ import com.robert.mymovies.repositories.FilmRepositoryImpl
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,26 +19,23 @@ import javax.inject.Inject
 class FilmViewModel@Inject constructor(
         private val repository: FilmRepository): ViewModel() {
 
-    private var _trending: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
-    val trending: LiveData<Resource<List<Film>>> get() =  _trending
+    private var _allPopularFilms: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
+    val allPopularFilms: LiveData<Resource<List<Film>>> get() =  _allPopularFilms
 
-    private var _allPopularFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allPopularFilms: LiveData<Resource<FilmResponse>> get() =  _allPopularFilms
-
-    private var _allUpcomingFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allUpcomingFilms: LiveData<Resource<FilmResponse>> get() =  _allUpcomingFilms
+    private var _allUpcomingFilms: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
+    val allUpcomingFilms: LiveData<Resource<List<Film>>> get() =  _allUpcomingFilms
 
     private var _allTrendingFilms: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
     val allTrendingFilms: LiveData<Resource<List<Film>>> get() =  _allTrendingFilms
 
-    private var _allTopRatedFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allTopRatedFilms: LiveData<Resource<FilmResponse>> get() =  _allTopRatedFilms
+    private var _allTopRatedFilms: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
+    val allTopRatedFilms: LiveData<Resource<List<Film>>> get() =  _allTopRatedFilms
 
-    private var _allOnAirFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allOnAirFilms: LiveData<Resource<FilmResponse>> get() =  _allOnAirFilms
+    private var _allOnAirFilms: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
+    val allOnAirFilms: LiveData<Resource<List<Film>>> get() =  _allOnAirFilms
 
-    private var _allLatestFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-    val allLatestFilms: LiveData<Resource<FilmResponse>> get() =  _allLatestFilms
+//    private var _allLatestFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
+//    val allLatestFilms: LiveData<Resource<FilmResponse>> get() =  _allLatestFilms
 
     private var _allGenres: MutableLiveData<Resource<GenreResponse>> = MutableLiveData()
     val allGenres: LiveData<Resource<GenreResponse>> get() =  _allGenres
@@ -48,15 +46,14 @@ class FilmViewModel@Inject constructor(
         //getLatestFilms(filmType)
         getTopRated(filmType)
         getPopularFilms(filmType)
-        getOnAirFilms(filmType)
+        getOnAirFilms()
     }
 
     fun fetchMovieData(filmType: FilmType){
-        //getTrending(filmType)
         getTrendingFilms(filmType)
         //getLatestFilms(filmType)
         getPopularFilms(filmType)
-        getUpcomingFilms(filmType)
+        getUpcomingFilms()
         getTopRated(filmType)
     }
 
@@ -69,43 +66,35 @@ class FilmViewModel@Inject constructor(
 //    }
 
     private fun getPopularFilms(filmType: FilmType) = viewModelScope.launch {
-        _allPopularFilms.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getPopularFilms(1, filmType)
-        _allPopularFilms.postValue(result)
+        repository.getPopularFilms( filmType).collect{
+            _allPopularFilms.value = it
+        }
     }
 
-    private fun getUpcomingFilms(filmType: FilmType) = viewModelScope.launch {
-        _allUpcomingFilms.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getUpcomingFilms(1, filmType)
-        _allUpcomingFilms.postValue(result)
+    private fun getUpcomingFilms() = viewModelScope.launch {
+        repository.getUpcomingFilms().collect{
+            _allUpcomingFilms.value = it
+        }
     }
 
     private fun getTrendingFilms(filmType: FilmType) = viewModelScope.launch {
-//        _allTrendingFilms.postValue(Resource(Resource.Status.LOADING, null, null))
-//        val result = repository.getTrendingFilms( filmType)
-//        _allTrendingFilms.postValue(result)
-        repository.getTrending(filmType).collect{
+        repository.getTrendingFilms(filmType).collect{
             _allTrendingFilms.postValue(it)
         }
     }
 
     private fun getTopRated(filmType: FilmType) = viewModelScope.launch {
-        _allTopRatedFilms.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getTopRatedFilms(1, filmType)
-        _allTopRatedFilms.postValue(result)
+        repository.getTopRatedFilms(filmType).collect{
+            _allTopRatedFilms.value = it
+        }
     }
 
-    private fun getOnAirFilms(filmType: FilmType) = viewModelScope.launch {
-        _allOnAirFilms.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getOnAirFilms(1, filmType)
-        _allOnAirFilms.postValue(result)
+    private fun getOnAirFilms() = viewModelScope.launch {
+        repository.getOnAirFilms().collect{
+            _allPopularFilms.value = it
+        }
     }
 
-    private fun getLatestFilms(filmType: FilmType) = viewModelScope.launch {
-        _allLatestFilms.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getLatestFilms(filmType)
-        _allLatestFilms.postValue(result)
-    }
 
     private fun getGenres(filmType: FilmType) = viewModelScope.launch {
         _allGenres.postValue(Resource(Resource.Status.LOADING, null, null))

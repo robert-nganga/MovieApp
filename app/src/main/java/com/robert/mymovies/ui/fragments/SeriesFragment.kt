@@ -1,7 +1,6 @@
 package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.denzcoskun.imageslider.constants.ScaleTypes
-import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
@@ -18,7 +16,6 @@ import com.robert.mymovies.databinding.FragmentSeriesBinding
 import com.robert.mymovies.viewmodels.FilmViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.FilmType
-import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -120,76 +117,51 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         }
 
         viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response ->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    binding.sliderShimmerSeries.stopShimmer()
-                    binding.sliderShimmerSeries.visibility = View.INVISIBLE
-                    binding.seriesCardSlider.visibility = View.VISIBLE
-                    response.data?.let {
-                        it.forEach { series ->
-                            val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
-                            imageList.add(SlideModel(imageUrl, series.title))
-                        }
-                        binding.seriesImageSlider.setImageList(imageList, ScaleTypes.FIT)
-                    }
+            binding.sliderShimmerSeries.stopShimmer()
+            binding.sliderShimmerSeries.visibility = View.INVISIBLE
+            binding.seriesCardSlider.visibility = View.VISIBLE
+
+            response.data?.let {
+                it.forEach { series ->
+                    val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
+                    imageList.add(SlideModel(imageUrl, series.title))
                 }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {error = response.message}
+                binding.seriesImageSlider.setImageList(imageList, ScaleTypes.FIT)
             }
+            error = response.message
         }
 
         viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response->
-            when(response.status){
-                Resource.Status.SUCCESS ->{
-                    binding.topRatedShimmerSeries.stopShimmer()
-                    binding.topRatedShimmerSeries.visibility = View.INVISIBLE
-                    binding.rvTopRatedSeries.visibility = View.VISIBLE
-                    response.data?.let {
-                        topRatedAdapter.differ.submitList(it.results.toList())
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {error = response.message}
+            binding.topRatedShimmerSeries.stopShimmer()
+            binding.topRatedShimmerSeries.visibility = View.INVISIBLE
+            binding.rvTopRatedSeries.visibility = View.VISIBLE
+            response.data?.let {
+                topRatedAdapter.differ.submitList(it.toList())
             }
+            error = response.message
         }
+
         viewModel.allPopularFilms.observe(viewLifecycleOwner){ response ->
-
-            when(response.status){
-                Resource.Status.SUCCESS ->{
-                    binding.popularShimmerSeries.stopShimmer()
-                    binding.popularShimmerSeries.visibility = View.INVISIBLE
-                    binding.rvPopularSeries.visibility = View.VISIBLE
-                    response.data?.let {
-                        popularAdapter.differ.submitList(it.results.toList())
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {error = response.message}
+            binding.popularShimmerSeries.stopShimmer()
+            binding.popularShimmerSeries.visibility = View.INVISIBLE
+            binding.rvPopularSeries.visibility = View.VISIBLE
+            response.data?.let {
+                popularAdapter.differ.submitList(it.toList())
             }
-
+            error = response.message
         }
 
         viewModel.allOnAirFilms.observe(viewLifecycleOwner){ response ->
-            when(response.status){
-                Resource.Status.SUCCESS ->{
-                    binding.onAirShimmerSeries.stopShimmer()
-                    binding.onAirShimmerSeries.visibility = View.INVISIBLE
-                    binding.rvOnAirSeries.visibility = View.VISIBLE
-                    response.data?.let {
-                        onAirAdapter.differ.submitList(it.results.toList())
-                    }
-                    if(error != null){
-                        displayError(view, error)
-                    }
-                }
-                Resource.Status.LOADING -> {}
-                Resource.Status.ERROR -> {
-                    if(error != null){
-                        displayError(view, error)
-                    }else{
-                        displayError(view, response.message)
-                    }
-                }
+            binding.onAirShimmerSeries.stopShimmer()
+            binding.onAirShimmerSeries.visibility = View.INVISIBLE
+            binding.rvOnAirSeries.visibility = View.VISIBLE
+            response.data?.let {
+                onAirAdapter.differ.submitList(it.toList())
+            }
+            if(error != null){
+                displayError(view, error)
+            }else{
+                displayError(view, response.message)
             }
         }
 
