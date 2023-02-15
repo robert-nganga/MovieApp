@@ -7,12 +7,10 @@ import android.net.NetworkCapabilities
 import androidx.room.withTransaction
 import com.robert.mymovies.data.local.FilmDatabase
 import com.robert.mymovies.data.remote.MoviesAPI
-import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import com.robert.mymovies.utils.networkBoundResource
-import okio.IOException
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -23,6 +21,7 @@ class FilmRepositoryImpl@Inject constructor(
 ): FilmRepository {
 
     private val filmDao = database.filmDao()
+    private val genreDao = database.genreDao()
 
 
     override fun getPopularFilms(filmType: FilmType) = networkBoundResource(
@@ -122,56 +121,28 @@ class FilmRepositoryImpl@Inject constructor(
         }
     )
 
-    override suspend fun getGenreList(filmType: FilmType): Resource<GenreResponse> {
-        if (filmType == FilmType.MOVIE){
-            return try {
-                if (checkForInternet()){
-                    val response = handleGenreResponse(api.getMoviesGenreList())
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
-                }
+    override fun getGenreList(filmType: FilmType) = networkBoundResource(
+        query = { if (filmType == FilmType.MOVIE) { genreDao.getGenres("movie") } else { genreDao.getGenres("tv") } },
+        fetch = { if (filmType == FilmType.MOVIE) { api.getMoviesGenreList() } else { api.getSeriesGenreList() } },
+        saveFetchResult = { response ->
+            val films = if (filmType == FilmType.MOVIE) {
+                response.body()?.genres?.map { it.copy(mediaType = "movie") }
+            } else {
+                response.body()?.genres?.map { it.copy(mediaType = "tv") }
             }
-        }else{
-            return try {
-                if (checkForInternet()){
-                    val response = handleGenreResponse(api.getSeriesGenreList())
-                    Resource(Resource.Status.SUCCESS, response.data, null)
-                }else{
-                    Resource(Resource.Status.ERROR, null, "No internet connection")
-                }
-            }catch (t: Throwable){
-                when(t){
-                    is IOException -> Resource(Resource.Status.ERROR, null, "Connection Time out")
-                    else -> Resource(Resource.Status.ERROR, null, "Conversion Error")
+            films?.let {
+                database.withTransaction {
+                    if (filmType == FilmType.MOVIE) {
+                        genreDao.deleteMovieGenres("movie")
+                        genreDao.insertGenres(it)
+                    } else {
+                        genreDao.deleteMovieGenres("tv")
+                        genreDao.insertGenres(it)
+                    }
                 }
             }
         }
-
-    }
-
-    private fun handleFilmResponse(response: Response<FilmResponse>): Resource<FilmResponse> {
-        if(response.isSuccessful){
-            response.body()?.let { resultResponse ->
-                return Resource(Resource.Status.SUCCESS, resultResponse, null)
-            }
-        }
-        return Resource(Resource.Status.ERROR, null, response.message())
-    }
-
-    private fun handleGenreResponse(response: Response<GenreResponse>): Resource<GenreResponse> {
-        if(response.isSuccessful){
-            response.body()?.let { resultResponse ->
-                return Resource(Resource.Status.SUCCESS, resultResponse, null)
-            }
-        }
-        return Resource(Resource.Status.ERROR, null, "Unknown Error")
-    }
+    )
 
     private fun checkForInternet(): Boolean {
         // register activity with the connectivity manager service

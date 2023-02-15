@@ -15,7 +15,7 @@ interface GenreDao {
     suspend fun insertGenres(genres: List<Genre>)
 
     @Query("SELECT * FROM genres WHERE mediaType = 'tv'")
-    fun getTvShows(mediaType: String): Flow<List<Genre>>
+    fun getGenres(mediaType: String): Flow<List<Genre>>
 
     @Query("DELETE FROM genres WHERE mediaType = :mediaType")
     suspend fun deleteMovieGenres(mediaType: String)

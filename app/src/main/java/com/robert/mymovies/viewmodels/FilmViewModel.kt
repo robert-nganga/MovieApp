@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.data.remote.responses.GenreResponse
 import com.robert.mymovies.model.Film
+import com.robert.mymovies.model.Genre
 import com.robert.mymovies.repositories.FilmRepository
 import com.robert.mymovies.repositories.FilmRepositoryImpl
 import com.robert.mymovies.utils.FilmType
@@ -34,11 +35,9 @@ class FilmViewModel@Inject constructor(
     private var _allOnAirFilms: MutableLiveData<Resource<List<Film>>> = MutableLiveData()
     val allOnAirFilms: LiveData<Resource<List<Film>>> get() =  _allOnAirFilms
 
-//    private var _allLatestFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
-//    val allLatestFilms: LiveData<Resource<FilmResponse>> get() =  _allLatestFilms
 
-    private var _allGenres: MutableLiveData<Resource<GenreResponse>> = MutableLiveData()
-    val allGenres: LiveData<Resource<GenreResponse>> get() =  _allGenres
+    private var _allGenres: MutableLiveData<Resource<List<Genre>>> = MutableLiveData()
+    val allGenres: LiveData<Resource<List<Genre>>> get() =  _allGenres
 
 
     fun fetchSeriesData(filmType: FilmType){
@@ -97,8 +96,8 @@ class FilmViewModel@Inject constructor(
 
 
     private fun getGenres(filmType: FilmType) = viewModelScope.launch {
-        _allGenres.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getGenreList(filmType)
-        _allGenres.postValue(result)
+        repository.getGenreList(filmType).collect{
+            _allGenres.value = it
+        }
     }
 }

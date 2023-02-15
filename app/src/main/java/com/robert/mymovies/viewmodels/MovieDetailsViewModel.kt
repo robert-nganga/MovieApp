@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.robert.mymovies.data.remote.responses.MovieDetailsResponse
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
-import com.robert.mymovies.repositories.RepositoryMovieDetails
+import com.robert.mymovies.repositories.MovieDetailsRepository
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailsViewModel@Inject constructor(
-        private val repository: RepositoryMovieDetails): ViewModel() {
+        private val repository: MovieDetailsRepository): ViewModel() {
 
     var movieId: Int? = null
 
