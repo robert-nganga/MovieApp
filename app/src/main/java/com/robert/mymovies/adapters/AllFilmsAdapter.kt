@@ -2,6 +2,7 @@ package com.robert.mymovies.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,16 +12,18 @@ import com.robert.mymovies.databinding.MovieItemBinding
 import com.robert.mymovies.model.Film
 import com.robert.mymovies.utils.Constants
 
-class AllFilmsAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllFilmsAdapter.AllFilmsViewHolder>() {
+class AllFilmsAdapter(private val deviceWidth: Int): PagingDataAdapter<Film, AllFilmsAdapter.AllFilmsViewHolder>(differCallBack) {
 
 
-    private val differCallBack = object: DiffUtil.ItemCallback<Film>() {
-        override fun areItemsTheSame(oldItem: Film, newItem: Film): Boolean {
-            return oldItem.id == newItem.id
-        }
+    companion object{
+        private val differCallBack = object: DiffUtil.ItemCallback<Film>() {
+            override fun areItemsTheSame(oldItem: Film, newItem: Film): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-        override fun areContentsTheSame(oldItem: Film, newItem: Film): Boolean {
-            return oldItem == newItem
+            override fun areContentsTheSame(oldItem: Film, newItem: Film): Boolean {
+                return oldItem == newItem
+            }
         }
     }
     private var onItemClickListener: ((Film)->Unit)? = null
@@ -29,7 +32,6 @@ class AllFilmsAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllFil
         onItemClickListener = listener
     }
 
-    val differ = AsyncListDiffer(this, differCallBack)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllFilmsViewHolder {
         val binding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -37,12 +39,13 @@ class AllFilmsAdapter(private val deviceWidth: Int): RecyclerView.Adapter<AllFil
     }
 
     override fun onBindViewHolder(holder: AllFilmsViewHolder, position: Int) {
-        val film = differ.currentList[position]
-        holder.itemView.setOnClickListener { onItemClickListener?.let { it(film) }}
-        holder.setData(film)
+        val film = getItem(position)
+        film?.let {
+            holder.itemView.setOnClickListener { onItemClickListener?.let { it(film) }}
+            holder.setData(film)
+        }
     }
 
-    override fun getItemCount(): Int = differ.currentList.size
 
     inner class AllFilmsViewHolder(private val binding: MovieItemBinding): RecyclerView.ViewHolder(binding.root) {
         private var currentCast: Film? = null

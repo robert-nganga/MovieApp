@@ -51,29 +51,7 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
 
 
         // Set listeners for the see more buttons
-        binding.tvMorePopular.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("type", "Movie")
-                putString("category", "popular")
-            }
-            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
-        }
-
-        binding.tvMoreUpcoming.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("type", "Movie")
-                putString("category", "upcoming")
-            }
-            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
-        }
-
-        binding.tvMoreTopRated.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("type", "Movie")
-                putString("category", "topRated")
-            }
-            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
-        }
+        seeMoreButtonListeners()
 
         //set the recycler view adapters
         binding.rvUpcoming.adapter = upcomingAdapter
@@ -136,6 +114,32 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             }else{
                 displayError(view, response.message)
             }
+        }
+    }
+
+    private fun seeMoreButtonListeners() {
+        binding.tvMorePopular.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("type", "Movie")
+                putString("category", "popular")
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
+        }
+
+        binding.tvMoreUpcoming.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("type", "Movie")
+                putString("category", "upcoming")
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
+        }
+
+        binding.tvMoreTopRated.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("type", "Movie")
+                putString("category", "topRated")
+            }
+            findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
         }
     }
 

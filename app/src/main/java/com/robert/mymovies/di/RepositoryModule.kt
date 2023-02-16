@@ -28,4 +28,8 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindSeriesDetailsRepository(seriesDetailsRepository: SeriesDetailsRepository): RepositorySeriesDetails
 
+    @Binds
+    @Singleton
+    abstract fun bindMoreFilmsRepository(moreFilmsRepositoryImpl: MoreFilmsRepositoryImpl): MoreFilmsRepository
+
 }
