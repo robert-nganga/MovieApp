@@ -14,7 +14,7 @@ interface GenreDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGenres(genres: List<Genre>)
 
-    @Query("SELECT * FROM genres WHERE mediaType = 'tv'")
+    @Query("SELECT * FROM genres WHERE mediaType = :mediaType")
     fun getGenres(mediaType: String): Flow<List<Genre>>
 
     @Query("DELETE FROM genres WHERE mediaType = :mediaType")

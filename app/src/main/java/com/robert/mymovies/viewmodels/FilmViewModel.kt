@@ -10,6 +10,7 @@ import com.robert.mymovies.repositories.FilmRepositoryImpl
 import com.robert.mymovies.utils.FilmType
 import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
@@ -90,7 +91,7 @@ class FilmViewModel@Inject constructor(
 
     private fun getOnAirFilms() = viewModelScope.launch {
         repository.getOnAirFilms().collect{
-            _allPopularFilms.value = it
+            _allOnAirFilms.value = it
         }
     }
 

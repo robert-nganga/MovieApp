@@ -17,6 +17,7 @@ import com.robert.mymovies.databinding.FragmentMoviesBinding
 import com.robert.mymovies.viewmodels.FilmViewModel
 import com.robert.mymovies.utils.Constants
 import com.robert.mymovies.utils.FilmType
+import com.robert.mymovies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -74,17 +75,75 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             findNavController().navigate(R.id.action_moviesFragment_to_moreFilmsFragment, bundle)
         }
 
-        //Start the shimmer effect
-        binding.topRatedShimmer.startShimmer()
-        binding.popularShimmer.startShimmer()
-        binding.upcomingShimmer.startShimmer()
-
         //set the recycler view adapters
         binding.rvUpcoming.adapter = upcomingAdapter
         binding.rvPopular.adapter = popularAdapter
         binding.rvTopRated.adapter = topRatedAdapter
 
-        //Set listeners for each movie
+        //Set listeners for each adapter
+        filmAdapterClickListeners(popularAdapter, upcomingAdapter, topRatedAdapter)
+
+        viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response->
+            response.data?.let {
+                it.forEach { movie ->
+                    val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdropPath}"
+                    imageList.add(SlideModel(imageUrl, movie.title ))
+                }
+                binding.imageSlider.setImageList(imageList, ScaleTypes.FIT)
+            }
+            response.message?.let { error = it }
+        }
+
+        viewModel.allPopularFilms.observe(viewLifecycleOwner){ response ->
+            if (response.status == Resource.Status.LOADING && response.data.isNullOrEmpty()) {
+                binding.popularShimmer.startShimmer()
+            }
+            response.data?.let {
+                //Stop the shimmer effect is there is data regardless of the status
+                binding.popularShimmer.stopShimmer()
+                binding.popularShimmer.visibility = View.INVISIBLE
+                binding.rvPopular.visibility = View.VISIBLE
+                popularAdapter.differ.submitList(it.toList())
+            }
+            response.message?.let { error = it }
+        }
+
+        viewModel.allUpcomingFilms.observe(viewLifecycleOwner){ response ->
+            if (response.status == Resource.Status.LOADING && response.data.isNullOrEmpty()) {
+                binding.upcomingShimmer.startShimmer()
+            }
+            response.data?.let {
+                binding.upcomingShimmer.stopShimmer()
+                binding.upcomingShimmer.visibility = View.INVISIBLE
+                binding.rvUpcoming.visibility = View.VISIBLE
+                upcomingAdapter.differ.submitList(it.toList())
+            }
+            response.message?.let { error = it }
+        }
+
+        viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response ->
+            if (response.status == Resource.Status.LOADING && response.data.isNullOrEmpty()) {
+                binding.topRatedShimmer.startShimmer()
+            }
+            response.data?.let {
+                binding.topRatedShimmer.stopShimmer()
+                binding.topRatedShimmer.visibility = View.INVISIBLE
+                binding.rvTopRated.visibility = View.VISIBLE
+                topRatedAdapter.differ.submitList(it.toList())
+            }
+            if(error != null){
+                displayError(view, error)
+            }else{
+                displayError(view, response.message)
+            }
+        }
+    }
+
+    private fun filmAdapterClickListeners(
+        popularAdapter: FilmAdapter,
+        upcomingAdapter: FilmAdapter,
+        topRatedAdapter: FilmAdapter
+    ) {
         upcomingAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putInt("id", it.id)
@@ -105,55 +164,6 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             }
             findNavController().navigate(R.id.action_moviesFragment_to_movieFragment, bundle)
         }
-
-        viewModel.allTrendingFilms.observe(viewLifecycleOwner){ response->
-            response.data?.let {
-                it.forEach { movie ->
-                    val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${movie.backdropPath}"
-                    imageList.add(SlideModel(imageUrl, movie.title ))
-                }
-                binding.imageSlider.setImageList(imageList, ScaleTypes.FIT)
-            }
-            error = response.message
-        }
-
-        viewModel.allPopularFilms.observe(viewLifecycleOwner){ response ->
-            binding.popularShimmer.stopShimmer()
-            binding.popularShimmer.visibility = View.INVISIBLE
-            binding.rvPopular.visibility = View.VISIBLE
-            response.data?.let {
-                popularAdapter.differ.submitList(it.toList())
-            }
-            error = response.message
-
-        }
-
-        viewModel.allUpcomingFilms.observe(viewLifecycleOwner){ response ->
-            binding.upcomingShimmer.stopShimmer()
-            binding.upcomingShimmer.visibility = View.INVISIBLE
-            binding.rvUpcoming.visibility = View.VISIBLE
-            response.data?.let {
-                upcomingAdapter.differ.submitList(it.toList())
-            }
-            error = response.message
-        }
-
-        viewModel.allTopRatedFilms.observe(viewLifecycleOwner){ response ->
-            binding.topRatedShimmer.stopShimmer()
-            binding.topRatedShimmer.visibility = View.INVISIBLE
-            binding.rvTopRated.visibility = View.VISIBLE
-            response.data?.let {
-                topRatedAdapter.differ.submitList(it.toList())
-            }
-            if(error != null){
-                displayError(view, error)
-            }else{
-                displayError(view, response.message)
-            }
-        }
-
-
-
     }
 
     private fun displayError(view: View, message: String?) {

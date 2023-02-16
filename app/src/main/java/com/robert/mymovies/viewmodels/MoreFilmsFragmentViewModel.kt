@@ -12,9 +12,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
+
 class MoreFilmsFragmentViewModel@Inject constructor(
         private val repository: FilmRepository): ViewModel() {
-
+/*
     private val _allFilms: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val allFilms: LiveData<Resource<FilmResponse>>
         get() = _allFilms
@@ -113,5 +114,6 @@ class MoreFilmsFragmentViewModel@Inject constructor(
         }
     }
 
-
+ */
 }
+

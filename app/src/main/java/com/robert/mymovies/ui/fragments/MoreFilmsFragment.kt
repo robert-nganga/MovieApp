@@ -52,6 +52,7 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         genresAdapter = GenresAdapter()
+        /*
         setUpRecyclerView(args.type)
         // Checks from where this fragment was called and calls the appropriate methods
         if (args.type == "Movie") {
@@ -106,9 +107,12 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
                 }
             }
         }
+
+         */
     }
 
     //Pagination
+    /*
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
@@ -198,34 +202,36 @@ class MoreFilmsFragment: Fragment(R.layout.fragment_more_films) {
         }
     }
 
+     */
 
-    private fun getSeries(category: String) {
-        when(category){
-            "popular" -> {
-                filmsViewModel.getPopularFilms(FilmType.TVSHOW)
-            }
-            "onAir" -> {
-                filmsViewModel.getOnAirFilms(FilmType.TVSHOW)
-            }
-            "topRated" -> {
-                filmsViewModel.getTopRatedFilms(FilmType.TVSHOW)
-            }
-        }
-    }
 
-    private fun getMovies(category: String) {
-        when(category){
-            "popular" -> {
-                filmsViewModel.getPopularFilms(FilmType.MOVIE)
-            }
-            "upcoming" -> {
-                filmsViewModel.getUpcomingFilms(FilmType.MOVIE)
-            }
-            "topRated" -> {
-                filmsViewModel.getTopRatedFilms(FilmType.MOVIE)
-            }
-        }
-    }
+//    private fun getSeries(category: String) {
+//        when(category){
+//            "popular" -> {
+//                filmsViewModel.getPopularFilms(FilmType.TVSHOW)
+//            }
+//            "onAir" -> {
+//                filmsViewModel.getOnAirFilms(FilmType.TVSHOW)
+//            }
+//            "topRated" -> {
+//                filmsViewModel.getTopRatedFilms(FilmType.TVSHOW)
+//            }
+//        }
+//    }
+//
+//    private fun getMovies(category: String) {
+//        when(category){
+//            "popular" -> {
+//                filmsViewModel.getPopularFilms(FilmType.MOVIE)
+//            }
+//            "upcoming" -> {
+//                filmsViewModel.getUpcomingFilms(FilmType.MOVIE)
+//            }
+//            "topRated" -> {
+//                filmsViewModel.getTopRatedFilms(FilmType.MOVIE)
+//            }
+//        }
+//    }
 
 }
 
