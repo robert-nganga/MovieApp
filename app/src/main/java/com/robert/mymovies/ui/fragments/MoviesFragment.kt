@@ -78,9 +78,11 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
             }
             response.data?.let {
                 //Stop the shimmer effect is there is data regardless of the status
-                binding.popularShimmer.stopShimmer()
-                binding.popularShimmer.visibility = View.INVISIBLE
-                binding.rvPopular.visibility = View.VISIBLE
+                if(it.isNotEmpty()){
+                    binding.popularShimmer.stopShimmer()
+                    binding.popularShimmer.visibility = View.INVISIBLE
+                    binding.rvPopular.visibility = View.VISIBLE
+                }
                 popularAdapter.differ.submitList(it.toList())
             }
             response.message?.let { error = it }
@@ -91,9 +93,11 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                 binding.upcomingShimmer.startShimmer()
             }
             response.data?.let {
-                binding.upcomingShimmer.stopShimmer()
-                binding.upcomingShimmer.visibility = View.INVISIBLE
-                binding.rvUpcoming.visibility = View.VISIBLE
+                if(it.isNotEmpty()){
+                    binding.upcomingShimmer.stopShimmer()
+                    binding.upcomingShimmer.visibility = View.INVISIBLE
+                    binding.rvUpcoming.visibility = View.VISIBLE
+                }
                 upcomingAdapter.differ.submitList(it.toList())
             }
             response.message?.let { error = it }
@@ -104,9 +108,11 @@ class MoviesFragment: Fragment(R.layout.fragment_movies) {
                 binding.topRatedShimmer.startShimmer()
             }
             response.data?.let {
-                binding.topRatedShimmer.stopShimmer()
-                binding.topRatedShimmer.visibility = View.INVISIBLE
-                binding.rvTopRated.visibility = View.VISIBLE
+                if(it.isNotEmpty()){
+                    binding.topRatedShimmer.stopShimmer()
+                    binding.topRatedShimmer.visibility = View.INVISIBLE
+                    binding.rvTopRated.visibility = View.VISIBLE
+                }
                 topRatedAdapter.differ.submitList(it.toList())
             }
             if(error != null){

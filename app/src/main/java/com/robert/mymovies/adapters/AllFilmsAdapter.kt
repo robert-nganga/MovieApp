@@ -12,7 +12,7 @@ import com.robert.mymovies.databinding.MovieItemBinding
 import com.robert.mymovies.model.Film
 import com.robert.mymovies.utils.Constants
 
-class AllFilmsAdapter(private val deviceWidth: Int): PagingDataAdapter<Film, AllFilmsAdapter.AllFilmsViewHolder>(differCallBack) {
+class AllFilmsAdapter(private val imageWidth: Int): PagingDataAdapter<Film, AllFilmsAdapter.AllFilmsViewHolder>(differCallBack) {
 
 
     companion object{
@@ -25,6 +25,8 @@ class AllFilmsAdapter(private val deviceWidth: Int): PagingDataAdapter<Film, All
                 return oldItem == newItem
             }
         }
+        private const val SHOW_ITEM = 0
+        const val LOADING_ITEM = 1
     }
     private var onItemClickListener: ((Film)->Unit)? = null
 
@@ -36,6 +38,10 @@ class AllFilmsAdapter(private val deviceWidth: Int): PagingDataAdapter<Film, All
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllFilmsViewHolder {
         val binding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return AllFilmsViewHolder(binding)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == itemCount) SHOW_ITEM else LOADING_ITEM
     }
 
     override fun onBindViewHolder(holder: AllFilmsViewHolder, position: Int) {
@@ -54,7 +60,7 @@ class AllFilmsAdapter(private val deviceWidth: Int): PagingDataAdapter<Film, All
             currentCast = film
             val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${film.posterPath}"
             val layoutParams = binding.imgMoviePoster.layoutParams
-            layoutParams.width = deviceWidth/2
+            layoutParams.width = imageWidth
             binding.imgMoviePoster.layoutParams = layoutParams
 
             Glide.with(itemView).load(imageUrl).error(R.drawable.error_movie).into(binding.imgMoviePoster)

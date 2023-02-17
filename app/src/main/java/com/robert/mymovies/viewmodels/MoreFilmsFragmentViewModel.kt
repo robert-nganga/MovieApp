@@ -16,8 +16,24 @@ import javax.inject.Inject
 @HiltViewModel
 class MoreFilmsFragmentViewModel@Inject constructor(private val repository: MoreFilmsRepository): ViewModel() {
 
-        fun getMoreFilms(filmType: FilmType, category: String) =
-                repository.getMoreFilms(filmType, category).cachedIn(viewModelScope)
+        private val details = MutableLiveData<Map<String, String>>()
+
+        val films = details.switchMap { map ->
+                val type = if (map["type"] == "Movie") FilmType.MOVIE else FilmType.TVSHOW
+                repository.getMoreFilms(type, map["category"]!!).cachedIn(viewModelScope).asLiveData()
+        }
+
+
+        private var type = ""
+        private var filmCategory = ""
+        fun getDetails(filmType: String, category: String){
+                if (type == filmType && filmCategory == category)
+                        return
+                type = filmType
+                filmCategory = category
+                details.value = mapOf("type" to filmType, "category" to category)
+
+        }
 
 
 }

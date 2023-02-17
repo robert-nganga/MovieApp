@@ -64,9 +64,11 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             }
             response.data?.let {
                 // Stop the shimmer effect regardless of the status
-                binding.sliderShimmerSeries.stopShimmer()
-                binding.sliderShimmerSeries.visibility = View.INVISIBLE
-                binding.seriesCardSlider.visibility = View.VISIBLE
+                if(it.isNotEmpty()){
+                    binding.sliderShimmerSeries.stopShimmer()
+                    binding.sliderShimmerSeries.visibility = View.INVISIBLE
+                    binding.seriesCardSlider.visibility = View.VISIBLE
+                }
 
                 it.forEach { series ->
                     val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
@@ -82,9 +84,11 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
                 binding.topRatedShimmerSeries.startShimmer()
             }
             response.data?.let {
-                binding.topRatedShimmerSeries.stopShimmer()
-                binding.topRatedShimmerSeries.visibility = View.INVISIBLE
-                binding.rvTopRatedSeries.visibility = View.VISIBLE
+                if (it.isNotEmpty()){
+                    binding.topRatedShimmerSeries.stopShimmer()
+                    binding.topRatedShimmerSeries.visibility = View.INVISIBLE
+                    binding.rvTopRatedSeries.visibility = View.VISIBLE
+                }
 
                 topRatedAdapter.differ.submitList(it.toList())
             }
@@ -96,9 +100,11 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
                 binding.popularShimmerSeries.startShimmer()
             }
             response.data?.let {
-                binding.popularShimmerSeries.stopShimmer()
-                binding.popularShimmerSeries.visibility = View.INVISIBLE
-                binding.rvPopularSeries.visibility = View.VISIBLE
+                if (it.isNotEmpty()){
+                    binding.popularShimmerSeries.stopShimmer()
+                    binding.popularShimmerSeries.visibility = View.INVISIBLE
+                    binding.rvPopularSeries.visibility = View.VISIBLE
+                }
                 popularAdapter.differ.submitList(it.toList())
             }
             response.message?.let { error = it }
@@ -110,9 +116,11 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             }
 
             response.data?.let {
-                binding.onAirShimmerSeries.stopShimmer()
-                binding.onAirShimmerSeries.visibility = View.INVISIBLE
-                binding.rvOnAirSeries.visibility = View.VISIBLE
+                if (it.isNotEmpty()){
+                    binding.onAirShimmerSeries.stopShimmer()
+                    binding.onAirShimmerSeries.visibility = View.INVISIBLE
+                    binding.rvOnAirSeries.visibility = View.VISIBLE
+                }
                 onAirAdapter.differ.submitList(it.toList())
             }
             if(error != null){
