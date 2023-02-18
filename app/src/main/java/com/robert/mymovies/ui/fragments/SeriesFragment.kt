@@ -1,17 +1,21 @@
 package com.robert.mymovies.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
 import com.robert.mymovies.adapters.FilmAdapter
+import com.robert.mymovies.adapters.ViewPagerAdapter
 import com.robert.mymovies.databinding.FragmentSeriesBinding
 import com.robert.mymovies.viewmodels.FilmViewModel
 import com.robert.mymovies.utils.Constants
@@ -28,6 +32,16 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
     private val viewModel: FilmViewModel by viewModels()
     private var error: String? = null
 
+    private lateinit var handler: Handler
+    private val runnable by lazy {  Runnable {
+        if (binding.viewPager2Series.currentItem == binding.viewPager2Series.adapter?.itemCount?.minus(1)) {
+            binding.viewPager2Series.currentItem = 0
+        } else{
+            binding.viewPager2Series.currentItem = binding.viewPager2Series.currentItem + 1
+        }
+    }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,10 +55,12 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         super.onViewCreated(view, savedInstanceState)
         // Fetch the data
         viewModel.fetchSeriesData(FilmType.TVSHOW)
+        handler = Handler(Looper.myLooper()!!)
 
         val popularAdapter = FilmAdapter()
         val onAirAdapter = FilmAdapter()
         val topRatedAdapter = FilmAdapter()
+        val viewPagerAdapter = ViewPagerAdapter()
 
         val imageList = ArrayList<SlideModel>()
 
@@ -54,6 +70,8 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
         binding.rvOnAirSeries.adapter = onAirAdapter
         binding.rvPopularSeries.adapter = popularAdapter
         binding.rvTopRatedSeries.adapter = topRatedAdapter
+        setupViewPager(viewPagerAdapter)
+        viewPagerOnPageChangedCallBack()
 
         //Set Adapter listeners
         filmAdapterClickListeners(popularAdapter, onAirAdapter, topRatedAdapter)
@@ -67,14 +85,10 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
                 if(it.isNotEmpty()){
                     binding.sliderShimmerSeries.stopShimmer()
                     binding.sliderShimmerSeries.visibility = View.INVISIBLE
-                    binding.seriesCardSlider.visibility = View.VISIBLE
                 }
+                viewPagerAdapter.differ.submitList(it.toList())
 
-                it.forEach { series ->
-                    val imageUrl = "${Constants.MOVIE_POSTER_BASE_URL}${series.backdropPath}"
-                    imageList.add(SlideModel(imageUrl, series.title))
-                }
-                binding.seriesImageSlider.setImageList(imageList, ScaleTypes.FIT)
+
             }
             response.message?.let { error = it }
         }
@@ -183,6 +197,33 @@ class SeriesFragment: Fragment(R.layout.fragment_series) {
             }
             findNavController().navigate(R.id.action_seriesFragment_to_seriesDetailsFragment, bundle)
         }
+    }
+
+    private fun viewPagerOnPageChangedCallBack() {
+        binding.viewPager2Series.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                handler.removeCallbacks(runnable)
+                handler.postDelayed(runnable, 3000L)
+            }
+        })
+    }
+
+    private fun setupViewPager(viewPagerAdapter: ViewPagerAdapter) {
+        binding.viewPager2Series.apply {
+            adapter = viewPagerAdapter
+            orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            offscreenPageLimit = 3
+            clipToPadding = false
+            clipChildren = false
+            setPageTransformer { page, position ->
+                val scaleFactor = 1 - Math.abs(position) * 0.2f
+                page.scaleX = scaleFactor
+                page.scaleY = scaleFactor
+                page.alpha = 0.5f + (scaleFactor - 0.8f) / 0.2f * 0.5f
+            }
+        }
+
     }
 
     private fun displayError(view: View, message: String?) {
