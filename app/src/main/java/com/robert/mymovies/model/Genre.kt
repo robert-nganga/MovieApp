@@ -9,5 +9,6 @@ data class Genre(
     val mediaType: String,
     @PrimaryKey
     val id: Int,
-    val name: String
+    val name: String,
+    val timeStamp: String
 )

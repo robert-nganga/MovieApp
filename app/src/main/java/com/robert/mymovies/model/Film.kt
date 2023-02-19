@@ -34,5 +34,6 @@ data class Film(
     val voteAverage: Double,
     @SerializedName("vote_count")
     val voteCount: Int,
-    val category: String
+    val category: String,
+    val timeStamp: String
 )

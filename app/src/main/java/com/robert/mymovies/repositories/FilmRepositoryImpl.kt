@@ -1,17 +1,15 @@
 package com.robert.mymovies.repositories
 
 import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.room.withTransaction
 import com.robert.mymovies.data.local.FilmDatabase
 import com.robert.mymovies.data.remote.MoviesAPI
-import com.robert.mymovies.data.remote.responses.GenreResponse
+import com.robert.mymovies.model.Film
 import com.robert.mymovies.utils.FilmType
-import com.robert.mymovies.utils.Resource
 import com.robert.mymovies.utils.networkBoundResource
-import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class FilmRepositoryImpl@Inject constructor(
@@ -23,15 +21,30 @@ class FilmRepositoryImpl@Inject constructor(
     private val filmDao = database.filmDao()
     private val genreDao = database.genreDao()
 
+    private val time = Date().toString()
+    //Convert time back to date
+
+
+    private fun shouldFetchFromNetwork(films: List<Film>): Boolean {
+        if (films.isEmpty()) return true
+        val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
+        val lastFetchTime = dateFormat.parse(films[0].timeStamp)
+        Log.i("NetworkBoundResource", "Last fetch time is $lastFetchTime")
+        val difference = lastFetchTime?.let { (Date().time - lastFetchTime.time) / (1000 * 60 * 60 * 24) }
+        Log.i("NetworkBoundResource", "Difference is $difference")
+        return difference != null && difference >= 1
+
+    }
+
 
     override fun getPopularFilms(filmType: FilmType) = networkBoundResource(
         query = { if (filmType == FilmType.MOVIE) { filmDao.getMovies("popular") } else { filmDao.getTvShows("popular") } },
         fetch = { if (filmType == FilmType.MOVIE) { api.getPopularMovies() } else { api.getPopularSeries() } },
         saveFetchResult = { response ->
             val films = if (filmType == FilmType.MOVIE) {
-                response.body()?.results?.map { it.copy(mediaType = "movie", category = "popular") }
+                response.body()?.results?.map { it.copy(mediaType = "movie", category = "popular", timeStamp = time) }
             } else {
-                response.body()?.results?.map { it.copy(mediaType = "tv", category = "popular") }
+                response.body()?.results?.map { it.copy(mediaType = "tv", category = "popular", timeStamp = time) }
             }
             films?.let {
                 database.withTransaction {
@@ -44,21 +57,23 @@ class FilmRepositoryImpl@Inject constructor(
                     }
                 }
             }
-        }
+        },
+        shouldFetch = { films -> shouldFetchFromNetwork(films) }
     )
 
     override fun getUpcomingFilms() = networkBoundResource(
         query = { filmDao.getMovies("upcoming")},
         fetch = { api.getUpcomingMovies() },
         saveFetchResult = { response ->
-            val films = response.body()?.results?.map { it.copy(mediaType = "movie", category = "upcoming") }
+            val films = response.body()?.results?.map { it.copy(mediaType = "movie", category = "upcoming", timeStamp = time) }
             films?.let {
                 database.withTransaction {
                         filmDao.deleteMovies("upcoming")
                         filmDao.insertFilms(it)
                 }
             }
-        }
+        },
+        shouldFetch = { films -> shouldFetchFromNetwork(films) }
     )
 
     override fun getTrendingFilms(filmType: FilmType) = networkBoundResource(
@@ -66,9 +81,9 @@ class FilmRepositoryImpl@Inject constructor(
         fetch = { if (filmType == FilmType.MOVIE) { api.getTrendingMovies() } else { api.getTrendingSeries() } },
         saveFetchResult = { response ->
             val films = if (filmType == FilmType.MOVIE) {
-                response.body()?.results?.map { it.copy(mediaType = "movie", category = "trending") }
+                response.body()?.results?.map { it.copy(mediaType = "movie", category = "trending", timeStamp = time) }
             } else {
-                response.body()?.results?.map { it.copy(mediaType = "tv", category = "trending") }
+                response.body()?.results?.map { it.copy(mediaType = "tv", category = "trending", timeStamp = time) }
             }
             films?.let {
                 database.withTransaction {
@@ -81,21 +96,23 @@ class FilmRepositoryImpl@Inject constructor(
                     }
                 }
             }
-        }
+        },
+        shouldFetch = { films -> shouldFetchFromNetwork(films) }
     )
 
     override fun getOnAirFilms() = networkBoundResource(
         query = { filmDao.getTvShows("onAir")},
         fetch = { api.getOnAirSeries() },
         saveFetchResult = { response ->
-            val films = response.body()?.results?.map { it.copy(mediaType = "tv", category = "onAir") }
+            val films = response.body()?.results?.map { it.copy(mediaType = "tv", category = "onAir", timeStamp = time) }
             films?.let {
                 database.withTransaction {
                         filmDao.deleteTvShows("onAir")
                         filmDao.insertFilms(it)
                 }
             }
-        }
+        },
+        shouldFetch = { films -> shouldFetchFromNetwork(films) }
     )
 
     override fun getTopRatedFilms(filmType: FilmType) = networkBoundResource(
@@ -103,9 +120,9 @@ class FilmRepositoryImpl@Inject constructor(
         fetch = { if (filmType == FilmType.MOVIE) { api.getTopRatedMovies() } else { api.getTopRatedSeries() } },
         saveFetchResult = { response ->
             val films = if (filmType == FilmType.MOVIE) {
-                response.body()?.results?.map { it.copy(mediaType = "movie", category = "topRated") }
+                response.body()?.results?.map { it.copy(mediaType = "movie", category = "topRated", timeStamp = time) }
             } else {
-                response.body()?.results?.map { it.copy(mediaType = "tv", category = "topRated") }
+                response.body()?.results?.map { it.copy(mediaType = "tv", category = "topRated", timeStamp = time) }
             }
             films?.let {
                 database.withTransaction {
@@ -118,7 +135,8 @@ class FilmRepositoryImpl@Inject constructor(
                     }
                 }
             }
-        }
+        },
+        shouldFetch = { films -> shouldFetchFromNetwork(films) }
     )
 
     override fun getGenreList(filmType: FilmType) = networkBoundResource(
@@ -126,9 +144,9 @@ class FilmRepositoryImpl@Inject constructor(
         fetch = { if (filmType == FilmType.MOVIE) { api.getMoviesGenreList() } else { api.getSeriesGenreList() } },
         saveFetchResult = { response ->
             val films = if (filmType == FilmType.MOVIE) {
-                response.body()?.genres?.map { it.copy(mediaType = "movie") }
+                response.body()?.genres?.map { it.copy(mediaType = "movie", timeStamp = time) }
             } else {
-                response.body()?.genres?.map { it.copy(mediaType = "tv") }
+                response.body()?.genres?.map { it.copy(mediaType = "tv", timeStamp = time) }
             }
             films?.let {
                 database.withTransaction {
@@ -141,27 +159,7 @@ class FilmRepositoryImpl@Inject constructor(
                     }
                 }
             }
-        }
+        },
+        shouldFetch = { true }
     )
-
-    private fun checkForInternet(): Boolean {
-        // register activity with the connectivity manager service
-        val connectivityManager = app.getSystemService(
-            Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork ?: return false
-
-        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
-
-        return when {
-            // Indicates this network uses a Wi-Fi transport,
-            // or WiFi has network connectivity
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            // Indicates this network uses a Cellular transport. or
-            // Cellular has network connectivity
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-
-            // else return false
-            else -> false
-        }
-    }
 }
