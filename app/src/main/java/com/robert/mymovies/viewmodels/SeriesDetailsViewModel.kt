@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.robert.mymovies.data.remote.responses.SeriesDetailsResponse
+import com.robert.mymovies.model.SeriesDetails
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.repositories.SeriesDetailsRepository
@@ -21,8 +21,8 @@ class SeriesDetailsViewModel@Inject constructor(private val repository: SeriesDe
     private val _similarSeries: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val similarSeries: LiveData<Resource<FilmResponse>> get() =  _similarSeries
 
-    private var _seriesDetails: MutableLiveData<Resource<SeriesDetailsResponse>> = MutableLiveData()
-    val seriesDetails: LiveData<Resource<SeriesDetailsResponse>> get() = _seriesDetails
+    private var _seriesDetails: MutableLiveData<Resource<SeriesDetails>> = MutableLiveData()
+    val seriesDetails: LiveData<Resource<SeriesDetails>> get() = _seriesDetails
 
     private var _seriesCast: MutableLiveData<Resource<CastResponse>> = MutableLiveData()
     val seriesCast: LiveData<Resource<CastResponse>> get() =  _seriesCast

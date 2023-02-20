@@ -15,7 +15,7 @@ import com.robert.mymovies.R
 import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.FilmAdapter
 import com.robert.mymovies.adapters.GenresAdapter
-import com.robert.mymovies.data.remote.responses.SeriesDetailsResponse
+import com.robert.mymovies.model.SeriesDetails
 import com.robert.mymovies.databinding.FragmentSeriesDetailsBinding
 import com.robert.mymovies.viewmodels.SeriesDetailsViewModel
 import com.robert.mymovies.utils.Constants
@@ -135,7 +135,7 @@ class SeriesDetailsFragment: Fragment(R.layout.fragment_series_details) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun displaySeriesDetails(series: SeriesDetailsResponse){
+    private fun displaySeriesDetails(series: SeriesDetails){
         var runtime = "N/A"
         if(series.episode_run_time.isNotEmpty()){
             runtime = "${series.episode_run_time[0]} Mins"

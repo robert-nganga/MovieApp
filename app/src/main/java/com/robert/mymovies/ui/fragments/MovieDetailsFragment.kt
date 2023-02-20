@@ -15,7 +15,7 @@ import com.robert.mymovies.R
 import com.robert.mymovies.adapters.CastAdapter
 import com.robert.mymovies.adapters.GenresAdapter
 import com.robert.mymovies.adapters.FilmAdapter
-import com.robert.mymovies.data.remote.responses.MovieDetailsResponse
+import com.robert.mymovies.model.MovieDetails
 import com.robert.mymovies.databinding.FragmentMovieDetailsBinding
 import com.robert.mymovies.viewmodels.MovieDetailsViewModel
 import com.robert.mymovies.utils.Constants
@@ -152,7 +152,7 @@ class MovieDetailsFragment: Fragment(R.layout.fragment_movie_details) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setMovieDetails(movie: MovieDetailsResponse) {
+    private fun setMovieDetails(movie: MovieDetails) {
         binding.collapsingToolBar.title = movie.title
         binding.tvDescription.text = movie.overview
         binding.tvTagLine.text = movie.tagline

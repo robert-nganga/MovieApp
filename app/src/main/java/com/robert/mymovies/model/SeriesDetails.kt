@@ -1,8 +1,8 @@
-package com.robert.mymovies.data.remote.responses
+package com.robert.mymovies.model
 
 import com.robert.mymovies.model.Genre
 
-data class SeriesDetailsResponse(
+data class SeriesDetails(
     val adult: Boolean,
     val backdrop_path: String,
     val episode_run_time: List<Any>,

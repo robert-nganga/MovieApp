@@ -1,13 +1,16 @@
-package com.robert.mymovies.data.remote.responses
+package com.robert.mymovies.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.robert.mymovies.model.Genre
 
-data class MovieDetailsResponse(
+@Entity(tableName = "movie_details")
+data class MovieDetails(
     val adult: Boolean,
     val backdrop_path: String,
-    val belongs_to_collection: Any,
     val genres: List<Genre>,
     val homepage: String,
+    @PrimaryKey(autoGenerate = false)
     val id: Int,
     val imdb_id: String,
     val original_language: String,
@@ -20,7 +23,6 @@ data class MovieDetailsResponse(
     val status: String,
     val tagline: String,
     val title: String,
-    val video: Boolean,
     val vote_average: Double,
     val vote_count: Int
 )

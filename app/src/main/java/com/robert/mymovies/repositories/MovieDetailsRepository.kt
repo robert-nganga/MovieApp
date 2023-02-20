@@ -1,13 +1,13 @@
 package com.robert.mymovies.repositories
 
-import com.robert.mymovies.data.remote.responses.MovieDetailsResponse
+import com.robert.mymovies.model.MovieDetails
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.utils.Resource
 
 interface MovieDetailsRepository {
 
-    suspend fun getMovieDetails(filmId:Int): Resource<MovieDetailsResponse>
+    suspend fun getMovieDetails(filmId:Int): Resource<MovieDetails>
 
     suspend fun getMovieCast(filmId: Int): Resource<CastResponse>
 

@@ -3,6 +3,8 @@ package com.robert.mymovies.data.remote
 import com.robert.mymovies.BuildConfig
 import com.robert.mymovies.data.remote.responses.*
 import com.robert.mymovies.data.remote.responses.SearchResponse
+import com.robert.mymovies.model.MovieDetails
+import com.robert.mymovies.model.SeriesDetails
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -104,7 +106,7 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("language")
         language: String = "en-US",
-    ): Response<MovieDetailsResponse>
+    ): Response<MovieDetails>
 
 
     // Tv Shows
@@ -189,5 +191,5 @@ interface MoviesAPI {
         apiKey: String = BuildConfig.API_KEY,
         @Query("language")
         language: String = "en-US",
-    ): Response<SeriesDetailsResponse>
+    ): Response<SeriesDetails>
 }

@@ -8,8 +8,10 @@ import com.robert.mymovies.model.Genre
 
 
 @Database(entities = [Film::class, Genre::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class FilmDatabase: RoomDatabase() {
 
         abstract fun filmDao(): FilmDao
         abstract fun genreDao(): GenreDao
+        abstract fun movieDetailsDao(): MovieDetailsDao
 }

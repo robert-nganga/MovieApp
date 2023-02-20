@@ -5,7 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.robert.mymovies.data.remote.MoviesAPI
-import com.robert.mymovies.data.remote.responses.MovieDetailsResponse
+import com.robert.mymovies.model.MovieDetails
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.utils.Resource
@@ -19,7 +19,7 @@ class MovieDetailsRepositoryImpl@Inject constructor(
 ): MovieDetailsRepository {
 
 
-    override suspend fun getMovieDetails(filmId: Int): Resource<MovieDetailsResponse> {
+    override suspend fun getMovieDetails(filmId: Int): Resource<MovieDetails> {
         return try {
             if (checkForInternet()){
                 val response = handleMovieDetailsResponse(api.getMovieDetails(filmId = filmId))
@@ -85,7 +85,7 @@ class MovieDetailsRepositoryImpl@Inject constructor(
         return Resource(Resource.Status.ERROR, null, response.message())
     }
 
-    private fun handleMovieDetailsResponse(response: Response<MovieDetailsResponse>): Resource<MovieDetailsResponse> {
+    private fun handleMovieDetailsResponse(response: Response<MovieDetails>): Resource<MovieDetails> {
         if(response.isSuccessful){
             response.body()?.let { resultResponse ->
                 return Resource(Resource.Status.SUCCESS, resultResponse, null)
