@@ -18,7 +18,7 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindSearchRepository(searchRepository: SearchRepository): RepositorySearch
+    abstract fun bindSearchRepository(searchRepository: SearchRepositoryImpl): SearchRepository
 
     @Binds
     @Singleton
@@ -26,7 +26,7 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindSeriesDetailsRepository(seriesDetailsRepository: SeriesDetailsRepository): RepositorySeriesDetails
+    abstract fun bindSeriesDetailsRepository(seriesDetailsRepository: SeriesDetailsRepositoryImpl): SeriesDetailsRepository
 
     @Binds
     @Singleton

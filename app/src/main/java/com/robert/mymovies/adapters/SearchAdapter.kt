@@ -3,6 +3,7 @@ package com.robert.mymovies.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,24 +13,15 @@ import com.robert.mymovies.databinding.SearchItemBinding
 import com.robert.mymovies.model.Search
 import com.robert.mymovies.utils.Constants
 
-class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
+class SearchAdapter: PagingDataAdapter<Search, SearchAdapter.SearchViewHolder>(differCallBack) {
 
-    private val differCallBack = object: DiffUtil.ItemCallback<Search>() {
-        override fun areItemsTheSame(oldItem: Search, newItem: Search): Boolean {
-            return oldItem.id == newItem.id
-        }
 
-        override fun areContentsTheSame(oldItem: Search, newItem: Search): Boolean {
-            return oldItem == newItem
-        }
-    }
     private var onItemClickListener: ((Search)->Unit)? = null
 
     fun setOnItemClickListener(listener: (Search)-> Unit){
         onItemClickListener = listener
     }
 
-    val differ = AsyncListDiffer(this, differCallBack)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val binding = SearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -37,12 +29,14 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        val search = differ.currentList[position]
-        holder.itemView.setOnClickListener { onItemClickListener?.let { it(search) } }
-        holder.setData(search)
+        val search = getItem(position)
+        search?.let {
+            holder.itemView.setOnClickListener { onItemClickListener?.let { it(search) }}
+            holder.setData(search)
+        }
     }
 
-    override fun getItemCount(): Int = differ.currentList.size
+
     inner class SearchViewHolder(private val binding: SearchItemBinding):RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
@@ -57,6 +51,18 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
             binding.searchTitle.text = search.title
             binding.searchReleaseDate.text = search.releaseDate
             binding.searchRating.text = "Rating ⭐: ${search.voteAverage}"
+        }
+    }
+
+    companion object{
+        private val differCallBack = object: DiffUtil.ItemCallback<Search>() {
+            override fun areItemsTheSame(oldItem: Search, newItem: Search): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Search, newItem: Search): Boolean {
+                return oldItem == newItem
+            }
         }
     }
 }

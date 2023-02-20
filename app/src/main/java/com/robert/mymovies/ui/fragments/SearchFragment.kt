@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import com.robert.mymovies.R
+import com.robert.mymovies.adapters.FilmLoadStateAdapter
 import com.robert.mymovies.adapters.SearchAdapter
 import com.robert.mymovies.databinding.FragmentSearchBinding
 import com.robert.mymovies.model.Search
@@ -43,7 +46,25 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
         super.onViewCreated(view, savedInstanceState)
 
         searchAdapter = SearchAdapter()
-        binding.rvSearch.adapter = searchAdapter
+        binding.rvSearch.adapter = searchAdapter.withLoadStateFooter(
+            footer = FilmLoadStateAdapter{ searchAdapter.retry() }
+        )
+
+        binding.retryButton.setOnClickListener { searchAdapter.retry() }
+        searchAdapter.addLoadStateListener { loadState->
+            val isListEmpty = loadState.refresh is LoadState.Error
+            // show empty list
+            binding.emptyList.isVisible = isListEmpty
+
+            // Only show the list if refresh succeeds.
+            binding.rvSearch.isVisible = !isListEmpty
+
+            // Show loading spinner during initial load or refresh.
+            binding.progressBar.isVisible = loadState.refresh is LoadState.Loading
+
+            // Show the retry state if initial load or refresh fails.
+            binding.retryButton.isVisible = loadState.refresh is LoadState.Error
+        }
 
         binding.imageButton.setOnClickListener {
             findNavController().popBackStack()
@@ -67,13 +88,13 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                //Creates a simple delay so that the user can finish typing
+                //Creates a simple delay after the user finishes typing
                 job?.cancel()
                 job = MainScope().launch {
                     delay(500L)
                     newText?.let{ query ->
                         if(query.isNotEmpty()){
-                            viewModel.getSearchResults(query)
+                            viewModel.getQuery(query)
                         }
                     }
                 }
@@ -81,47 +102,10 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             }
         })
 
-        viewModel.searchResult.observe(viewLifecycleOwner){ response ->
-            when(response.status){
-                Resource.Status.SUCCESS -> {
-                    hideProgressBar()
-                    response.data?.let {
-                        searchAdapter.differ.submitList(filteredList(it.results))
-                    }
-                }
-                Resource.Status.LOADING -> {
-                    showProgressbar()
-                }
-                Resource.Status.ERROR -> {
-                    hideProgressBar()
-                    displayError(view, response.message)
-                }
-            }
+        viewModel.searchFilms.observe(viewLifecycleOwner){ response ->
+            searchAdapter.submitData(viewLifecycleOwner.lifecycle,response)
 
         }
     }
 
-    private fun filteredList(results: MutableList<Search>): List<Search> {
-        return results.filter { search-> search.mediaType != "person" }
-    }
-
-
-
-    private fun showProgressbar(){
-        binding.progressBar.visibility = View.VISIBLE
-    }
-
-    private fun hideProgressBar(){
-        binding.progressBar.visibility = View.INVISIBLE
-    }
-
-    private fun displayError(view: View, message: String?) {
-        if (message != null) {
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG).apply {
-                setAction("Retry"){
-
-                }.show()
-            }
-        }
-    }
 }
