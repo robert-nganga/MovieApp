@@ -2,7 +2,6 @@ package com.robert.mymovies.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.robert.mymovies.model.Genre
 
 @Entity(tableName = "movie_details")
 data class MovieDetails(
@@ -24,5 +23,6 @@ data class MovieDetails(
     val tagline: String,
     val title: String,
     val vote_average: Double,
-    val vote_count: Int
+    val vote_count: Int,
+    val timeStamp: String
 )

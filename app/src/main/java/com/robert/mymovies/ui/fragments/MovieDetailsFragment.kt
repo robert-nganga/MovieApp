@@ -56,6 +56,7 @@ class MovieDetailsFragment: Fragment(R.layout.fragment_movie_details) {
             viewModel.fetchData(viewModel.movieId!!)
         }else{
             viewModel.fetchData(args.id)
+            viewModel.setMovieId(args.id)
         }
 
         //set the navigation icon click listener
@@ -170,6 +171,7 @@ class MovieDetailsFragment: Fragment(R.layout.fragment_movie_details) {
                         viewModel.fetchData(viewModel.movieId!!)
                     }else{
                         viewModel.fetchData(args.id)
+                        viewModel.setMovieId(args.id)
                     }
                 }.show()
             }

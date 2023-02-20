@@ -1,9 +1,6 @@
 package com.robert.mymovies.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.robert.mymovies.model.MovieDetails
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
@@ -19,29 +16,28 @@ class MovieDetailsViewModel@Inject constructor(
         private val repository: MovieDetailsRepository): ViewModel() {
 
     var movieId: Int? = null
+    private val id = MutableLiveData<Int>()
 
     private val _similarMovies: MutableLiveData<Resource<FilmResponse>> = MutableLiveData()
     val similarMovies: LiveData<Resource<FilmResponse>> get() =  _similarMovies
 
-    private var _movieDetails: MutableLiveData<Resource<MovieDetails>> = MutableLiveData()
-    val movieDetails: LiveData<Resource<MovieDetails>> get() = _movieDetails
-
     private var _movieCast: MutableLiveData<Resource<CastResponse>> = MutableLiveData()
     val movieCast: LiveData<Resource<CastResponse>> get() =  _movieCast
 
+    val movieDetails = id.switchMap {
+        repository.getMovieDetails(filmId = it).asLiveData()
+    }
+
 
     fun fetchData(filmId: Int){
-        getMovieDetails(filmId)
         getMovieCast(filmId)
         getSimilarMovie(filmId)
     }
 
-
-    private fun getMovieDetails(filmId: Int) = viewModelScope.launch {
-        _movieDetails.postValue(Resource(Resource.Status.LOADING, null, null))
-        val result = repository.getMovieDetails(filmId = filmId)
-        _movieDetails.postValue(result)
+    fun setMovieId(filmId: Int){
+        id.postValue(filmId)
     }
+
 
     private fun getMovieCast(filmId: Int) = viewModelScope.launch {
         _movieCast.postValue(Resource(Resource.Status.LOADING, null, null))

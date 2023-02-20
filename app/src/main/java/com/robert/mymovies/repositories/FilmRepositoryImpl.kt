@@ -1,7 +1,5 @@
 package com.robert.mymovies.repositories
 
-import android.app.Application
-import android.util.Log
 import androidx.room.withTransaction
 import com.robert.mymovies.data.local.FilmDatabase
 import com.robert.mymovies.data.remote.MoviesAPI
@@ -13,7 +11,6 @@ import java.util.*
 import javax.inject.Inject
 
 class FilmRepositoryImpl@Inject constructor(
-        private val app: Application,
         private val database: FilmDatabase,
         private val api: MoviesAPI
 ): FilmRepository {
@@ -22,18 +19,15 @@ class FilmRepositoryImpl@Inject constructor(
     private val genreDao = database.genreDao()
 
     private val time = Date().toString()
-    //Convert time back to date
+
 
 
     private fun shouldFetchFromNetwork(films: List<Film>): Boolean {
         if (films.isEmpty()) return true
         val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
         val lastFetchTime = dateFormat.parse(films[0].timeStamp)
-        Log.i("NetworkBoundResource", "Last fetch time is $lastFetchTime")
         val difference = lastFetchTime?.let { (Date().time - lastFetchTime.time) / (1000 * 60 * 60 * 24) }
-        Log.i("NetworkBoundResource", "Difference is $difference")
         return difference != null && difference >= 1
-
     }
 
 

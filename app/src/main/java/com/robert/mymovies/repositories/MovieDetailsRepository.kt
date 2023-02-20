@@ -4,10 +4,11 @@ import com.robert.mymovies.model.MovieDetails
 import com.robert.mymovies.data.remote.responses.CastResponse
 import com.robert.mymovies.data.remote.responses.FilmResponse
 import com.robert.mymovies.utils.Resource
+import kotlinx.coroutines.flow.Flow
 
 interface MovieDetailsRepository {
 
-    suspend fun getMovieDetails(filmId:Int): Resource<MovieDetails>
+    fun getMovieDetails(filmId:Int): Flow<Resource<MovieDetails>>
 
     suspend fun getMovieCast(filmId: Int): Resource<CastResponse>
 
